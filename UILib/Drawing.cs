@@ -16,6 +16,8 @@ namespace UIEditor.UILib {
         public static Texture2D DefaultBoxTexture;
         public static Texture2D DefaultBox2Texture;
         public static Texture2D CloseButtonTexture;
+        public static Texture2D CollapseButtonUp;
+        public static Texture2D CollapseButtonDown;
         public static Mod CurrentMod;
         public static void Initialize(Mod mod) {
             CurrentMod = mod;
@@ -24,6 +26,8 @@ namespace UIEditor.UILib {
             DefaultBoxTexture = CurrentMod.GetTexture("Images/Box");
             DefaultBox2Texture = CurrentMod.GetTexture("Images/Box2");
             CloseButtonTexture = CurrentMod.GetTexture("Images/CloseButton");
+            CollapseButtonUp = CurrentMod.GetTexture("Images/CollapseButtonUp");
+            CollapseButtonDown = CurrentMod.GetTexture("Images/CollapseButtonDown");
         }
         public static void Unload() {
             CurrentMod = null;

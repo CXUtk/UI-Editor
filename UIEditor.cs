@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using UIEditor.UILib;
 using UIEditor.UILib.Tests;
+using UIEditor.Editor.States;
 
 namespace UIEditor {
     public class UIEditor : Mod {
@@ -24,7 +25,8 @@ namespace UIEditor {
             Instance = this;
             Drawing.Initialize(this);
             UIStateMachine = new UIStateMachine();
-            // UIStateMachine.Add(new TestState());
+            UIStateMachine.Add(new EditorState());
+            UIStateMachine.Add(new BottomToolBarState());
             // UIStateMachine.Add(new TestState2());
         }
 

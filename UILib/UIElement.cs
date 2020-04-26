@@ -145,14 +145,58 @@ namespace UIEditor.UILib {
             }
         }
 
-        protected int Width {
+
+        public int Width {
             get {
                 return (int)(SizeFactor.X * getParentRect().Width + Size.X);
             }
         }
-        protected int Height {
+        public int Height {
             get {
                 return (int)(SizeFactor.Y * getParentRect().Height + Size.Y);
+            }
+        }
+
+
+        public bool IsMouseHover {
+            get {
+                return _selfHitbox.Contains(Main.MouseScreen);
+            }
+        }
+
+        private Vector2 PivotOffset {
+            get {
+                return new Vector2(Width * Pivot.X, Height * Pivot.Y);
+            }
+        }
+
+        public Vector2 ScreenPositionToNode(Vector2 worldPos) {
+            return worldPos - (_baseTopLeftScreen - Position + PivotOffset);
+        }
+
+        //public Vector2 NodePositionToScreen(Vector2 worldPos) {
+        //    return _baseTopLeftScreen - PivotOffset;
+        //}
+
+
+        public IHitBox ScreenHitBox {
+            get {
+                return _selfHitbox;
+            }
+        }
+
+        public Vector2 PostionScreen {
+            get {
+                return _baseTopLeftScreen + PivotOffset;
+            }
+            set {
+                Position = ScreenPositionToNode(value);
+            }
+        }
+
+        public void RecalculateChildren() {
+            foreach (var element in Children) {
+                element.Recalculate();
             }
         }
         #endregion
@@ -248,41 +292,7 @@ namespace UIEditor.UILib {
         }
 
 
-        private Vector2 PivotOffset {
-            get {
-                return new Vector2(Width * Pivot.X, Height * Pivot.Y);
-            }
-        }
 
-        public Vector2 ScreenPositionToNode(Vector2 worldPos) {
-            return worldPos - (_baseTopLeftScreen - Position + PivotOffset);
-        }
-
-        //public Vector2 NodePositionToScreen(Vector2 worldPos) {
-        //    return _baseTopLeftScreen - PivotOffset;
-        //}
-
-
-        public IHitBox ScreenHitBox {
-            get {
-                return _selfHitbox;
-            }
-        }
-
-        public Vector2 PostionScreen {
-            get {
-                return _baseTopLeftScreen + PivotOffset;
-            }
-            set {
-                Position = ScreenPositionToNode(value);
-            }
-        }
-
-        public void RecalculateChildren() {
-            foreach (var element in Children) {
-                element.Recalculate();
-            }
-        }
 
         public UIElement() {
             Name = "UI元素";

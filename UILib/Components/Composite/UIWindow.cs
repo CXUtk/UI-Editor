@@ -33,6 +33,7 @@ namespace UIEditor.UILib.Components.Composite {
             AppendChild(_closeButton);
         }
 
+
         private void _closeButton_OnClick(UIMouseEvent e, UIElement sender) {
             OnClose?.Invoke(new UIActionEvent(this, e.TimeStamp), sender);
         }

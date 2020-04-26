@@ -8,9 +8,6 @@ using System.Threading.Tasks;
 using Terraria;
 
 namespace UIEditor.UILib.Components {
-    public abstract class UIButtonBase : UIElement {
-
-    }
     public class UIButton : UIPanel {
         public string Text { get; set; }
         public bool DrawPanel { get; set; }

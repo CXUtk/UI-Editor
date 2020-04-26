@@ -47,8 +47,9 @@ namespace UIEditor.UILib {
 
             bool mouseLeftDown = Main.mouseLeft && Main.hasFocus;
             // 响应鼠标事件的时候一定是从后往前，前端的窗口一定是第一个响应鼠标事件的
-            int sz = uiRunningStack.Count;
+            // 如果有多个前端窗口，那么优先响应当前焦点窗口
             UIElement hoverElement = null;
+            int sz = uiRunningStack.Count;
             for (int i = sz - 1; i >= 0; i--) {
                 var state = uiRunningStack[i];
                 if (state.IsActive) {

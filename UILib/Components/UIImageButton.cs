@@ -25,7 +25,8 @@ namespace UIEditor.UILib.Components {
             SizeStyle = SizeStyle.Inline;
             TextureScale = 1f;
             Texture = Main.magicPixel;
-            DefaultColor = Color.White;
+            DefaultColor = Color.Gray * 1.2f;
+            MouseOverColor = Color.White;
             TextureRotation = 0f;
 
             this.OnMouseEnter += UIImageButton_OnMouseEnter;
@@ -56,7 +57,12 @@ namespace UIEditor.UILib.Components {
 
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            sb.Draw(Texture, new Vector2(Width / 2, Height / 2), null, _color, TextureRotation, Texture.Size() * 0.5f, new Vector2(1, 1), SpriteEffects.None, 0f);
+            if (SizeStyle == SizeStyle.Inline)
+                sb.Draw(Texture, Pivot * new Vector2(Width, Height), null, _color, TextureRotation, Pivot * Texture.Size(),
+                    new Vector2(1, 1), SpriteEffects.None, 0f);
+            else
+                sb.Draw(Texture, Pivot * new Vector2(Width, Height), null, _color, TextureRotation, Pivot * Texture.Size(),
+                    new Vector2(Width / (float)Texture.Width, Height / (float)Texture.Height), SpriteEffects.None, 0f);
         }
     }
 }
