@@ -1,0 +1,9 @@
+﻿displayName = UI 编辑器
+author = DXTsT
+version = 1.0
+hideResources = false
+hideCode = false
+includeSource = true
+includePDB = true
+homepage = http://fs49.org/
+buildIgnore = *.csproj, *.sln, obj\*, bin\*, *.suo, *.user, .git\*, .vs\*, Libraries\*
