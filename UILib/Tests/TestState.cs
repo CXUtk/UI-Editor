@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using UILib.UI.Components;
-using UILib.UI.Components.Composite;
+using UIEditor.UILib.Components;
+using UIEditor.UILib.Components.Composite;
 using Terraria;
 
-namespace UILib.UI.Tests {
+namespace UIEditor.UILib.Tests {
     public class TestState : UIState {
         public override void Initialize() {
             base.Initialize();
@@ -23,7 +23,8 @@ namespace UILib.UI.Tests {
             box1.OnClose += Box1_OnClose;
             var box12 = new UILabel() {
                 Name = "label",
-                Text = "哈哈哈哈",
+                Text = "哈哈哈哈哈哈哈哈",
+                MaxWidth = 100,
                 IsLargeText = false,
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 //Rotation = 0.5f
@@ -32,6 +33,7 @@ namespace UILib.UI.Tests {
                 Size = new Vector2(100, 50),
                 AnchorPoint = new Vector2(0f, 0f),
                 Pivot = new Vector2(0f, 0f),
+                Tooltip = "按钮",
             };
             var box3 = new UIButton() {
                 Size = new Vector2(50, 50),

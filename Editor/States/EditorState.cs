@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+using UIEditor.UILib;
 using UIEditor.UILib.Components;
 using UIEditor.UILib.Components.Composite;
-using Terraria;
+using UIEditor.UILib.Events;
 
-namespace UIEditor.UILib.Tests {
-    public class TestState2 : UIState {
+namespace UIEditor.Editor.States {
+    public class EditorState : UIState {
         public override void Initialize() {
             base.Initialize();
             var box13 = new UIWindow() {
@@ -22,16 +23,12 @@ namespace UIEditor.UILib.Tests {
             AppendChild(box13);
         }
 
-        private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {
+        private void Box1_OnClose(UIActionEvent e, UIElement sender) {
             this.IsActive = false;
         }
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-            //var box1 = GetChildByName("a");
-            //box1.Rotation -= 1f * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            //box1.GetChildByName("label").Rotation += 3.14f * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
-
     }
 }

@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UILib.UI.Events;
-using UILib.UI.Hitbox;
+using UIEditor.UILib.Events;
+using UIEditor.UILib.Hitbox;
 using Terraria;
 using Newtonsoft.Json;
 
-namespace UILib.UI {
+namespace UIEditor.UILib {
     public class UIElement {
         public delegate void MouseEvent(UIMouseEvent e, UIElement sender);
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
@@ -96,6 +96,12 @@ namespace UILib.UI {
         /// 这个UI元素是否会响应事件
         /// </summary>
         public bool NoEvent { get; set; }
+
+
+        /// <summary>
+        /// 鼠标移动上去时候显示的说明文字
+        /// </summary>
+        public string Tooltip { get; set; }
 
 
 
@@ -294,6 +300,7 @@ namespace UILib.UI {
                 CullMode = CullMode.None,
                 ScissorTestEnable = true,
             };
+            Tooltip = "";
             _selfHitbox = new QuadrilateralHitbox();
             Recalculate();
         }

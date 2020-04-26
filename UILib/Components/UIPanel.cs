@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UILib.UI.Components {
+namespace UIEditor.UILib.Components {
     public class UIPanel : UIElement {
         public Texture2D PanelTexture {
             get; set;

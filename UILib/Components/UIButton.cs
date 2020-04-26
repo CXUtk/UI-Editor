@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 
-namespace UILib.UI.Components {
+namespace UIEditor.UILib.Components {
     public abstract class UIButtonBase : UIElement {
 
     }

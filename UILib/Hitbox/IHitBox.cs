@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UILib.UI.Hitbox {
+namespace UIEditor.UILib.Hitbox {
     public interface IHitBox {
         bool Contains(Vector2 point);
         bool Intersects(IHitBox hitBox);

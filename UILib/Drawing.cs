@@ -9,11 +9,12 @@ using Terraria;
 using Terraria.ModLoader;
 using UIEditor;
 
-namespace UILib.UI {
+namespace UIEditor.UILib {
     public static class Drawing {
         public static Texture2D PanelDefaultBackTexture;
         public static Texture2D ButtonDefaultBackTexture;
         public static Texture2D DefaultBoxTexture;
+        public static Texture2D DefaultBox2Texture;
         public static Texture2D CloseButtonTexture;
         public static Mod CurrentMod;
         public static void Initialize(Mod mod) {
@@ -21,7 +22,11 @@ namespace UILib.UI {
             PanelDefaultBackTexture = CurrentMod.GetTexture("Images/AdvInvBack1");
             ButtonDefaultBackTexture = CurrentMod.GetTexture("Images/AdvInvBack1");
             DefaultBoxTexture = CurrentMod.GetTexture("Images/Box");
+            DefaultBox2Texture = CurrentMod.GetTexture("Images/Box2");
             CloseButtonTexture = CurrentMod.GetTexture("Images/CloseButton");
+        }
+        public static void Unload() {
+            CurrentMod = null;
         }
         public static Color DefaultBoxColor {
             get {

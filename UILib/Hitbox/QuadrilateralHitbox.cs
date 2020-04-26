@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 
-namespace UILib.UI.Hitbox {
+namespace UIEditor.UILib.Hitbox {
     public class QuadrilateralHitbox : IHitBox {
         private Vector2[] _points;
 

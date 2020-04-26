@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UILib.UI.Events;
+using UIEditor.UILib.Events;
 using Terraria;
 
-namespace UILib.UI {
+namespace UIEditor.UILib {
     public class UIStateMachine {
         public int ActiveStateNumber => uiRunningStack.Count;
         private List<UIState> uiRunningStack = new List<UIState>();
@@ -19,11 +19,13 @@ namespace UILib.UI {
         private UIElement _lastDownElement;
         private long _timer;
         private UIState _currentFocus;
+        private string _tooltip;
 
         public UIStateMachine() {
             _wasMouseDown = false;
             _previousHoverElement = null;
             _timer = 0;
+            _tooltip = "";
         }
 
         public void Add<T>(T state) where T : UIState {
@@ -37,9 +39,12 @@ namespace UILib.UI {
         }
 
         public void Update(GameTime gameTime) {
+            _tooltip = "";
             _timer++;
             Recalculate();
             ReorderRunningStack();
+
+
             bool mouseLeftDown = Main.mouseLeft && Main.hasFocus;
             // 响应鼠标事件的时候一定是从后往前，前端的窗口一定是第一个响应鼠标事件的
             int sz = uiRunningStack.Count;
@@ -58,6 +63,8 @@ namespace UILib.UI {
                     }
                 }
             }
+            if (hoverElement != null)
+                _tooltip = hoverElement.Tooltip;
             if (hoverElement != null && hoverElement != _previousHoverElement)
                 hoverElement.MouseEnter(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
             if (_previousHoverElement != null && hoverElement != _previousHoverElement)
@@ -109,6 +116,18 @@ namespace UILib.UI {
                 if (state.IsActive) {
                     state.Draw(sb);
                 }
+            }
+
+            if (_tooltip != "") {
+                var size = Main.fontMouseText.MeasureString(_tooltip);
+                var drawPos = new Vector2(Main.mouseX, Main.mouseY) + new Vector2(25f, 25f);
+                if (drawPos.Y > Main.screenHeight - 30f)
+                    drawPos.Y = Main.screenHeight - 30f;
+                if (drawPos.X > Main.screenWidth - size.X)
+                    drawPos.X = Main.screenWidth - size.X - 30.0f;
+                Drawing.DrawAdvBox(Main.spriteBatch, (int)drawPos.X - 5, (int)drawPos.Y - 10, (int)size.X + 10, (int)size.Y + 10,
+                    Color.White * 0.75f, Drawing.DefaultBox2Texture, new Vector2(8, 8));
+                Utils.DrawBorderStringFourWay(Main.spriteBatch, Main.fontMouseText, _tooltip, drawPos.X, drawPos.Y, Color.White, Color.Black, Vector2.Zero, 1f);
             }
         }
 

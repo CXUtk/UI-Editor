@@ -11,8 +11,11 @@
     <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
   </Target>
   <ItemGroup>
+    <Compile Remove="packages\**" />
     <Compile Remove="UITest\**" />
+    <EmbeddedResource Remove="packages\**" />
     <EmbeddedResource Remove="UITest\**" />
+    <None Remove="packages\**" />
     <None Remove="UITest\**" />
   </ItemGroup>
 </Project>

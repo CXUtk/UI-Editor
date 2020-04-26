@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UILib.UI {
+namespace UIEditor.UILib {
     /// <summary>
     /// 决定该UI元素的部分处于父节点容器之外的行为
     /// </summary>

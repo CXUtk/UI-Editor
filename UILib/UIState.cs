@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 
-namespace UILib.UI {
+namespace UIEditor.UILib {
     public class UIState : UIElement, IComparable {
         internal long TimeGetFocus { get; set; }
         internal float ZIndex { get; set; }

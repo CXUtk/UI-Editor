@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UILib.UI.Events;
+using UIEditor.UILib.Events;
 using Terraria;
 
-namespace UILib.UI.Components.Composite {
+namespace UIEditor.UILib.Components.Composite {
     public class UIWindow : UIPanel {
         private UIImageButton _closeButton;
         private bool _isDragging;

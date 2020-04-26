@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 
-namespace UILib.UI.Components {
+namespace UIEditor.UILib.Components {
     public class UIImageButton : UIElement {
         public Texture2D Texture { get; set; }
         public float TextureScale { get; set; }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UILib.UI.Events {
+namespace UIEditor.UILib.Events {
     /// <summary>
     /// 储存UI事件的信息
     /// </summary>
