@@ -13,10 +13,13 @@ namespace UIEditor.UILib {
         public int ActiveStateNumber => uiRunningStack.Count;
         private List<UIState> uiRunningStack = new List<UIState>();
         private List<UIState> uiStates = new List<UIState>();
+
+
         private UIElement _previousHoverElement;
+        private UIElement _lastDownElement;
 
         private bool _wasMouseDown;
-        private UIElement _lastDownElement;
+
         private long _timer;
         private UIState _currentFocus;
         private string _tooltip;
@@ -28,23 +31,25 @@ namespace UIEditor.UILib {
             _tooltip = "";
         }
 
-        public void Add<T>(T state) where T : UIState {
+        public void Add(UIState state) {
             uiStates.Add(state);
             state.TimeGetFocus = _timer;
             state.Recalculate();
         }
 
-        public void Remove<T>(T state) where T : UIState {
+        public void Remove(UIState state) {
             uiRunningStack.Remove(state);
         }
 
-        public void Update(GameTime gameTime) {
-            _tooltip = "";
-            _timer++;
-            Recalculate();
-            ReorderRunningStack();
+        public void Toggle(string name) {
+            var state = uiStates.Find((s) => s.Name == name);
+            if (state == null) throw new ArgumentNullException();
+            state.IsActive ^= true;
+            if (state.IsActive)
+                state.TimeGetFocus = _timer;
+        }
 
-
+        public void HandleMouseEvent(GameTime gameTime) {
             bool mouseLeftDown = Main.mouseLeft && Main.hasFocus;
             // 响应鼠标事件的时候一定是从后往前，前端的窗口一定是第一个响应鼠标事件的
             // 如果有多个前端窗口，那么优先响应当前焦点窗口
@@ -64,8 +69,12 @@ namespace UIEditor.UILib {
                     }
                 }
             }
-            if (hoverElement != null)
+            // if (hoverElement != null) Main.NewText(hoverElement.ToString());
+            if (hoverElement != null) {
                 _tooltip = hoverElement.Tooltip;
+                Main.LocalPlayer.mouseInterface = true;
+                Main.LocalPlayer.releaseUseItem = true;
+            }
             if (hoverElement != null && hoverElement != _previousHoverElement)
                 hoverElement.MouseEnter(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
             if (_previousHoverElement != null && hoverElement != _previousHoverElement)
@@ -75,11 +84,12 @@ namespace UIEditor.UILib {
                 hoverElement.MouseDown(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 _lastDownElement = hoverElement;
             }
-            if (_wasMouseDown && Main.mouseLeftRelease && hoverElement != null) {
-                hoverElement.MouseUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+            if (_wasMouseDown && Main.mouseLeftRelease) {
+                _lastDownElement?.MouseUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 if (_wasMouseDown && Main.mouseLeftRelease && hoverElement != null && _lastDownElement == hoverElement) {
                     hoverElement.MouseClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 }
+                _lastDownElement = null;
             }
 
             _previousHoverElement = hoverElement;
@@ -88,9 +98,22 @@ namespace UIEditor.UILib {
                     state.Update(gameTime);
                 }
             }
-            Recalculate();
 
             _wasMouseDown = Main.mouseLeft;
+        }
+
+        public void Update(GameTime gameTime) {
+            _tooltip = "";
+            _timer++;
+            Recalculate();
+            ReorderRunningStack();
+            if (Main.hasFocus) {
+                HandleMouseEvent(gameTime);
+            }
+
+
+            Recalculate();
+
         }
 
         private void ReorderRunningStack() {

@@ -215,6 +215,12 @@ namespace UIEditor.UILib {
         }
 
         public virtual void Recalculate() {
+            RecalculateSelf();
+            RecalculateChildren();
+        }
+
+
+        public void RecalculateSelf() {
             _baseTopLeftScreen = getBaseRectScreen() + Position - PivotOffset;
             _realPosition = (Parent == null) ? Position : new Vector2(Parent.Width, Parent.Height) * AnchorPoint
                 + Position - new Vector2(Width * Pivot.X, Height * Pivot.Y);
@@ -224,9 +230,7 @@ namespace UIEditor.UILib {
             _selfTransform = ApplyTransform(_selfTransform);
             _selfHitbox.Reset(Width, Height);
             _selfHitbox.Transform(_selfTransform);
-            RecalculateChildren();
         }
-
 
         private Vector2 _baseTopLeftScreen;
         private Vector2 _realPosition;

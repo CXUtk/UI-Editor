@@ -10,11 +10,12 @@ namespace UIEditor.UILib {
     public class UIState : UIElement, IComparable {
         internal long TimeGetFocus { get; set; }
         internal float ZIndex { get; set; }
-        public UIState() : base() {
+        public UIState(string name) : base() {
             Pivot = new Vector2(0, 0);
             SizeFactor = new Vector2(1, 1);
             IsVisible = false;
             ZIndex = 0f;
+            Name = name;
 
             Initialize();
             Recalculate();

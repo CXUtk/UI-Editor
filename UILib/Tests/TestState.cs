@@ -10,6 +10,7 @@ using Terraria;
 
 namespace UIEditor.UILib.Tests {
     public class TestState : UIState {
+        public TestState(string name) : base(name) { }
         public override void Initialize() {
             base.Initialize();
             var box1 = new UIWindow() {

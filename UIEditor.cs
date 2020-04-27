@@ -15,7 +15,7 @@ namespace UIEditor {
         /// </summary>
         public static UIEditor Instance;
 
-        private static UIStateMachine UIStateMachine;
+        public UIStateMachine UIStateMachine;
 
         public UIEditor() {
 
@@ -25,8 +25,8 @@ namespace UIEditor {
             Instance = this;
             Drawing.Initialize(this);
             UIStateMachine = new UIStateMachine();
-            UIStateMachine.Add(new EditorState());
-            UIStateMachine.Add(new BottomToolBarState());
+            UIStateMachine.Add(new EditorState("Editor"));
+            UIStateMachine.Add(new BottomToolBarState("ToolbarBottom"));
             // UIStateMachine.Add(new TestState2());
         }
 

@@ -14,6 +14,9 @@ namespace UIEditor.Editor.States {
     public class BottomToolBarState : UIState {
         private List<UIElement> _toolElements;
         private UIToolBarH _toolBar;
+
+        public BottomToolBarState(string name) : base(name) { }
+
         public override void Initialize() {
             base.Initialize();
             _toolElements = new List<UIElement>();
@@ -32,8 +35,14 @@ namespace UIEditor.Editor.States {
             };
             _toolElements.Add(button);
             button.AnchorPoint = new Vector2(0.5f, 0.5f);
+            button.OnClick += Button_OnClick;
             _toolBar.AddToPanel(button);
         }
+
+        private void Button_OnClick(UIMouseEvent e, UIElement sender) {
+            UIEditor.Instance.UIStateMachine.Toggle("Editor");
+        }
+
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
 
