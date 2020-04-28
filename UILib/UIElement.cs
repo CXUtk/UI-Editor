@@ -207,19 +207,19 @@ namespace UIEditor.UILib {
 
 
         private Vector2 getBaseRectScreen() {
-            var rect = _parentRect;
-            Vector2 pos = rect.TopLeft();
-            pos += rect.Size() * AnchorPoint;
+            Vector2 pos = _parentRect.TopLeft();
+            pos += _parentRect.Size() * AnchorPoint;
             return pos;
         }
-
-        public void RecalculateSelf() {
+        public void RecalculateLocation() {
             _parentRect = Parent == null ? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight) :
                  Parent.InnerRectangleScreen;
             _baseTopLeftScreen = getBaseRectScreen() + Position - PivotOffset;
             _realPosition = (Parent == null) ? Position : new Vector2(Parent.Width, Parent.Height) * AnchorPoint
                 + Position - new Vector2(Width * Pivot.X, Height * Pivot.Y);
-
+        }
+        public void RecalculateSelf() {
+            RecalculateLocation();
             _selfTransform = Main.UIScaleMatrix;
             if (Parent != null) _selfTransform = Parent._selfTransform;
             _selfTransform = ApplyTransform(_selfTransform);

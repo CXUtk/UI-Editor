@@ -105,23 +105,25 @@ namespace UIEditor.UILib {
 
 
             _previousHoverElement = hoverElement;
-            foreach (var state in uiRunningStack) {
-                if (state.IsActive) {
-                    state.Update(gameTime);
-                }
-            }
 
-            _wasMouseDown = Main.mouseLeft;
         }
 
         public void Update(GameTime gameTime) {
             _tooltip = "";
             _timer++;
-            RecalculateAll();
+
             ReorderRunningStack();
+
             if (Main.hasFocus) {
                 HandleMouseEvent(gameTime);
             }
+            foreach (var state in uiRunningStack) {
+                if (state.IsActive) {
+                    state.Update(gameTime);
+                }
+            }
+            _wasMouseDown = Main.mouseLeft;
+            RecalculateAll();
         }
 
         private void ReorderRunningStack() {

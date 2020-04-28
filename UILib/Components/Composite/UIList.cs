@@ -17,9 +17,10 @@ namespace UIEditor.UILib.Components.Composite {
         public List<UIElement> _elements;
         private UIListViewPort _viewPort;
         private float _totHeight;
+        private int _listUpMost;
+        private int _listBottomMost;
 
-
-        private const float PADDING = 10f;
+        private const float PADDING = 5f;
         public UIList() : base() {
             Overflow = OverflowType.Hidden;
             _viewPort = new UIListViewPort() {
@@ -48,17 +49,21 @@ namespace UIEditor.UILib.Components.Composite {
             _verticalScrollBar.Pivot = new Vector2(1, 0.5f);
             _verticalScrollBar.Position = new Vector2(-5, 0);
             AppendChild(_verticalScrollBar);
+            ShouldRecalculate = true;
         }
 
         private void UpdateScrollBarV() {
             if (_verticalScrollBar == null) return;
             _viewPort.Size = new Vector2(-_verticalScrollBar.Width - 5f, 0f);
-            _verticalScrollBar.ViewSize = Height / (_totHeight - Height);
-            float offset = _verticalScrollBar.CurrentValue * (_totHeight - Height);
+
+            var totHeight = Math.Max(_totHeight - Height, 0);
+            _verticalScrollBar.ViewSize = Height / totHeight;
+            float offset = _verticalScrollBar.CurrentValue * totHeight;
             foreach (var element in _elements) {
                 float y = element.Position.Y;
                 element.Position = new Vector2(element.Position.X, y - offset);
             }
+
         }
 
         public override void UpdateSelf(GameTime gameTime) {
@@ -69,13 +74,50 @@ namespace UIEditor.UILib.Components.Composite {
                 _totHeight += element.Height + MarginBetweenItems;
             }
             UpdateScrollBarV();
+            PlaceChildren();
+        }
+
+        private void PlaceChildren() {
+            if (_elements.Count == 0) return;
+            int upper = 0;
+            int lower = Height;
+            int L = 0, R = _elements.Count - 1;
+            _listUpMost = 0;
+            _listBottomMost = 0;
+            while (L <= R) {
+                int mid = (L + R) / 2;
+                var child = _elements[mid];
+                if (upper <= child.Position.Y + child.Height) {
+                    _listUpMost = mid;
+                    R = mid - 1;
+                } else {
+                    L = mid + 1;
+                }
+            }
+            L = 0;
+            R = _elements.Count - 1;
+            while (L <= R) {
+                int mid = (L + R) / 2;
+                var child = _elements[mid];
+                if (lower >= child.Position.Y) {
+                    _listBottomMost = mid;
+                    L = mid + 1;
+                } else {
+                    R = mid - 1;
+                }
+            }
+            _viewPort.RemoveAll();
+            for (int i = _listUpMost; i <= _listBottomMost; i++) {
+                _viewPort.AppendChild(_elements[i]);
+            }
+            Main.NewText(_viewPort.Children.Count);
+            ShouldRecalculate = true;
         }
 
         public void AddElement(UIElement element) {
             element.Pivot = new Vector2(0f, 0f);
             element.AnchorPoint = new Vector2(0f, 0f);
             _elements.Add(element);
-            _viewPort.AppendChild(element);
         }
 
         public override void DrawSelf(SpriteBatch sb) {

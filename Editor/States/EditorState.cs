@@ -51,8 +51,7 @@ namespace UIEditor.Editor.States {
             window.AppendChild(_body);
             _body.AppendChild(_list);
 
-return;
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 100000; i++) {
                 var bt = new UIButton() {
                     Text = $"按钮{i}",
                     SizeFactor = new Vector2(1f, 0f),
