@@ -30,7 +30,12 @@ namespace UIEditor.UILib.Components.Composite {
             _elements = new List<UIElement>();
             MarginBetweenItems = 5f;
             this.AppendChild(_viewPort);
+            OnScrollWheel += UIList_OnScrollWheel;
 
+        }
+
+        private void UIList_OnScrollWheel(Events.UIScrollWheelEvent e, UIElement sender) {
+            _verticalScrollBar.CurrentValue -= e.ScrollValue / (_totHeight - Height);
         }
 
         public void SetScrollBarV(UIScrollBarV scrollBarV) {

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UIEditor.UILib.Events;
 using Terraria;
+using Terraria.GameInput;
 
 namespace UIEditor.UILib {
     public class UIStateMachine {
@@ -70,6 +71,7 @@ namespace UIEditor.UILib {
                 }
             }
             // if (hoverElement != null) Main.NewText(hoverElement.ToString());
+            // 鼠标点击移动事件
             if (hoverElement != null) {
                 _tooltip = hoverElement.Tooltip;
                 Main.LocalPlayer.mouseInterface = true;
@@ -91,6 +93,10 @@ namespace UIEditor.UILib {
                 }
                 _lastDownElement = null;
             }
+            // 滚轮
+            if (PlayerInput.ScrollWheelDeltaForUI != 0)
+                hoverElement?.ScrollWheel(new UIScrollWheelEvent(hoverElement, gameTime.TotalGameTime, PlayerInput.ScrollWheelDeltaForUI));
+
 
             _previousHoverElement = hoverElement;
             foreach (var state in uiRunningStack) {
@@ -105,7 +111,7 @@ namespace UIEditor.UILib {
         public void Update(GameTime gameTime) {
             _tooltip = "";
             _timer++;
-            Recalculate();
+            //Recalculate();
             ReorderRunningStack();
             if (Main.hasFocus) {
                 HandleMouseEvent(gameTime);

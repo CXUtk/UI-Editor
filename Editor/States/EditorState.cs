@@ -52,11 +52,11 @@ namespace UIEditor.Editor.States {
             _body.AppendChild(_list);
 
 
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 1000; i++) {
                 var bt = new UIButton() {
                     Text = $"按钮{i}",
                     SizeFactor = new Vector2(1f, 0f),
-                    Size = new Vector2(0, 40),
+                    Size = new Vector2(0, Main.rand.Next(30, 60)),
                 };
                 _list.AddElement(bt);
             }

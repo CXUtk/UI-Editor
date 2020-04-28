@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 namespace UIEditor.UILib {
     public class UIElement {
         public delegate void MouseEvent(UIMouseEvent e, UIElement sender);
+        public delegate void ScrollEvent(UIScrollWheelEvent e, UIElement sender);
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
 
         public static bool DEBUG_MODE = true;
@@ -125,6 +126,7 @@ namespace UIEditor.UILib {
         public event MouseEvent OnMouseDown;
         public event MouseEvent OnMouseUp;
         public event MouseEvent OnClick;
+        public event ScrollEvent OnScrollWheel;
         #endregion
 
 
@@ -194,9 +196,10 @@ namespace UIEditor.UILib {
             }
         }
 
-        public void RecalculateChildren() {
+        public virtual void RecalculateChildren() {
             foreach (var element in Children) {
-                element.Recalculate();
+                if (element.IsActive)
+                    element.Recalculate();
             }
         }
         #endregion
@@ -275,6 +278,12 @@ namespace UIEditor.UILib {
                 Parent?.MouseClick(e);
         }
 
+        public void ScrollWheel(UIScrollWheelEvent e) {
+            OnScrollWheel?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.ScrollWheel(e);
+        }
+
         public UIElement ElementAt(Vector2 pos) {
             UIElement target = null;
             int sz = Children.Count;
@@ -344,10 +353,11 @@ namespace UIEditor.UILib {
         }
 
         private Matrix ApplyTransform(Matrix prev) {
-            Matrix curTransform = Matrix.CreateTranslation(new Vector3(_realPosition.X + Width * Pivot.X, _realPosition.Y + Height * Pivot.Y, 0)) * prev;
+            int w = Width, h = Height;
+            Matrix curTransform = Matrix.CreateTranslation(new Vector3(_realPosition.X + w * Pivot.X, _realPosition.Y + h * Pivot.Y, 0)) * prev;
             curTransform = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * curTransform;
             curTransform = Matrix.CreateRotationZ(Rotation) * curTransform;
-            curTransform = Matrix.CreateTranslation(new Vector3(-Width * Pivot.X, -Height * Pivot.Y, 0f)) * curTransform;
+            curTransform = Matrix.CreateTranslation(new Vector3(-w * Pivot.X, -h * Pivot.Y, 0f)) * curTransform;
             return curTransform;
         }
 

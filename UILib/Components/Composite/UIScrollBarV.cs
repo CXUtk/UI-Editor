@@ -146,8 +146,8 @@ namespace UIEditor.UILib.Components {
             }
 
             _innerBar.SizeFactor = new Vector2(1f, MathHelper.Clamp(ViewSize, 0, 1));
-            _innerBar.RecalculateSelf();
-            _outerBar.RecalculateSelf();
+            //_innerBar.RecalculateSelf();
+            //_outerBar.RecalculateSelf();
 
 
             var pos = new Vector2(0, MathHelper.Lerp(topY, bottomY, CurrentValue));
