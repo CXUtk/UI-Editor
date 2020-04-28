@@ -38,7 +38,7 @@ namespace UIEditor.UILib {
         /// <summary>
         /// 该UI节点的直接子节点
         /// </summary>
-        private List<UIElement> Children { get; set; }
+        public List<UIElement> Children { get; set; }
 
         /// <summary>
         /// 该UI节点的基准点位置，计算位置旋转等时会以此位置为原点，
@@ -350,6 +350,14 @@ namespace UIEditor.UILib {
             curTransform = Matrix.CreateTranslation(new Vector3(-Width * Pivot.X, -Height * Pivot.Y, 0f)) * curTransform;
             return curTransform;
         }
+
+        public virtual void DrawChildren(SpriteBatch sb) {
+            foreach (var child in Children) {
+                if (child.IsActive) {
+                    child.Draw(sb);
+                }
+            }
+        }
         public virtual void Draw(SpriteBatch sb) {
             Rectangle scissorRectangle = sb.GraphicsDevice.ScissorRectangle;
             if (IsVisible) {
@@ -364,11 +372,7 @@ namespace UIEditor.UILib {
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                     DepthStencilState.None, _selfRasterizerState, null, _selfTransform);
             }
-            foreach (var child in Children) {
-                if (child.IsActive) {
-                    child.Draw(sb);
-                }
-            }
+            DrawChildren(sb);
             if (Overflow == OverflowType.Hidden) {
                 sb.End();
                 var defaultstate = sb.GraphicsDevice.RasterizerState;

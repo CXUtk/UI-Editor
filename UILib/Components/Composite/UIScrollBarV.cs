@@ -145,7 +145,7 @@ namespace UIEditor.UILib.Components {
                 CurrentValue = (posLocal.Y - topY) / (float)(bottomY - topY);
             }
 
-            _innerBar.SizeFactor = new Vector2(1f, ViewSize);
+            _innerBar.SizeFactor = new Vector2(1f, MathHelper.Clamp(ViewSize, 0, 1));
             _innerBar.RecalculateSelf();
             _outerBar.RecalculateSelf();
 

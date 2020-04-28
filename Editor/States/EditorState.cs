@@ -15,6 +15,7 @@ namespace UIEditor.Editor.States {
         public EditorState(string name) : base(name) { }
 
         private UIElement _body;
+        private UIList _list;
         private UIScrollBarV scrollBar;
 
         private const float PADDING_BODY = 10f;
@@ -33,17 +34,32 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-PADDING_BODY * 2, -32 - PADDING_BODY),
             };
+            _list = new UIList() {
+                AnchorPoint = new Vector2(0, 0),
+                Pivot = new Vector2(0, 0),
+                SizeFactor = new Vector2(0.4f, 1f),
+            };
             scrollBar = new UIScrollBarV() {
                 Name = "ScrollBar",
                 AnchorPoint = new Vector2(1, 0.5f),
                 Pivot = new Vector2(1, 0.5f),
                 Position = new Vector2(-5, 0),
             };
-            scrollBar.ViewSize = 0.2f;
+            _list.SetScrollBarV(scrollBar);
             window.OnClose += Box1_OnClose;
             AppendChild(window);
             window.AppendChild(_body);
-            _body.AppendChild(scrollBar);
+            _body.AppendChild(_list);
+
+
+            for (int i = 0; i < 100; i++) {
+                var bt = new UIButton() {
+                    Text = $"按钮{i}",
+                    SizeFactor = new Vector2(1f, 0f),
+                    Size = new Vector2(0, 40),
+                };
+                _list.AddElement(bt);
+            }
         }
 
         private void Box1_OnClose(UIActionEvent e, UIElement sender) {
