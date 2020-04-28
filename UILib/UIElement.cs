@@ -45,28 +45,33 @@ namespace UIEditor.UILib {
         /// 该UI节点的基准点位置，计算位置旋转等时会以此位置为原点，
         /// X和Y的值一般为0到1的浮点数，代表节点的比例位置
         /// </summary>
-        public Vector2 Pivot { get; set; }
+        public Vector2 Pivot { get { return _pivot; } set { CheckRecalculate(_pivot, value); _pivot = value; } }
+        private Vector2 _pivot;
 
         /// <summary>
         /// UI元素的锚点，也就是其基准点相对于父节点的位置，
         /// X和Y的值一般为0到1的浮点数，代表父节点的比例位置
         /// </summary>
-        public Vector2 AnchorPoint { get; set; }
+        public Vector2 AnchorPoint { get { return _anchorPoint; } set { CheckRecalculate(_anchorPoint, value); _anchorPoint = value; } }
+        private Vector2 _anchorPoint;
 
         /// <summary>
         /// 该UI元素的宽度，高度
         /// </summary>
-        public Vector2 Size { get; set; }
+        public Vector2 Size { get { return _size; } set { CheckRecalculate(_size, value); _size = value; } }
+        private Vector2 _size;
 
         /// <summary>
         /// 该UI元素相对于父节点的宽度，高度
         /// </summary>
-        public Vector2 SizeFactor { get; set; }
+        public Vector2 SizeFactor { get { return _sizeFactor; } set { CheckRecalculate(_sizeFactor, value); _sizeFactor = value; } }
+        private Vector2 _sizeFactor;
 
         /// <summary>
         /// 该UI元素与于自身锚点的相对位置
         /// </summary>
-        public Vector2 Position { get; set; }
+        public Vector2 Position { get { return _position; } set { CheckRecalculate(_position, value); _position = value; } }
+        private Vector2 _position;
 
         /// <summary>
         /// UI元素绕基准点旋转的弧度，注意，如果设置了旋转，就不要设置溢出隐藏了
@@ -76,7 +81,8 @@ namespace UIEditor.UILib {
         /// <summary>
         /// UI元素的放大倍率
         /// </summary>
-        public Vector2 Scale { get; set; }
+        public Vector2 Scale { get { return _scale; } set { CheckRecalculate(_scale, value); _scale = value; } }
+        private Vector2 _scale;
 
         /// <summary>
         /// UI元素的名字
@@ -150,15 +156,14 @@ namespace UIEditor.UILib {
 
         public int Width {
             get {
-                return (int)(SizeFactor.X * getParentRect().Width + Size.X);
+                return (int)(SizeFactor.X * _parentRect.Width + Size.X);
             }
         }
         public int Height {
             get {
-                return (int)(SizeFactor.Y * getParentRect().Height + Size.Y);
+                return (int)(SizeFactor.Y * _parentRect.Height + Size.Y);
             }
         }
-
 
         public bool IsMouseHover {
             get {
@@ -196,34 +201,21 @@ namespace UIEditor.UILib {
             }
         }
 
-        public virtual void RecalculateChildren() {
-            foreach (var element in Children) {
-                if (element.IsActive)
-                    element.Recalculate();
-            }
-        }
+        public bool ShouldRecalculate { get; set; }
         #endregion
 
 
-        private Rectangle getParentRect() {
-            return Parent == null ? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight) :
-                Parent.InnerRectangleScreen;
-        }
 
         private Vector2 getBaseRectScreen() {
-            var rect = getParentRect();
+            var rect = _parentRect;
             Vector2 pos = rect.TopLeft();
             pos += rect.Size() * AnchorPoint;
             return pos;
         }
 
-        public virtual void Recalculate() {
-            RecalculateSelf();
-            RecalculateChildren();
-        }
-
-
         public void RecalculateSelf() {
+            _parentRect = Parent == null ? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight) :
+                 Parent.InnerRectangleScreen;
             _baseTopLeftScreen = getBaseRectScreen() + Position - PivotOffset;
             _realPosition = (Parent == null) ? Position : new Vector2(Parent.Width, Parent.Height) * AnchorPoint
                 + Position - new Vector2(Width * Pivot.X, Height * Pivot.Y);
@@ -235,10 +227,30 @@ namespace UIEditor.UILib {
             _selfHitbox.Transform(_selfTransform);
         }
 
+
+        public virtual void RecalculateChildren() {
+            foreach (var element in Children) {
+                if (element.IsActive) {
+                    element.Recalculate();
+                }
+            }
+        }
+        protected void CheckRecalculate(object prev, object post) {
+            if (!prev.Equals(post)) ShouldRecalculate = true;
+        }
+
+        public virtual void Recalculate() {
+            RecalculateSelf();
+            ShouldRecalculate = false;
+            RecalculateChildren();
+        }
+
+
         private Vector2 _baseTopLeftScreen;
         private Vector2 _realPosition;
         private QuadrilateralHitbox _selfHitbox;
         private Matrix _selfTransform;
+        private Rectangle _parentRect;
 
         private RasterizerState _selfRasterizerState;
 
@@ -328,15 +340,17 @@ namespace UIEditor.UILib {
             Recalculate();
         }
 
+
         public void AppendChild(UIElement element) {
             element.SplitFromParent();
             element.Parent = this;
             Children.Add(element);
-            element.Recalculate();
+            ShouldRecalculate = true;
         }
 
         public void RemoveChild(UIElement element) {
             Children.Remove(element);
+            ShouldRecalculate = true;
         }
 
         public UIElement GetChildByName(string name) {
@@ -354,11 +368,9 @@ namespace UIEditor.UILib {
 
         private Matrix ApplyTransform(Matrix prev) {
             int w = Width, h = Height;
-            Matrix curTransform = Matrix.CreateTranslation(new Vector3(_realPosition.X + w * Pivot.X, _realPosition.Y + h * Pivot.Y, 0)) * prev;
-            curTransform = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * curTransform;
-            curTransform = Matrix.CreateRotationZ(Rotation) * curTransform;
-            curTransform = Matrix.CreateTranslation(new Vector3(-w * Pivot.X, -h * Pivot.Y, 0f)) * curTransform;
-            return curTransform;
+            Matrix m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3(_realPosition.X + w * Pivot.X, _realPosition.Y + h * Pivot.Y, 0)) * prev;
+            Matrix m2 = Matrix.CreateTranslation(new Vector3(-w * Pivot.X, -h * Pivot.Y, 0f)) * Matrix.CreateRotationZ(Rotation);
+            return m2 * m1;
         }
 
         public virtual void DrawChildren(SpriteBatch sb) {
@@ -406,14 +418,17 @@ namespace UIEditor.UILib {
         }
 
         public virtual void UpdateSelf(GameTime gameTime) { }
-
-        public void Update(GameTime gameTime) {
-            UpdateSelf(gameTime);
+        public virtual void UpdateChildren(GameTime gameTime) {
             foreach (var child in Children) {
                 if (child.IsActive) {
                     child.Update(gameTime);
                 }
             }
+        }
+
+        public void Update(GameTime gameTime) {
+            UpdateSelf(gameTime);
+            UpdateChildren(gameTime);
         }
 
         public override string ToString() {

@@ -30,11 +30,17 @@ namespace UIEditor.UILib {
             _previousHoverElement = null;
             _timer = 0;
             _tooltip = "";
+            Main.OnResolutionChanged += Main_OnResolutionChanged;
+        }
+
+        private void Main_OnResolutionChanged(Vector2 obj) {
+            RecalculateAll();
         }
 
         public void Add(UIState state) {
             uiStates.Add(state);
             state.TimeGetFocus = _timer;
+            state.ShouldRecalculate = true;
             state.Recalculate();
         }
 
@@ -111,15 +117,11 @@ namespace UIEditor.UILib {
         public void Update(GameTime gameTime) {
             _tooltip = "";
             _timer++;
-            //Recalculate();
+            RecalculateAll();
             ReorderRunningStack();
             if (Main.hasFocus) {
                 HandleMouseEvent(gameTime);
             }
-
-
-            Recalculate();
-
         }
 
         private void ReorderRunningStack() {
@@ -132,10 +134,22 @@ namespace UIEditor.UILib {
             }
         }
 
-        private void Recalculate() {
+        private void RecalculateAll() {
             foreach (var state in uiRunningStack) {
                 if (state.IsActive) {
-                    state.Recalculate();
+                    Recalculate(state);
+                }
+            }
+        }
+
+        private void Recalculate(UIElement element) {
+            if (element.ShouldRecalculate)
+                element.Recalculate();
+            else {
+                foreach (var child in element.Children) {
+                    if (child.IsActive) {
+                        Recalculate(child);
+                    }
                 }
             }
         }

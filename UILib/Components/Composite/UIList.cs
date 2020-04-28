@@ -14,15 +14,15 @@ namespace UIEditor.UILib.Components.Composite {
 
         private UIScrollBarV _verticalScrollBar;
         // private UIScrollBarV _horizontalScrollBar;
-        private List<UIElement> _elements;
-        private UIViewPort _viewPort;
+        public List<UIElement> _elements;
+        private UIListViewPort _viewPort;
         private float _totHeight;
 
 
         private const float PADDING = 10f;
         public UIList() : base() {
             Overflow = OverflowType.Hidden;
-            _viewPort = new UIViewPort() {
+            _viewPort = new UIListViewPort() {
                 AnchorPoint = new Vector2(0f, 0f),
                 SizeFactor = new Vector2(1, 1),
                 Pivot = new Vector2(0f, 0f),

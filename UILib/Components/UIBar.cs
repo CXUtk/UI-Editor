@@ -25,5 +25,9 @@ namespace UIEditor.UILib.Components {
             sb.Draw(Texture, new Rectangle(0, EndSize, Width, Height - 2 * EndSize), new Rectangle(0, EndSize, Texture.Width, Texture.Height - 2 * EndSize), Color);
             sb.Draw(Texture, new Rectangle(0, Height - EndSize, Width, EndSize), new Rectangle(0, Texture.Height - EndSize, Texture.Width, EndSize), Color);
         }
+
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+        }
     }
 }
