@@ -110,7 +110,6 @@ namespace UIEditor.UILib.Components.Composite {
             for (int i = _listUpMost; i <= _listBottomMost; i++) {
                 _viewPort.AppendChild(_elements[i]);
             }
-            Main.NewText(_viewPort.Children.Count);
             ShouldRecalculate = true;
         }
 

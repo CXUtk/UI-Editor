@@ -32,6 +32,7 @@ namespace UIEditor.Editor.States {
                 Texture = ModContent.GetTexture("UIEditor/Images/Cog"),
                 Size = new Vector2(32f, 32f),
                 SizeStyle = SizeStyle.Block,
+                Tooltip = "切换编辑器界面"
             };
             _toolElements.Add(button);
             button.AnchorPoint = new Vector2(0.5f, 0.5f);
