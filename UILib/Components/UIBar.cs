@@ -9,6 +9,9 @@ using Terraria;
 using Terraria.Graphics;
 
 namespace UIEditor.UILib.Components {
+    /// <summary>
+    /// 一个简易的条状UI，由两端和中间组成
+    /// </summary>
     public class UIBar : UIElement {
         public Texture2D Texture { get; set; }
         public int EndSize { get; set; }

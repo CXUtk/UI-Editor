@@ -45,12 +45,20 @@ namespace UIEditor.Editor.States {
                 Pivot = new Vector2(1, 0.5f),
                 Position = new Vector2(-5, 0),
             };
+            var progress = new UIProgressBar() {
+                Name = "Progress",
+                AnchorPoint = new Vector2(1, 0),
+                Pivot = new Vector2(1, 0),
+                Position = new Vector2(-5, 5),
+                SizeFactor = new Vector2(0.5f, 0f),
+                Size = new Vector2(0, 20),
+            };
             _list.SetScrollBarV(scrollBar);
             window.OnClose += Box1_OnClose;
             AppendChild(window);
             window.AppendChild(_body);
             _body.AppendChild(_list);
-
+            _body.AppendChild(progress);
             for (int i = 0; i < 10000; i++) {
                 var bt = new UIButton() {
                     Text = $"按钮{i}",
@@ -67,6 +75,8 @@ namespace UIEditor.Editor.States {
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
+            var progress = _body.GetChildByName("Progress") as UIProgressBar;
+            progress.CurrentValue = (float)Math.Abs(Math.Sin(gameTime.TotalGameTime.TotalSeconds * 0.5f));
         }
     }
 }
