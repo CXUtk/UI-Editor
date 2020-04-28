@@ -27,7 +27,7 @@ namespace UIEditor {
             UIStateMachine = new UIStateMachine();
             UIStateMachine.Add(new EditorState("Editor"));
             UIStateMachine.Add(new BottomToolBarState("ToolbarBottom"));
-            // UIStateMachine.Add(new TestState2());
+            UIStateMachine.Add(new TestState2("tstate2"));
         }
 
         public override void Unload() {

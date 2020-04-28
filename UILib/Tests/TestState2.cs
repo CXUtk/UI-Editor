@@ -19,8 +19,17 @@ namespace UIEditor.UILib.Tests {
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 Position = new Vector2(100, 100)
             };
+            var textbox = new UITextBox
+            {
+                Name = "emmm",
+                Size = new Vector2(20 * 16, 3 * 16),
+                Position = new Vector2(0, 300),
+                Pivot = new Vector2(0.5f, 0),
+                AnchorPoint = new Vector2(0.5f, 0)
+            };
             box13.OnClose += Box1_OnClose;
             AppendChild(box13);
+            box13.AppendChild(textbox);
         }
 
         private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {

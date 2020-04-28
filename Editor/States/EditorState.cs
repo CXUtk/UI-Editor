@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Terraria;
 using UIEditor.UILib;
 using UIEditor.UILib.Components;
@@ -52,8 +51,8 @@ namespace UIEditor.Editor.States {
             window.AppendChild(_body);
             _body.AppendChild(_list);
 
-
-            for (int i = 0; i < 100000; i++) {
+return;
+            for (int i = 0; i < 1000; i++) {
                 var bt = new UIButton() {
                     Text = $"按钮{i}",
                     SizeFactor = new Vector2(1f, 0f),
