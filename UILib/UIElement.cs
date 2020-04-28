@@ -110,6 +110,8 @@ namespace UIEditor.UILib {
         /// </summary>
         public string Tooltip { get; set; }
 
+        public bool IsFocused { get; set; }
+
 
 
         //public int MarginLeft { get; set; }
@@ -133,6 +135,8 @@ namespace UIEditor.UILib {
         public event MouseEvent OnMouseUp;
         public event MouseEvent OnClick;
         public event ScrollEvent OnScrollWheel;
+        public event ActionEvent OnFocused;
+        public event ActionEvent OnUnFocused;
         #endregion
 
 
@@ -296,6 +300,18 @@ namespace UIEditor.UILib {
                 Parent?.ScrollWheel(e);
         }
 
+        // 聚焦事件不会向后传播
+        public void FocusOn(UIActionEvent e) {
+            IsFocused = true;
+            OnFocused?.Invoke(e, this);
+        }
+
+        public void UnFocus(UIActionEvent e) {
+            IsFocused = false;
+            OnUnFocused?.Invoke(e, this);
+        }
+
+
         public UIElement ElementAt(Vector2 pos) {
             UIElement target = null;
             int sz = Children.Count;
@@ -408,6 +424,7 @@ namespace UIEditor.UILib {
                     DepthStencilState.None, _selfRasterizerState, null, Main.UIScaleMatrix);
                 _selfHitbox.Draw(sb);
                 Drawing.StrokeRect(sb, GetClippingRectangle(sb), 1, Color.Yellow);
+                if (IsFocused) Drawing.StrokeRect(sb, GetClippingRectangle(sb), 2, Color.Red);
             }
         }
 

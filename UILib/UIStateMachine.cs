@@ -18,6 +18,7 @@ namespace UIEditor.UILib {
 
         private UIElement _previousHoverElement;
         private UIElement _lastDownElement;
+        private UIElement _lastFocusElement;
 
         private bool _wasMouseDown;
 
@@ -88,10 +89,18 @@ namespace UIEditor.UILib {
             if (_previousHoverElement != null && hoverElement != _previousHoverElement)
                 _previousHoverElement.MouseOut(new UIMouseEvent(_previousHoverElement, gameTime.TotalGameTime, Main.MouseScreen));
 
+            if (!_wasMouseDown && mouseLeftDown) {
+                if (hoverElement == null || _lastFocusElement != hoverElement) {
+                    _lastFocusElement?.UnFocus(new UIActionEvent(_lastDownElement, gameTime.TotalGameTime));
+                }
+            }
             if (!_wasMouseDown && mouseLeftDown && hoverElement != null) {
                 hoverElement.MouseDown(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                hoverElement.FocusOn(new UIActionEvent(hoverElement, gameTime.TotalGameTime));
                 _lastDownElement = hoverElement;
+                _lastFocusElement = hoverElement;
             }
+
             if (_wasMouseDown && Main.mouseLeftRelease) {
                 _lastDownElement?.MouseUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 if (_wasMouseDown && Main.mouseLeftRelease && hoverElement != null && _lastDownElement == hoverElement) {
@@ -105,7 +114,7 @@ namespace UIEditor.UILib {
 
 
             _previousHoverElement = hoverElement;
-
+            _wasMouseDown = Main.mouseLeft;
         }
 
         public void Update(GameTime gameTime) {
@@ -122,7 +131,7 @@ namespace UIEditor.UILib {
                     state.Update(gameTime);
                 }
             }
-            _wasMouseDown = Main.mouseLeft;
+
             RecalculateAll();
         }
 
