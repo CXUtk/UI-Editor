@@ -24,6 +24,10 @@ namespace UIEditor.UILib {
         Inline
     }
 
+    public enum DrawStyle {
+        Horizontal,
+        Vertical,
+    }
 
     public enum TransitionFunction {
         Linear,

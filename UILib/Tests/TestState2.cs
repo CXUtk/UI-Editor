@@ -19,8 +19,7 @@ namespace UIEditor.UILib.Tests {
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 Position = new Vector2(100, 100)
             };
-            var textbox = new UITextBox
-            {
+            var textbox = new UITextBox {
                 Name = "emmm",
                 Size = new Vector2(20 * 16, 3 * 16),
                 Position = new Vector2(0, 300),
@@ -30,6 +29,14 @@ namespace UIEditor.UILib.Tests {
             box13.OnClose += Box1_OnClose;
             AppendChild(box13);
             box13.AppendChild(textbox);
+
+            var scrollBarH = new UIScrollBarH() {
+                AnchorPoint = new Vector2(0.5f, 1),
+                Pivot = new Vector2(0.5f, 1),
+                SizeFactor = new Vector2(1f, 0f),
+                Size = new Vector2(0, 20),
+            };
+            box13.AppendChild(scrollBarH);
         }
 
         private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {

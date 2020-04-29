@@ -7,9 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics;
+using Terraria.ModLoader;
 
 namespace UIEditor.UILib.Components {
-    public class UIScrollBarV : UIElement {
+    public class UIScrollBarH : UIElement {
         public Texture2D OuterTexture {
             get {
                 return _outerBar.Texture;
@@ -64,29 +65,33 @@ namespace UIEditor.UILib.Components {
 
         private bool _isMouseOver;
         private bool _isMouseDown;
-        private float _offsetY;
+        private float _offsetX;
         private float _timer;
 
         private const float PADDING = 5;
-        public UIScrollBarV() : base() {
+        public UIScrollBarH() : base() {
             BlockPropagation = true;
             SizeFactor = new Vector2(0, 1);
             Size = new Vector2(20, -PADDING * 2);
-            _currentValue = 0;
+            _currentValue = 0f;
             _isMouseOver = false;
+            var tex = ModContent.GetTexture("UIEditor/Images/ScrollBarH");
             _outerBar = new UIBar() {
-                Texture = TextureManager.Load("Images/UI/ScrollbarInner"),
+                Texture = tex,
                 SizeFactor = new Vector2(1f, 1f),
                 AnchorPoint = new Vector2(0.5f, 0.5f),
-                EndSize = 6
+                EndSize = 6,
+                DrawStyle = DrawStyle.Horizontal,
             };
+            ViewSize = 0.5f;
             _innerBar = new UIBar() {
                 Name = "Inner",
-                Texture = TextureManager.Load("Images/UI/ScrollbarInner"),
-                SizeFactor = new Vector2(1f, 0.5f),
-                Pivot = new Vector2(0.5f, 0),
-                AnchorPoint = new Vector2(0.5f, 0),
-                EndSize = 6
+                Texture = tex,
+                SizeFactor = new Vector2(0.5f, 1f),
+                Pivot = new Vector2(0f, 0.5f),
+                AnchorPoint = new Vector2(0f, 0.5f),
+                EndSize = 6,
+                DrawStyle = DrawStyle.Horizontal,
             };
             BackgroundColor = Color.Gray;
             DefaultInnerColor = Color.White * 0.5f;
@@ -107,7 +112,7 @@ namespace UIEditor.UILib.Components {
 
         private void _innerBar_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
             _isMouseDown = true;
-            _offsetY = _innerBar.PostionScreen.Y - e.MouseScreen.Y;
+            _offsetX = _innerBar.PostionScreen.X - e.MouseScreen.X;
         }
 
         private void _innerBar_OnMouseOut(Events.UIMouseEvent e, UIElement sender) {
@@ -118,6 +123,9 @@ namespace UIEditor.UILib.Components {
             _isMouseOver = true;
             Main.PlaySound(12);
         }
+
+
+
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
 
@@ -136,18 +144,18 @@ namespace UIEditor.UILib.Components {
             }
             _innerBar.Color = Color.Lerp(DefaultInnerColor, MouseMoveInnerColor, _timer / 150f);
             // 锚点和基准点都在顶部
-            int topY = 0, bottomY = _outerBar.Height - _innerBar.Height;
+            int topX = 0, bottomX = _outerBar.Width - _innerBar.Width;
             if (_isMouseDown) {
-                var posLocal = _innerBar.ScreenPositionToNode(Main.MouseScreen + new Vector2(0, _offsetY));
-                CurrentValue = (posLocal.Y - topY) / (float)(bottomY - topY);
+                var posLocal = _innerBar.ScreenPositionToNode(Main.MouseScreen + new Vector2(_offsetX, 0));
+                CurrentValue = (posLocal.X - topX) / (float)(bottomX - topX);
             }
 
-            _innerBar.SizeFactor = new Vector2(1f, MathHelper.Clamp(ViewSize, 0.01f, 1));
+            _innerBar.SizeFactor = new Vector2(MathHelper.Clamp(ViewSize, 0.01f, 1), 1f);
             //_innerBar.RecalculateSelf();
             //_outerBar.RecalculateSelf();
 
 
-            var pos = new Vector2(0, MathHelper.Lerp(topY, bottomY, CurrentValue));
+            var pos = new Vector2(MathHelper.Lerp(topX, bottomX, CurrentValue), 0);
             _innerBar.Position = pos;
         }
 
