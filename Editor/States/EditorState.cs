@@ -51,7 +51,7 @@ namespace UIEditor.Editor.States {
                 Pivot = new Vector2(1, 0),
                 Position = new Vector2(-5, 5),
                 SizeFactor = new Vector2(0.5f, 0f),
-                Size = new Vector2(0, 20),
+                Size = new Vector2(0, 25),
             };
             _list.SetScrollBarV(scrollBar);
             window.OnClose += Box1_OnClose;
@@ -77,6 +77,7 @@ namespace UIEditor.Editor.States {
             base.UpdateSelf(gameTime);
             var progress = _body.GetChildByName("Progress") as UIProgressBar;
             progress.CurrentValue = (float)Math.Abs(Math.Sin(gameTime.TotalGameTime.TotalSeconds * 0.5f));
+            progress.Rotation = -progress.CurrentValue;
         }
     }
 }

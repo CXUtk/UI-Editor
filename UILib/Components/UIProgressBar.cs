@@ -29,7 +29,7 @@ namespace UIEditor.UILib.Components {
         public UIProgressBar() : base() {
             FrameTexture = Drawing.DefaultBox2Texture;
             FrameCornerSize = new Vector2(8f, 8f);
-            BackgroundColor = Color.DarkBlue;
+            BackgroundColor = Color.Gray;
             FillColor = Color.Yellow;
             CurrentValue = 0;
         }

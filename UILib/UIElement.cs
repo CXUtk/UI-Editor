@@ -76,7 +76,8 @@ namespace UIEditor.UILib {
         /// <summary>
         /// UI元素绕基准点旋转的弧度，注意，如果设置了旋转，就不要设置溢出隐藏了
         /// </summary>
-        public float Rotation { get; set; }
+        public float Rotation { get { return _rotation; } set { CheckRecalculate(_rotation, value); _rotation = value; } }
+        private float _rotation;
 
         /// <summary>
         /// UI元素的放大倍率
