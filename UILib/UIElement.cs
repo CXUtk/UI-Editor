@@ -9,6 +9,7 @@ using UIEditor.UILib.Events;
 using UIEditor.UILib.Hitbox;
 using Terraria;
 using Newtonsoft.Json;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib {
     public class UIElement {
@@ -30,12 +31,13 @@ namespace UIEditor.UILib {
         /// </summary>
         public bool IsVisible { get; set; }
 
-        [JsonIgnore]
+        [EditorPropertyIgnore]
         /// <summary>
         /// 该UI节点的父节点
         /// </summary>
         public UIElement Parent { get; set; }
 
+        [EditorPropertyIgnore]
         /// <summary>
         /// 该UI节点的直接子节点
         /// </summary>
@@ -111,7 +113,11 @@ namespace UIEditor.UILib {
         /// </summary>
         public string Tooltip { get; set; }
 
+        [EditorPropertyIgnore]
         public bool IsFocused { get; set; }
+
+        [EditorPropertyIgnore]
+        public bool ShouldRecalculate { get; set; }
 
 
 
@@ -206,7 +212,6 @@ namespace UIEditor.UILib {
             }
         }
 
-        public bool ShouldRecalculate { get; set; }
         #endregion
 
 

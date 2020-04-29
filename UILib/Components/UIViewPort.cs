@@ -11,10 +11,8 @@ namespace UIEditor.UILib.Components {
         public UIListViewPort() : base() {
             Overflow = OverflowType.Hidden;
         }
-
         public void RemoveAll() {
             Children.Clear();
         }
-
     }
 }

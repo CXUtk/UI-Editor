@@ -10,17 +10,26 @@ using Terraria.Graphics;
 
 namespace UIEditor.UILib.Components.Composite {
     public class UIList : UIElement {
-        public float MarginBetweenItems { get; set; }
+        public float ItemMargin {
+            get { return _itemMargin; }
+            set { base.CheckRecalculate(_itemMargin, value); _itemMargin = value; }
+        }
+        public float InnerContainerPadding {
+            get { return _innerContainerPadding; }
+            set { base.CheckRecalculate(_innerContainerPadding, value); _innerContainerPadding = value; }
+        }
+        private float _itemMargin;
+        private float _innerContainerPadding;
 
         private UIScrollBarV _verticalScrollBar;
         // private UIScrollBarV _horizontalScrollBar;
-        public List<UIElement> _elements;
-        private UIListViewPort _viewPort;
-        private float _totHeight;
+        protected IList<UIElement> _elements;
+        protected UIListViewPort _viewPort;
+        protected float _totHeight;
         private int _listUpMost;
         private int _listBottomMost;
 
-        private const float PADDING = 5f;
+
         public UIList() : base() {
             Overflow = OverflowType.Hidden;
             _viewPort = new UIListViewPort() {
@@ -29,7 +38,7 @@ namespace UIEditor.UILib.Components.Composite {
                 Pivot = new Vector2(0f, 0f),
             };
             _elements = new List<UIElement>();
-            MarginBetweenItems = 5f;
+            ItemMargin = 5f;
             this.AppendChild(_viewPort);
             OnScrollWheel += UIList_OnScrollWheel;
 
@@ -66,18 +75,23 @@ namespace UIEditor.UILib.Components.Composite {
 
         }
 
-        public override void UpdateSelf(GameTime gameTime) {
-            base.UpdateSelf(gameTime);
-            _totHeight = PADDING;
+        public virtual void UpdateElementPos(GameTime gameTime) {
+            _totHeight = InnerContainerPadding;
             foreach (var element in _elements) {
                 element.Position = new Vector2(0, _totHeight);
-                _totHeight += element.Height + MarginBetweenItems;
+                _totHeight += element.Height + ItemMargin;
             }
+        }
+
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+            UpdateElementPos(gameTime);
             UpdateScrollBarV();
             PlaceChildren();
         }
 
         private void PlaceChildren() {
+            _viewPort.RemoveAll();
             if (_elements.Count == 0) return;
             int upper = 0;
             int lower = Height;
@@ -106,21 +120,18 @@ namespace UIEditor.UILib.Components.Composite {
                     R = mid - 1;
                 }
             }
-            _viewPort.RemoveAll();
             for (int i = _listUpMost; i <= _listBottomMost; i++) {
                 _viewPort.AppendChild(_elements[i]);
             }
             ShouldRecalculate = true;
         }
-
-        public void AddElement(UIElement element) {
+        public void Clear() {
+            _elements.Clear();
+        }
+        public virtual void AddElement(UIElement element) {
             element.Pivot = new Vector2(0f, 0f);
             element.AnchorPoint = new Vector2(0f, 0f);
             _elements.Add(element);
-        }
-
-        public override void DrawSelf(SpriteBatch sb) {
-            base.DrawSelf(sb);
         }
 
 
