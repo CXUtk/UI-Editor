@@ -10,6 +10,8 @@ using UIEditor.UILib.Events;
 using UIEditor.UILib.Enums;
 using Terraria.GameInput;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.UI.Chat;
+using ReLogic.OS;
 
 namespace UIEditor.UILib.Components {
 
@@ -87,6 +89,14 @@ namespace UIEditor.UILib.Components {
             SyncLabel();
         }
 
+        public override void Draw(SpriteBatch sb) {
+            base.Draw(sb);
+            if (IsFocused)
+            {
+                DrawIME();
+            }
+        }
+
         public void TextChange(UITextChangeEvent e) {
             OnTextChange?.Invoke(e, this);
         }
@@ -126,6 +136,37 @@ namespace UIEditor.UILib.Components {
                 anchor.X = 1 - (float)_label.Width / Width / 2;
             }
             _label.AnchorPoint = anchor;
+        }
+
+        private void DrawIME()
+        {
+            var pos = PostionScreen;
+            var size = GetIMESize();
+            if (pos.Y + Height + size.Y > Main.screenHeight)
+            {
+                pos.Y -= 6 + size.Y;
+            }
+            else
+            {
+                pos.Y += Height + 6 + size.Y;
+            }
+            pos.X += size.X + 10;
+            Main.instance.DrawWindowsIMEPanel(pos);
+        }
+
+        private Vector2 GetIMESize()
+        {
+            List<TextSnippet> list = ChatManager.ParseMessage(Text, Color.White);
+            string compositionString = Platform.Current.Ime.CompositionString;
+            if (compositionString != null && compositionString.Length > 0)
+            {
+                list.Add(new TextSnippet(compositionString, new Color(255, 240, 20)));
+            }
+            if (Main.instance.textBlinkerState == 1)
+            {
+                list.Add(new TextSnippet("|", Color.White));
+            }
+            return ChatManager.GetStringSize(Main.fontMouseText, list.ToArray(), Vector2.Zero);
         }
 
     }
