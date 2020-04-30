@@ -55,8 +55,6 @@ namespace UIEditor.UILib.Components.Composite {
                 element.Size = new Vector2(_maxLeftPadding, element.Size.Y);
                 _maxWidth = Math.Max(_maxWidth, element.Width);
             }
-
-            Main.NewText(_maxWidth);
             CalculateViewPortScrollRelated();
         }
         public override void UpdateSelf(GameTime gameTime) {

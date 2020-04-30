@@ -33,7 +33,7 @@ namespace UIEditor.UILib.Components {
             MaxWidth = -1;
         }
 
-        public override void UpdateSelf(GameTime gameTime) {
+        public void CalculateSize() {
             _displayString = Text;
             var font = IsLargeText ? Main.fontDeathText : Main.fontMouseText;
             Size = new Vector2(font.MeasureString(Text).X, IsLargeText ? 42f : 18f) * TextScale;
@@ -42,6 +42,9 @@ namespace UIEditor.UILib.Components {
                 _displayString = StringProcess.GetClampStringWithEllipses(font, _displayString, TextScale, MaxWidth);
                 Size = new Vector2(font.MeasureString(_displayString).X, Size.Y);
             }
+        }
+        public override void UpdateSelf(GameTime gameTime) {
+            CalculateSize();
             Recalculate();
             base.UpdateSelf(gameTime);
         }

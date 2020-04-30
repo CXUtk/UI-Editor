@@ -12,94 +12,105 @@ using Terraria.GameInput;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI.Chat;
 using ReLogic.OS;
-using static UIEditor.UILib.Components.UITextArea;
 
 namespace UIEditor.UILib.Components {
 
     /// <summary>
-    /// 单行输入的文本框
+    /// 支持多行输入的文本框
     /// </summary>
-    public class UITextBox : UIElement {
+    public class UITextArea : UIElement {
+        public delegate void KeyEvent(UIKeyEvent e, UIElement sender);
+        public delegate void TextChangeEvent(UITextChangeEvent e, UIElement sender);
+
+
         private UILabel _label;
+
+        private static UIStateMachine StateMachine => UIEditor.Instance.UIStateMachine;
+
         public string Text {
             get => _label.Text;
             set => _label.Text = value;
         }
+
         public float TextScale {
             get => _label.TextScale;
             set => _label.TextScale = value;
         }
+
         public Color TextColor {
             get => _label.TextColor;
             set => _label.TextColor = value;
         }
-        private float _timer;
-        private bool _shouldBlink;
-        private string _realText;
-        private float _offsetX;
-        private static UIStateMachine StateMachine => UIEditor.Instance.UIStateMachine;
-        public event TextChangeEvent OnTextChange;
-        public UITextBox() : base() {
-            Overflow = OverflowType.Hidden;
-            BlockPropagation = true;
-            _shouldBlink = false;
-            _label = new UILabel() {
-                AnchorPoint = new Vector2(0, 0.5f),
-                Pivot = new Vector2(0, 0.5f),
-                NoEvent = true,
-            };
-            AppendChild(_label);
-        }
-        public override void FocusOn(UIActionEvent e) {
-            _shouldBlink = true;
-            _timer = 0;
-            base.FocusOn(e);
-        }
-        public override void UnFocus(UIActionEvent e) {
-            _shouldBlink = false;
-            _timer = 0;
-            base.UnFocus(e);
-        }
-        public override void UpdateSelf(GameTime gameTime) {
-            base.UpdateSelf(gameTime);
-            if (IsFocused) {
-                _timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                // 显示文本光标，500ms闪烁一次
-                if (_timer > 500) {
-                    _shouldBlink ^= true;
-                    _timer = 0;
-                }
-            }
+
+        public Align TextAlign {
+            get;
+            set;
         }
 
+        //public event KeyEvent OnKeyDown;
+        //public event KeyEvent OnKeyUp;
+        //public event KeyEvent OnKeyPress;
+        public event KeyEvent OnKeyInput;
+        public event TextChangeEvent OnTextChange;
+
+        public UITextArea() {
+            BlockPropagation = true;
+            _label = new UILabel() {
+                AnchorPoint = new Vector2(0.5f, 0.5f),
+                Pivot = new Vector2(0.5f, 0.5f),
+                NoEvent = true,
+            };
+
+            this.AppendChild(_label);
+        }
 
         public override void DrawSelf(SpriteBatch sb) {
             if (IsFocused) {
                 PlayerInput.WritingText = true;
+                //Main.blockInput = true;
                 Main.instance.HandleIME();
-                string oldString = _realText;
-                var newString = Main.GetInputText(_realText);
+                string oldString = Text;
+                var newString = Main.GetInputText(oldString);
                 if (oldString != newString) {
                     var e = new UITextChangeEvent(oldString, newString, this, Main._drawInterfaceGameTime.TotalGameTime);
                     TextChange(e);
                     if (!e.Cancel) {
-                        _realText = newString;
+                        Text = newString;
                     }
-                    _label.CalculateSize();
-                    // 5像素的偏移是留给光标的
-                    _offsetX = Math.Min(0, Width - 5f - _label.Width);
-                    _label.Position = new Vector2(_offsetX, 0);
-                    _label.Recalculate();
+                    Recalculate();
                 }
                 DrawIME();
             }
-            Text = _realText + (_shouldBlink ? "|" : "");
             base.DrawSelf(sb);
+        }
+
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+            SyncLabel();
         }
 
         public void TextChange(UITextChangeEvent e) {
             OnTextChange?.Invoke(e, this);
         }
+        public void KeyInput(UIKeyEvent e) {
+            OnKeyInput?.Invoke(e, this);
+        }
+
+        private void SyncLabel() {
+            Vector2 anchor = new Vector2(0.5f, 0.5f);
+            if (TextAlign.HasFlag(Align.Top)) {
+                anchor.Y = 0 + (float)_label.Height / Height / 2;
+            } else if (TextAlign.HasFlag(Align.Bottom)) {
+                anchor.Y = 1 - (float)_label.Height / Height / 2;
+            }
+            if (TextAlign.HasFlag(Align.Left)) {
+                anchor.X = 0 + (float)_label.Width / Width / 2;
+            } else if (TextAlign.HasFlag(Align.Right)) {
+                anchor.X = 1 - (float)_label.Width / Width / 2;
+            }
+            _label.AnchorPoint = anchor;
+        }
+
         private void DrawIME() {
             var pos = PostionScreen;
             var size = GetIMESize();
@@ -123,5 +134,6 @@ namespace UIEditor.UILib.Components {
             }
             return ChatManager.GetStringSize(Main.fontMouseText, list.ToArray(), Vector2.Zero);
         }
+
     }
 }

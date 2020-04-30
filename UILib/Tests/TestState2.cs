@@ -13,8 +13,7 @@ namespace UIEditor.UILib.Tests {
         public TestState2(string name) : base(name) { }
         public override void Initialize() {
             base.Initialize();
-            var button = new UIButton()
-            {
+            var button = new UIButton() {
                 Name = "tbDebug",
                 Size = new Vector2(10 * 16, 3 * 16),
                 Position = new Vector2(10 * 16, 3 * 16) / 2
@@ -25,7 +24,7 @@ namespace UIEditor.UILib.Tests {
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 Position = new Vector2(100, 100)
             };
-            var textbox = new UITextBox {
+            var textbox = new UITextArea {
                 Name = "emmm",
                 Size = new Vector2(20 * 16, 3 * 16),
                 Position = new Vector2(0, 300),
@@ -33,15 +32,12 @@ namespace UIEditor.UILib.Tests {
                 AnchorPoint = new Vector2(0.5f, 0),
                 TextAlign = Enums.Align.TopLeft
             };
-            var checkbox = new UICheckBox
-            {
+            var checkbox = new UICheckBox {
                 Name = "test checkbox",
                 Position = new Vector2(70, 70)
             };
-            button.OnClick += (e, sender) =>
-            {
-                switch(textbox.TextAlign)
-                {
+            button.OnClick += (e, sender) => {
+                switch (textbox.TextAlign) {
                     case Enums.Align.Top:
                         textbox.TextAlign = Enums.Align.TopRight;
                         break;

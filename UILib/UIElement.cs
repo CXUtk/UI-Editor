@@ -322,12 +322,12 @@ namespace UIEditor.UILib {
         }
 
         // 聚焦事件不会向后传播
-        public void FocusOn(UIActionEvent e) {
+        public virtual void FocusOn(UIActionEvent e) {
             IsFocused = true;
             OnFocused?.Invoke(e, this);
         }
 
-        public void UnFocus(UIActionEvent e) {
+        public virtual void UnFocus(UIActionEvent e) {
             IsFocused = false;
             OnUnFocused?.Invoke(e, this);
         }
@@ -437,7 +437,7 @@ namespace UIEditor.UILib {
                 var defaultstate = sb.GraphicsDevice.RasterizerState;
                 sb.GraphicsDevice.ScissorRectangle = scissorRectangle;
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
-                    DepthStencilState.None, defaultstate, null, _selfTransform);
+                    DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
             }
             if (DEBUG_MODE) {
                 sb.End();

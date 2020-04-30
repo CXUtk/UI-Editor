@@ -58,6 +58,14 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(0.5f, 0f),
                 Size = new Vector2(0, 25),
             };
+            var textbox = new UITextBox() {
+                Name = "Text",
+                AnchorPoint = new Vector2(1, 0),
+                Pivot = new Vector2(1, 0),
+                Position = new Vector2(-5, 50),
+                SizeFactor = new Vector2(0.5f, 0f),
+                Size = new Vector2(0, 30),
+            };
             _list.SetScrollBarV(scrollBar);
             _list.SetScrollBarH(scrollBarH);
             window.OnClose += Box1_OnClose;
@@ -65,7 +73,7 @@ namespace UIEditor.Editor.States {
             window.AppendChild(_body);
             _body.AppendChild(_list);
             _body.AppendChild(progress);
-
+            _body.AppendChild(textbox);
 
             //for (int j = 0; j < 2; j++) {
             //    var list = new List<UITreeNode>();

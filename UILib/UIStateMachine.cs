@@ -25,6 +25,7 @@ namespace UIEditor.UILib {
         private long _timer;
         private UIState _currentFocus;
         private string _tooltip;
+        private bool _shouldDrawIME;
 
         public UIStateMachine() {
             _wasMouseDown = false;
@@ -166,13 +167,28 @@ namespace UIEditor.UILib {
         }
 
         public void Draw(SpriteBatch sb) {
+            _shouldDrawIME = false;
             // 绘制一定要从前往后，维持父子关系
             foreach (var state in uiRunningStack) {
                 if (state.IsActive) {
                     state.Draw(sb);
                 }
             }
+            DrawIME();
+            DrawTooltip();
+        }
 
+        public void SetIME(Vector2 pos) {
+            _imePosition = pos;
+            _shouldDrawIME = true;
+        }
+        private Vector2 _imePosition;
+        private void DrawIME() {
+            if (!_shouldDrawIME) return;
+            Main.instance.DrawWindowsIMEPanel(_imePosition);
+        }
+
+        private void DrawTooltip() {
             if (_tooltip != "") {
                 var size = Main.fontMouseText.MeasureString(_tooltip);
                 var drawPos = new Vector2(Main.mouseX, Main.mouseY) + new Vector2(25f, 25f);

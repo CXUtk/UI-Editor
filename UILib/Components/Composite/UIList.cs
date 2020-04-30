@@ -98,7 +98,6 @@ namespace UIEditor.UILib.Components.Composite {
             }
             var maxWidth = Math.Max(_maxWidth - _viewPort.Width, 0);
             _horizontalScrollBar.ViewSize = _viewPort.Width / _maxWidth;
-            Main.NewText($"{_viewPort.Width}/{_maxWidth}");
             float offset = _horizontalScrollBar.CurrentValue * maxWidth;
             foreach (var element in _elements) {
                 float x = element.Position.X;
