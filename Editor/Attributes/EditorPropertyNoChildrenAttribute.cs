@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UIEditor.Editor.Attributes {
     /// <summary>
-    /// 被EditorPropertyIgnore指定的成员属性会在编辑器显示的属性界面中被忽略
+    /// 如果某个UI类型具有此特性，则在层级浏览器中不会显示其子节点
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class EditorPropertyNoChildrenAttribute : Attribute {

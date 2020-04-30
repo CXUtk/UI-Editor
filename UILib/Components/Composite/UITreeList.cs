@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics;
+using Terraria.ModLoader;
 using UIEditor.UILib.Components.Advanced;
 
 namespace UIEditor.UILib.Components.Composite {
@@ -31,7 +32,16 @@ namespace UIEditor.UILib.Components.Composite {
             node.DisplayElement.Position = new Vector2(leftPadding, _totHeight);
             _addElement(node.DisplayElement);
             _totHeight += node.DisplayElement.Height + ItemMargin;
-            if (node.IsFolded) return;
+            if (node.TreeNodes.Count == 0) {
+                node.DisplayElement._foldButton.Texture = ModContent.GetTexture("UIEditor/Images/Trans");
+                return;
+            }
+            if (node.IsFolded) {
+                node.DisplayElement._foldButton.Texture = ModContent.GetTexture("UIEditor/Images/FoldOn");
+                return;
+            } else {
+                node.DisplayElement._foldButton.Texture = ModContent.GetTexture("UIEditor/Images/FoldOff");
+            }
             foreach (var child in node.TreeNodes) {
                 _dfsCalculate(child, leftPadding + LayerPaddingLeft);
             }

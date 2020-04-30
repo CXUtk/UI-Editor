@@ -38,7 +38,7 @@ namespace UIEditor.UILib.Components.Advanced {
     }
     public class UITreeNode : UIElement {
 
-        public UIElement DisplayElement { get; }
+        public UITreeNodeDisplay DisplayElement { get; }
         public IList<UITreeNode> TreeNodes { get; }
         public bool IsFolded { get; set; }
 
@@ -55,6 +55,11 @@ namespace UIEditor.UILib.Components.Advanced {
             DisplayElement = display;
             TreeNodes = nodes;
             //AppendChild(display);
+        }
+
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+
         }
 
         private void Element_OnClick(Events.UIMouseEvent e, UIElement sender) {
