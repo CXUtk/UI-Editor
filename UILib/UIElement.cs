@@ -212,6 +212,19 @@ namespace UIEditor.UILib {
             }
         }
 
+        protected bool MouseDownedLeft {
+            get {
+                return _mouseDownedLeft;
+            }
+        }
+
+        protected int MouseDownTimeLeft {
+            get {
+                return _mouseDownTimeLeft;
+            }
+        }
+
+        public bool ShouldRecalculate { get; set; }
         #endregion
 
 
@@ -261,6 +274,8 @@ namespace UIEditor.UILib {
         private QuadrilateralHitbox _selfHitbox;
         private Matrix _selfTransform;
         private Rectangle _parentRect;
+        private int _mouseDownTimeLeft;
+        private bool _mouseDownedLeft;
 
         private RasterizerState _selfRasterizerState;
 
@@ -282,6 +297,7 @@ namespace UIEditor.UILib {
 
         public void MouseDown(UIMouseEvent e) {
             //Main.NewText("按下");
+            _mouseDownedLeft = true;
             OnMouseDown?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseDown(e);
@@ -289,6 +305,7 @@ namespace UIEditor.UILib {
 
         public void MouseUp(UIMouseEvent e) {
             //Main.NewText("抬起");
+            _mouseDownedLeft = false;
             OnMouseUp?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseUp(e);
@@ -440,7 +457,16 @@ namespace UIEditor.UILib {
             }
         }
 
-        public virtual void UpdateSelf(GameTime gameTime) { }
+        public virtual void UpdateSelf(GameTime gameTime) {
+            if (_mouseDownedLeft)
+            {
+                _mouseDownTimeLeft++;
+            }
+            else
+            {
+                _mouseDownTimeLeft = 0;
+            }
+        }
         public virtual void UpdateChildren(GameTime gameTime) {
             foreach (var child in Children) {
                 if (child.IsActive) {

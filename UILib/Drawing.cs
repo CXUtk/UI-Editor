@@ -18,6 +18,8 @@ namespace UIEditor.UILib {
         public static Texture2D CloseButtonTexture;
         public static Texture2D CollapseButtonUp;
         public static Texture2D CollapseButtonDown;
+        public static Texture2D CheckBox;
+        public static Texture2D CheckBoxChecked;
         public static Mod CurrentMod;
         public static void Initialize(Mod mod) {
             CurrentMod = mod;
@@ -28,6 +30,8 @@ namespace UIEditor.UILib {
             CloseButtonTexture = CurrentMod.GetTexture("Images/CloseButton");
             CollapseButtonUp = CurrentMod.GetTexture("Images/CollapseButtonUp");
             CollapseButtonDown = CurrentMod.GetTexture("Images/CollapseButtonDown");
+            CheckBox = CurrentMod.GetTexture("Images/CheckBox");
+            CheckBoxChecked = CurrentMod.GetTexture("Images/CheckBox_Checked");
         }
         public static void Unload() {
             CurrentMod = null;
