@@ -22,10 +22,11 @@ namespace UIEditor.UILib.Components.Composite {
         private float _innerContainerPadding;
 
         private UIScrollBarV _verticalScrollBar;
-        // private UIScrollBarV _horizontalScrollBar;
+        private UIScrollBarH _horizontalScrollBar;
         protected IList<UIElement> _elements;
         protected UIListViewPort _viewPort;
         protected float _totHeight;
+        protected float _maxWidth;
         private int _listUpMost;
         private int _listBottomMost;
 
@@ -45,7 +46,8 @@ namespace UIEditor.UILib.Components.Composite {
         }
 
         private void UIList_OnScrollWheel(Events.UIScrollWheelEvent e, UIElement sender) {
-            _verticalScrollBar.CurrentValue -= e.ScrollValue / (_totHeight - Height);
+            if (_verticalScrollBar != null)
+                _verticalScrollBar.CurrentValue -= e.ScrollValue * 0.5f / (_totHeight - _viewPort.Height);
         }
 
         public void SetScrollBarV(UIScrollBarV scrollBarV) {
@@ -61,12 +63,24 @@ namespace UIEditor.UILib.Components.Composite {
             ShouldRecalculate = true;
         }
 
+        public void SetScrollBarH(UIScrollBarH scrollBarH) {
+            if (_horizontalScrollBar != null) {
+                _horizontalScrollBar.Parent = null;
+                Children.Remove(_horizontalScrollBar);
+            }
+            _horizontalScrollBar = scrollBarH;
+            _horizontalScrollBar.AnchorPoint = new Vector2(0f, 1f);
+            _horizontalScrollBar.Pivot = new Vector2(0f, 1f);
+            _horizontalScrollBar.Position = new Vector2(0, -5);
+            AppendChild(_horizontalScrollBar);
+            ShouldRecalculate = true;
+        }
+
         private void UpdateScrollBarV() {
             if (_verticalScrollBar == null) return;
-            _viewPort.Size = new Vector2(-_verticalScrollBar.Width - 5f, 0f);
+            var totHeight = Math.Max(_totHeight - _viewPort.Height, 0);
 
-            var totHeight = Math.Max(_totHeight - Height, 0);
-            _verticalScrollBar.ViewSize = Height / totHeight;
+            _verticalScrollBar.ViewSize = _viewPort.Height / _totHeight;
             float offset = _verticalScrollBar.CurrentValue * totHeight;
             foreach (var element in _elements) {
                 float y = element.Position.Y;
@@ -75,18 +89,47 @@ namespace UIEditor.UILib.Components.Composite {
 
         }
 
+        private void UpdateScrollBarH() {
+            if (_horizontalScrollBar == null) return;
+
+            // 给垂直滚动条留点空间
+            if (_verticalScrollBar != null) {
+                _horizontalScrollBar.Size = new Vector2(-_verticalScrollBar.Width - 5f, _horizontalScrollBar.Size.Y);
+            }
+            var maxWidth = Math.Max(_maxWidth - _viewPort.Width, 0);
+            _horizontalScrollBar.ViewSize = _viewPort.Width / _maxWidth;
+            Main.NewText($"{_viewPort.Width}/{_maxWidth}");
+            float offset = _horizontalScrollBar.CurrentValue * maxWidth;
+            foreach (var element in _elements) {
+                float x = element.Position.X;
+                element.Position = new Vector2(x - offset, element.Position.Y);
+            }
+
+        }
+
         public virtual void UpdateElementPos(GameTime gameTime) {
             _totHeight = InnerContainerPadding;
+            _maxWidth = 0;
             foreach (var element in _elements) {
                 element.Position = new Vector2(0, _totHeight);
                 _totHeight += element.Height + ItemMargin;
+                _maxWidth = Math.Max(_maxWidth, element.Position.X + element.Width);
             }
+            CalculateViewPortScrollRelated();
+        }
+
+        protected void CalculateViewPortScrollRelated() {
+            if (_verticalScrollBar != null)
+                _viewPort.Size = new Vector2(-_verticalScrollBar.Width - 5f, 0);
+            if (_horizontalScrollBar != null)
+                _viewPort.Size = new Vector2(_viewPort.Size.X, -_horizontalScrollBar.Height - 5f);
         }
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             UpdateElementPos(gameTime);
             UpdateScrollBarV();
+            UpdateScrollBarH();
             PlaceChildren();
         }
 

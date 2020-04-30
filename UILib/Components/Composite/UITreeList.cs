@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Graphics;
 using Terraria.ModLoader;
 using UIEditor.UILib.Components.Advanced;
 
@@ -25,6 +20,8 @@ namespace UIEditor.UILib.Components.Composite {
 
         private void _addElement(UIElement element) {
             base.AddElement(element);
+            element.Parent = _viewPort;
+            element.Recalculate();
         }
         private float _maxLeftPadding;
         private void _dfsCalculate(UITreeNode node, float leftPadding) {
@@ -51,10 +48,16 @@ namespace UIEditor.UILib.Components.Composite {
             Clear();
             _totHeight = InnerContainerPadding;
             _maxLeftPadding = 0;
+            _maxWidth = 0;
             foreach (var root in _roots)
                 _dfsCalculate(root, 0);
-            foreach (var element in _elements)
+            foreach (var element in _elements) {
                 element.Size = new Vector2(_maxLeftPadding, element.Size.Y);
+                _maxWidth = Math.Max(_maxWidth, element.Width);
+            }
+
+            Main.NewText(_maxWidth);
+            CalculateViewPortScrollRelated();
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);

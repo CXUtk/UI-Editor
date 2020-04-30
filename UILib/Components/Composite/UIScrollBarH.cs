@@ -71,8 +71,8 @@ namespace UIEditor.UILib.Components {
         private const float PADDING = 5;
         public UIScrollBarH() : base() {
             BlockPropagation = true;
-            SizeFactor = new Vector2(0, 1);
-            Size = new Vector2(20, -PADDING * 2);
+            SizeFactor = new Vector2(1, 0);
+            Size = new Vector2(-PADDING * 2, 20);
             _currentValue = 0f;
             _isMouseOver = false;
             var tex = ModContent.GetTexture("UIEditor/Images/ScrollBarH");
@@ -147,12 +147,11 @@ namespace UIEditor.UILib.Components {
             int topX = 0, bottomX = _outerBar.Width - _innerBar.Width;
             if (_isMouseDown) {
                 var posLocal = _innerBar.ScreenPositionToNode(Main.MouseScreen + new Vector2(_offsetX, 0));
-                CurrentValue = (posLocal.X - topX) / (float)(bottomX - topX);
+                float r = (posLocal.X - topX) / (float)(bottomX - topX);
+                if (float.IsNaN(r)) r = 0;
+                CurrentValue = r;
             }
-
             _innerBar.SizeFactor = new Vector2(MathHelper.Clamp(ViewSize, 0.01f, 1), 1f);
-            //_innerBar.RecalculateSelf();
-            //_outerBar.RecalculateSelf();
 
 
             var pos = new Vector2(MathHelper.Lerp(topX, bottomX, CurrentValue), 0);

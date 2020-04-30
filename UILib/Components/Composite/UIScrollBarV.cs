@@ -55,7 +55,10 @@ namespace UIEditor.UILib.Components {
         /// <summary>
         /// 当前滚动条运动到的位置的比例，这个值处于0和1之间
         /// </summary>
-        public float CurrentValue { get { return _currentValue; } set { _currentValue = MathHelper.Clamp(value, 0, 1); } }
+        public float CurrentValue {
+            get { return _currentValue; }
+            set { _currentValue = MathHelper.Clamp(value, 0, 1); }
+        }
 
         private float _currentValue;
 
@@ -139,13 +142,12 @@ namespace UIEditor.UILib.Components {
             int topY = 0, bottomY = _outerBar.Height - _innerBar.Height;
             if (_isMouseDown) {
                 var posLocal = _innerBar.ScreenPositionToNode(Main.MouseScreen + new Vector2(0, _offsetY));
-                CurrentValue = (posLocal.Y - topY) / (float)(bottomY - topY);
+                float r = (posLocal.Y - topY) / (float)(bottomY - topY);
+                if (float.IsNaN(r)) r = 0;
+                CurrentValue = r;
             }
 
             _innerBar.SizeFactor = new Vector2(1f, MathHelper.Clamp(ViewSize, 0.01f, 1));
-            //_innerBar.RecalculateSelf();
-            //_outerBar.RecalculateSelf();
-
 
             var pos = new Vector2(0, MathHelper.Lerp(topY, bottomY, CurrentValue));
             _innerBar.Position = pos;

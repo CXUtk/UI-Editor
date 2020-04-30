@@ -223,8 +223,6 @@ namespace UIEditor.UILib {
                 return _mouseDownTimeLeft;
             }
         }
-
-        public bool ShouldRecalculate { get; set; }
         #endregion
 
 
@@ -458,12 +456,9 @@ namespace UIEditor.UILib {
         }
 
         public virtual void UpdateSelf(GameTime gameTime) {
-            if (_mouseDownedLeft)
-            {
+            if (_mouseDownedLeft) {
                 _mouseDownTimeLeft++;
-            }
-            else
-            {
+            } else {
                 _mouseDownTimeLeft = 0;
             }
         }

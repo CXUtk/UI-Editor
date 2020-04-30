@@ -47,6 +47,9 @@ namespace UIEditor.Editor.States {
                 Pivot = new Vector2(1, 0.5f),
                 Position = new Vector2(-5, 0),
             };
+            var scrollBarH = new UIScrollBarH() {
+                Name = "ScrollBarH",
+            };
             var progress = new UIProgressBar() {
                 Name = "Progress",
                 AnchorPoint = new Vector2(1, 0),
@@ -56,6 +59,7 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(0, 25),
             };
             _list.SetScrollBarV(scrollBar);
+            _list.SetScrollBarH(scrollBarH);
             window.OnClose += Box1_OnClose;
             AppendChild(window);
             window.AppendChild(_body);
@@ -63,14 +67,33 @@ namespace UIEditor.Editor.States {
             _body.AppendChild(progress);
 
 
-            for (int j = 0; j < 50; j++) {
-                var list = new List<UITreeNode>();
-                for (int i = 0; i < 10; i++) {
-                    list.Add(new UITreeNode("Leaf", new List<UITreeNode>()));
-                }
-                var root = new UITreeNode("Root", list);
-                _list.AddElement(root);
+            //for (int j = 0; j < 2; j++) {
+            //    var list = new List<UITreeNode>();
+            //    for (int i = 0; i < 10; i++) {
+            //        list.Add(new UITreeNode("Leaf", new List<UITreeNode>()));
+            //    }
+            //    var root = new UITreeNode("Root", list);
+            //    _list.AddElement(root);
+            //}
+            UITreeNode node = null;
+            node = _build(node, 0);
+            node.Name = "根节点";
+            _list.AddElement(node);
+        }
+        int tot = 0;
+        UITreeNode _build(UITreeNode node, int level) {
+            tot++;
+            List<UITreeNode> nodes = new List<UITreeNode>();
+            if (node == null) {
+                node = new UITreeNode(tot.ToString(), nodes);
             }
+            if (level == 6) return node;
+            for (int i = 0; i < 2; i++) {
+                UITreeNode child = null;
+                child = _build(child, level + 1);
+                nodes.Add(child);
+            }
+            return node;
         }
 
         private void Box1_OnClose(UIActionEvent e, UIElement sender) {
