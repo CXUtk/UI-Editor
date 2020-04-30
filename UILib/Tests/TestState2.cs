@@ -13,6 +13,12 @@ namespace UIEditor.UILib.Tests {
         public TestState2(string name) : base(name) { }
         public override void Initialize() {
             base.Initialize();
+            var button = new UIButton()
+            {
+                Name = "tbDebug",
+                Size = new Vector2(10 * 16, 3 * 16),
+                Position = Size / 2
+            };
             var box13 = new UIWindow() {
                 Name = "a",
                 Size = new Vector2(800, 640),
@@ -25,11 +31,44 @@ namespace UIEditor.UILib.Tests {
                 Size = new Vector2(20 * 16, 3 * 16),
                 Position = new Vector2(0, 300),
                 Pivot = new Vector2(0.5f, 0),
-                AnchorPoint = new Vector2(0.5f, 0)
+                AnchorPoint = new Vector2(0.5f, 0),
+                TextAlign = Enums.Align.TopLeft
+            };
+            button.OnClick += (e, sender) =>
+            {
+                switch(textbox.TextAlign)
+                {
+                    case Enums.Align.Top:
+                        textbox.TextAlign = Enums.Align.TopRight;
+                        break;
+                    case Enums.Align.TopRight:
+                        textbox.TextAlign = Enums.Align.Right;
+                        break;
+                    case Enums.Align.Right:
+                        textbox.TextAlign = Enums.Align.BottomRight;
+                        break;
+                    case Enums.Align.BottomRight:
+                        textbox.TextAlign = Enums.Align.Bottom;
+                        break;
+                    case Enums.Align.Bottom:
+                        textbox.TextAlign = Enums.Align.BottomLeft;
+                        break;
+                    case Enums.Align.BottomLeft:
+                        textbox.TextAlign = Enums.Align.Left;
+                        break;
+                    case Enums.Align.Left:
+                        textbox.TextAlign = Enums.Align.TopLeft;
+                        break;
+                    case Enums.Align.TopLeft:
+                        textbox.TextAlign = Enums.Align.Top;
+                        break;
+                }
+                button.Text = textbox.TextAlign.ToString();
             };
             box13.OnClose += Box1_OnClose;
             AppendChild(box13);
             box13.AppendChild(textbox);
+            box13.AppendChild(button);
         }
 
         private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {

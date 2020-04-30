@@ -7,6 +7,7 @@ using Terraria;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using UIEditor.UILib.Events;
+using UIEditor.UILib.Enums;
 using Terraria.GameInput;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -39,6 +40,11 @@ namespace UIEditor.UILib.Components {
             set => _label.TextColor = value;
         }
 
+        public Align TextAlign {
+            get;
+            set;
+        }
+
         //public event KeyEvent OnKeyDown;
         //public event KeyEvent OnKeyUp;
         //public event KeyEvent OnKeyPress;
@@ -50,7 +56,7 @@ namespace UIEditor.UILib.Components {
             _label = new UILabel() {
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 Pivot = new Vector2(0.5f, 0.5f),
-                NoEvent = true
+                NoEvent = true,
             };
 
             this.AppendChild(_label);
@@ -70,6 +76,7 @@ namespace UIEditor.UILib.Components {
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
+            SyncLabel();
         }
 
         public void KeyInput(UIKeyEvent e) {
@@ -88,6 +95,27 @@ namespace UIEditor.UILib.Components {
         //  OnKeyPress?.Invoke(e, this);
         //}
 
+        private void SyncLabel()
+        {
+            Vector2 anchor = new Vector2(0.5f, 0.5f);
+            if (TextAlign.HasFlag(Align.Top))
+            {
+                anchor.Y = 0 + (float)_label.Height / Height / 2;
+            }
+            else if (TextAlign.HasFlag(Align.Bottom))
+            {
+                anchor.Y = 1 - (float)_label.Height / Height / 2;
+            }
+            if (TextAlign.HasFlag(Align.Left))
+            {
+                anchor.X = 0 + (float)_label.Width / Width / 2;
+            }
+            else if (TextAlign.HasFlag(Align.Right))
+            {
+                anchor.X = 1 - (float)_label.Width / Width / 2;
+            }
+            _label.AnchorPoint = anchor;
+        }
 
     }
 }
