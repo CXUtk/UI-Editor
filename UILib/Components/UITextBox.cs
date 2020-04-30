@@ -65,7 +65,6 @@ namespace UIEditor.UILib.Components {
         }
 
         public override void DrawSelf(SpriteBatch sb) {
-            base.DrawSelf(sb);
             if (IsFocused) {
                 PlayerInput.WritingText = true;
                 //Main.blockInput = true;
@@ -82,6 +81,7 @@ namespace UIEditor.UILib.Components {
                     }
                 }
             }
+            base.DrawSelf(sb);
         }
 
         public override void UpdateSelf(GameTime gameTime) {
