@@ -71,12 +71,10 @@ namespace UIEditor.UILib.Components {
                 Main.instance.HandleIME();
                 string oldString = Text;
                 var newString = Main.GetInputText(oldString);
-                if (oldString != newString)
-                {
+                if (oldString != newString) {
                     var e = new UITextChangeEvent(oldString, newString, this, Main._drawInterfaceGameTime.TotalGameTime);
                     TextChange(e);
-                    if (!e.Cancel)
-                    {
+                    if (!e.Cancel) {
                         Text = newString;
                     }
                 }
@@ -91,8 +89,7 @@ namespace UIEditor.UILib.Components {
 
         public override void Draw(SpriteBatch sb) {
             base.Draw(sb);
-            if (IsFocused)
-            {
+            if (IsFocused) {
                 DrawIME();
             }
         }
@@ -103,67 +100,41 @@ namespace UIEditor.UILib.Components {
         public void KeyInput(UIKeyEvent e) {
             OnKeyInput?.Invoke(e, this);
         }
-        //public void KeyDown(UIKeyEvent e)
-        //{
-        //  OnKeyDown?.Invoke(e, this);
-        //}
-        //public void KeyUp(UIKeyEvent e)
-        //{
-        //  OnKeyUp?.Invoke(e, this);
-        //}
-        //public void KeyPress(UIKeyEvent e)
-        //{
-        //  OnKeyPress?.Invoke(e, this);
-        //}
 
-        private void SyncLabel()
-        {
+        private void SyncLabel() {
             Vector2 anchor = new Vector2(0.5f, 0.5f);
-            if (TextAlign.HasFlag(Align.Top))
-            {
+            if (TextAlign.HasFlag(Align.Top)) {
                 anchor.Y = 0 + (float)_label.Height / Height / 2;
-            }
-            else if (TextAlign.HasFlag(Align.Bottom))
-            {
+            } else if (TextAlign.HasFlag(Align.Bottom)) {
                 anchor.Y = 1 - (float)_label.Height / Height / 2;
             }
-            if (TextAlign.HasFlag(Align.Left))
-            {
+            if (TextAlign.HasFlag(Align.Left)) {
                 anchor.X = 0 + (float)_label.Width / Width / 2;
-            }
-            else if (TextAlign.HasFlag(Align.Right))
-            {
+            } else if (TextAlign.HasFlag(Align.Right)) {
                 anchor.X = 1 - (float)_label.Width / Width / 2;
             }
             _label.AnchorPoint = anchor;
         }
 
-        private void DrawIME()
-        {
+        private void DrawIME() {
             var pos = PostionScreen;
             var size = GetIMESize();
-            if (pos.Y + Height + size.Y > Main.screenHeight)
-            {
+            if (pos.Y + Height + size.Y > Main.screenHeight) {
                 pos.Y -= 6 + size.Y;
-            }
-            else
-            {
+            } else {
                 pos.Y += Height + 6 + size.Y;
             }
             pos.X += size.X + 10;
             Main.instance.DrawWindowsIMEPanel(pos);
         }
 
-        private Vector2 GetIMESize()
-        {
+        private Vector2 GetIMESize() {
             List<TextSnippet> list = ChatManager.ParseMessage(Text, Color.White);
             string compositionString = Platform.Current.Ime.CompositionString;
-            if (compositionString != null && compositionString.Length > 0)
-            {
+            if (compositionString != null && compositionString.Length > 0) {
                 list.Add(new TextSnippet(compositionString, new Color(255, 240, 20)));
             }
-            if (Main.instance.textBlinkerState == 1)
-            {
+            if (Main.instance.textBlinkerState == 1) {
                 list.Add(new TextSnippet("|", Color.White));
             }
             return ChatManager.GetStringSize(Main.fontMouseText, list.ToArray(), Vector2.Zero);
