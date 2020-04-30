@@ -36,6 +36,7 @@ namespace UIEditor.UILib {
         }
 
         private void Main_OnResolutionChanged(Vector2 obj) {
+            foreach (var state in uiRunningStack) state.ShouldRecalculate = true;
             RecalculateAll();
         }
 

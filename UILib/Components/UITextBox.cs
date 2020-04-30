@@ -21,6 +21,7 @@ namespace UIEditor.UILib.Components {
     /// </summary>
     public class UITextBox : UIElement {
         private UILabel _label;
+        public Texture2D FrameTexture { get; set; }
         public string Text {
             get => _label.Text;
             set => _label.Text = value;
@@ -43,6 +44,7 @@ namespace UIEditor.UILib.Components {
             Overflow = OverflowType.Hidden;
             BlockPropagation = true;
             _shouldBlink = false;
+            FrameTexture = Drawing.DefaultBoxTexture;
             _label = new UILabel() {
                 AnchorPoint = new Vector2(0, 0.5f),
                 Pivot = new Vector2(0, 0.5f),
@@ -78,22 +80,25 @@ namespace UIEditor.UILib.Components {
                 PlayerInput.WritingText = true;
                 Main.instance.HandleIME();
                 string oldString = _realText;
-                var newString = Main.GetInputText(_realText);
+                var newString = Main.GetInputText(oldString);
                 if (oldString != newString) {
                     var e = new UITextChangeEvent(oldString, newString, this, Main._drawInterfaceGameTime.TotalGameTime);
                     TextChange(e);
                     if (!e.Cancel) {
                         _realText = newString;
                     }
-                    _label.CalculateSize();
-                    // 5像素的偏移是留给光标的
-                    _offsetX = Math.Min(0, Width - 5f - _label.Width);
-                    _label.Position = new Vector2(_offsetX, 0);
-                    _label.Recalculate();
                 }
+
+                _label.CalculateSize();
+
+                // 10像素的偏移是留给光标的
+                _offsetX = Math.Min(0, Width - 10 - 10f * TextScale - _label.MeasureSize(_realText).X);
+                _label.Position = new Vector2(_offsetX + 10, 0);
+                _label.Recalculate();
                 DrawIME();
             }
             Text = _realText + (_shouldBlink ? "|" : "");
+            Drawing.DrawAdvBox(sb, 0, 0, Width, Height, Color.White, FrameTexture, new Vector2(8, 8));
             base.DrawSelf(sb);
         }
 
@@ -101,7 +106,7 @@ namespace UIEditor.UILib.Components {
             OnTextChange?.Invoke(e, this);
         }
         private void DrawIME() {
-            var pos = PostionScreen;
+            var pos = _label.InnerRectangleScreen.BottomRight();
             var size = GetIMESize();
             if (pos.Y + Height + size.Y > Main.screenHeight) {
                 pos.Y -= 6 + size.Y;

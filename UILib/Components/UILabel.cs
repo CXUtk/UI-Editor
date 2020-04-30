@@ -32,12 +32,15 @@ namespace UIEditor.UILib.Components {
             IsLargeText = false;
             MaxWidth = -1;
         }
+        public Vector2 MeasureSize(string str) {
+            var font = IsLargeText ? Main.fontDeathText : Main.fontMouseText;
+            return new Vector2(font.MeasureString(str).X, IsLargeText ? 42f : 18f) * TextScale;
 
+        }
         public void CalculateSize() {
             _displayString = Text;
             var font = IsLargeText ? Main.fontDeathText : Main.fontMouseText;
-            Size = new Vector2(font.MeasureString(Text).X, IsLargeText ? 42f : 18f) * TextScale;
-
+            Size = MeasureSize(Text);
             if (MaxWidth != -1) {
                 _displayString = StringProcess.GetClampStringWithEllipses(font, _displayString, TextScale, MaxWidth);
                 Size = new Vector2(font.MeasureString(_displayString).X, Size.Y);
