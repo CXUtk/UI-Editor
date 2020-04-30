@@ -18,7 +18,7 @@ namespace UIEditor.UILib.Components {
     /// </summary>
     public class UITextBox : UIElement {
         public delegate void KeyEvent(UIKeyEvent e, UIElement sender);
-        public delegate void TextChangeEvent(UIActionEvent e, UIElement sender);
+        public delegate void TextChangeEvent(UITextChangeEvent e, UIElement sender);
 
 
         private UILabel _label;
@@ -70,7 +70,15 @@ namespace UIEditor.UILib.Components {
                 Main.instance.HandleIME();
                 string oldString = Text;
                 var newString = Main.GetInputText(oldString);
-                Text = newString;
+                if (oldString != newString)
+                {
+                    var e = new UITextChangeEvent(oldString, newString, this, Main._drawInterfaceGameTime.TotalGameTime);
+                    TextChange(e);
+                    if (!e.Cancel)
+                    {
+                        Text = newString;
+                    }
+                }
             }
         }
 
@@ -79,6 +87,9 @@ namespace UIEditor.UILib.Components {
             SyncLabel();
         }
 
+        public void TextChange(UITextChangeEvent e) {
+            OnTextChange?.Invoke(e, this);
+        }
         public void KeyInput(UIKeyEvent e) {
             OnKeyInput?.Invoke(e, this);
         }

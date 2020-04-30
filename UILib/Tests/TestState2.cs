@@ -17,7 +17,7 @@ namespace UIEditor.UILib.Tests {
             {
                 Name = "tbDebug",
                 Size = new Vector2(10 * 16, 3 * 16),
-                Position = Size / 2
+                Position = new Vector2(10 * 16, 3 * 16) / 2
             };
             var box13 = new UIWindow() {
                 Name = "a",
@@ -33,6 +33,11 @@ namespace UIEditor.UILib.Tests {
                 Pivot = new Vector2(0.5f, 0),
                 AnchorPoint = new Vector2(0.5f, 0),
                 TextAlign = Enums.Align.TopLeft
+            };
+            var checkbox = new UICheckBox
+            {
+                Name = "test checkbox",
+                Position = new Vector2(70, 70)
             };
             button.OnClick += (e, sender) =>
             {
@@ -69,6 +74,7 @@ namespace UIEditor.UILib.Tests {
             AppendChild(box13);
             box13.AppendChild(textbox);
             box13.AppendChild(button);
+            box13.AppendChild(checkbox);
         }
 
         private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {
