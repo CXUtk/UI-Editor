@@ -26,7 +26,7 @@ namespace UIEditor.UILib.Tests {
             };
             var textbox = new UITextArea {
                 Name = "emmm",
-                Size = new Vector2(20 * 16, 3 * 16),
+                Size = new Vector2(20 * 16, 6.5f * 16),
                 Position = new Vector2(0, 300),
                 Pivot = new Vector2(0.5f, 0),
                 AnchorPoint = new Vector2(0.5f, 0),
@@ -36,8 +36,10 @@ namespace UIEditor.UILib.Tests {
                 Name = "test checkbox",
                 Position = new Vector2(70, 70)
             };
-            button.OnClick += (e, sender) => {
-                switch (textbox.TextAlign) {
+            button.OnClick += (e, sender) =>
+            {
+                switch (textbox.TextAlign)
+                {
                     case Enums.Align.Top:
                         textbox.TextAlign = Enums.Align.TopRight;
                         break;

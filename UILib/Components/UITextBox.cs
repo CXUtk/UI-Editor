@@ -21,10 +21,31 @@ namespace UIEditor.UILib.Components {
     /// </summary>
     public class UITextBox : UIElement {
         private UILabel _label;
+        private string _text;
+        private int caret;
+        private float _timer;
+        private bool _shouldBlink;
+        private float _offsetX;
+
         public Texture2D FrameTexture { get; set; }
         public string Text {
-            get => _label.Text;
-            set => _label.Text = value;
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                if (_text != value)
+                {
+                    var e = new UITextChangeEvent(_text, value, this, Main._drawInterfaceGameTime.TotalGameTime);
+                    TextChange(e);
+                    if (!e.Cancel)
+                    {
+                        _text = e.NewString;
+                        caret = _text.Length;
+                    }
+                }
+            }
         }
         public float TextScale {
             get => _label.TextScale;
@@ -34,15 +55,12 @@ namespace UIEditor.UILib.Components {
             get => _label.TextColor;
             set => _label.TextColor = value;
         }
-        private float _timer;
-        private bool _shouldBlink;
-        private string _realText;
-        private float _offsetX;
         private static UIStateMachine StateMachine => UIEditor.Instance.UIStateMachine;
         public event TextChangeEvent OnTextChange;
         public UITextBox() : base() {
             Overflow = OverflowType.Hidden;
             BlockPropagation = true;
+            _text = string.Empty;
             _shouldBlink = false;
             FrameTexture = Drawing.DefaultBoxTexture;
             _label = new UILabel() {
@@ -60,16 +78,33 @@ namespace UIEditor.UILib.Components {
         public override void UnFocus(UIActionEvent e) {
             _shouldBlink = false;
             _timer = 0;
+            caret = Text.Length;
             base.UnFocus(e);
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-            if (IsFocused) {
+            caret = (int)MathHelper.Clamp(caret, 0, Text.Length);
+            if (IsFocused)
+            {
                 _timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 // 显示文本光标，500ms闪烁一次
-                if (_timer > 500) {
+                if (_timer > 500)
+                {
                     _shouldBlink ^= true;
                     _timer = 0;
+                }
+                _label.Text = Text.Insert(caret, _shouldBlink ? "|" : " ");
+                _label.CalculateSize();
+                //// 5像素的偏移是留给光标的
+                //_offsetX = Math.Min(0, Width - 5f - _label.Width);
+                //_label.Position = new Vector2(_offsetX, 0);
+                _label.Recalculate();
+            }
+            else
+            {
+                if (_label.Text.Length != Text.Length)
+                {
+                    _label.Text = Text;
                 }
             }
         }
@@ -77,34 +112,68 @@ namespace UIEditor.UILib.Components {
 
         public override void DrawSelf(SpriteBatch sb) {
             if (IsFocused) {
-                PlayerInput.WritingText = true;
-                Main.instance.HandleIME();
-                string oldString = _realText;
-                var newString = Main.GetInputText(oldString);
-                if (oldString != newString) {
-                    var e = new UITextChangeEvent(oldString, newString, this, Main._drawInterfaceGameTime.TotalGameTime);
-                    TextChange(e);
-                    if (!e.Cancel) {
-                        _realText = newString;
-                    }
-                }
-
-                _label.CalculateSize();
-
-                // 10像素的偏移是留给光标的
-                _offsetX = Math.Min(0, Width - 10 - 10f * TextScale - _label.MeasureSize(_realText).X);
-                _label.Position = new Vector2(_offsetX + 10, 0);
-                _label.Recalculate();
+                InputText();
                 DrawIME();
             }
-            Text = _realText + (_shouldBlink ? "|" : "");
-            Drawing.DrawAdvBox(sb, 0, 0, Width, Height, Color.White, FrameTexture, new Vector2(8, 8));
             base.DrawSelf(sb);
         }
 
         public void TextChange(UITextChangeEvent e) {
+
             OnTextChange?.Invoke(e, this);
         }
+
+        private void InputText()
+        {
+            PlayerInput.WritingText = true;
+            Main.instance.HandleIME();
+            #region KeyDown
+            bool KeyDown(Keys key)
+            {
+                return Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
+            }
+            #endregion
+            if (KeyDown(Keys.End))
+            {
+                caret = Text.Length;
+            }
+            else if (KeyDown(Keys.Home))
+            {
+                caret = 0;
+            }
+            else if (KeyDown(Keys.LeftControl) && KeyDown(Keys.X))
+            {
+                Platform.Current.Clipboard = Text;
+                Text = string.Empty;
+            }
+            else if (KeyDown(Keys.Left))
+            {
+                caret = Math.Max(0, caret - 1);
+            }
+            else if (KeyDown(Keys.Right))
+            {
+                caret = Math.Min(Text.Length, caret + 1);
+            }
+            else
+            {
+                if (caret == Text.Length)
+                {
+                    Text = Main.GetInputText(Text);
+                }
+                else
+                {
+                    var front = Text.Substring(0, caret);
+                    var back = Text.Substring(caret);
+                    var newString = Main.GetInputText(front);
+                    if (front != newString)
+                    {
+                        Text = newString + back;
+                        caret = newString.Length;
+                    }
+                }
+            }
+        }
+
         private void DrawIME() {
             var pos = _label.InnerRectangleScreen.BottomRight();
             var size = GetIMESize();
