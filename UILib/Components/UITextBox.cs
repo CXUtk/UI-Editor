@@ -76,6 +76,7 @@ namespace UIEditor.UILib.Components {
         public override void UnFocus(UIActionEvent e) {
             _shouldBlink = false;
             _timer = 0;
+            caret = Text.Length;
             base.UnFocus(e);
         }
         public override void UpdateSelf(GameTime gameTime) {
@@ -138,7 +139,7 @@ namespace UIEditor.UILib.Components {
             {
                 caret = 0;
             }
-            if (KeyDown(Keys.LeftControl) && KeyDown(Keys.X))
+            else if (KeyDown(Keys.LeftControl) && KeyDown(Keys.X))
             {
                 Platform.Current.Clipboard = Text;
                 Text = string.Empty;
