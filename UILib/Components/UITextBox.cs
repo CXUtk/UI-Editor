@@ -72,14 +72,15 @@ namespace UIEditor.UILib.Components {
         private void FindCarrot(UIMouseEvent e, UIElement sender) {
             var localMousePos = _label.ScreenPositionToNode(e.MouseScreen);
             int l = 0, r = Text.Length;
-            int ans = 0;
+            int ans = r;
+            Main.NewText(localMousePos);
             while (l <= r) {
                 int mid = (l + r) / 2;
-                if (_label.Position.X + _label.MeasureSize(Text.Substring(0, mid)).X >= localMousePos.X) {
-                    r = mid - 1;
+                if (_label.Position.X + _label.MeasureSize(Text.Substring(0, mid)).X < localMousePos.X) {
+                    l = mid + 1;
                     ans = mid;
                 } else {
-                    l = mid + 1;
+                    r = mid - 1;
                 }
             }
             _carrot = ans;
@@ -176,7 +177,7 @@ namespace UIEditor.UILib.Components {
         }
 
         private void DrawIME() {
-            var pos = _label.InnerRectangleScreen.BottomRight();
+            var pos = _label.InnerRectangleScreen.BottomLeft() + new Vector2(_label.MeasureSize(Text.Substring(0, _carrot)).X, 0);
             var size = GetIMESize();
             if (pos.Y + Height + size.Y > Main.screenHeight) {
                 pos.Y -= 6 + size.Y;
