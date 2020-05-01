@@ -73,7 +73,6 @@ namespace UIEditor.UILib.Components {
             var localMousePos = _label.ScreenPositionToNode(e.MouseScreen);
             int l = 0, r = Text.Length;
             int ans = r;
-            Main.NewText(localMousePos);
             while (l <= r) {
                 int mid = (l + r) / 2;
                 if (_label.Position.X + _label.MeasureSize(Text.Substring(0, mid)).X < localMousePos.X) {

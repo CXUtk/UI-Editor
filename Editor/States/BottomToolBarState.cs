@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,15 +30,24 @@ namespace UIEditor.Editor.States {
             ZIndex = 1f;
 
             var button = new UIImageButton() {
-                Texture = ModContent.GetTexture("UIEditor/Images/Cog"),
-                Size = new Vector2(32f, 32f),
+                Texture = Drawing.CogTexture,
+                Size = new Vector2(30f, 30f),
                 SizeStyle = SizeStyle.Block,
+                DefaultColor = Color.White,
                 Tooltip = "切换编辑器界面"
             };
             _toolElements.Add(button);
             button.AnchorPoint = new Vector2(0.5f, 0.5f);
             button.OnClick += Button_OnClick;
+            button.PostDrawSelf += Button_PostDrawSelf;
             _toolBar.AddToPanel(button);
+        }
+
+        private void Button_PostDrawSelf(UIDrawEvent e, UIElement sender) {
+            if (sender.IsMouseHover) {
+                e.SpriteBatch.Draw(Drawing.CogTexture_White, Vector2.Zero, null, Color.White, 0, Vector2.Zero,
+                    new Vector2(1, 1), SpriteEffects.None, 0f);
+            }
         }
 
         private void Button_OnClick(UIMouseEvent e, UIElement sender) {

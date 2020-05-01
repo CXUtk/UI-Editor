@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UIEditor.UILib.Events;
 using Terraria;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor.UILib.Components.Composite {
     public class UIWindow : UIPanel {
@@ -45,6 +46,9 @@ namespace UIEditor.UILib.Components.Composite {
         private void UIWindow_OnMouseDown(UIMouseEvent e, UIElement sender) {
             _isDragging = true;
             _dragOffset = e.MouseScreen - PostionScreen;
+        }
+        public override void DrawSelf(SpriteBatch sb) {
+            base.DrawSelf(sb);
         }
 
         public override void UpdateSelf(GameTime gameTime) {

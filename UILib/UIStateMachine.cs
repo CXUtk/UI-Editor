@@ -200,8 +200,10 @@ namespace UIEditor.UILib {
                     state.Draw(sb);
                 }
             }
+
             DrawIME();
             DrawTooltip();
+
         }
 
         public void SetIME(Vector2 pos) {

@@ -11,6 +11,7 @@ using UIEditor.UILib.Components;
 using UIEditor.UILib.Components.Advanced;
 using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor.Editor.States {
     public class EditorState : UIState {
@@ -110,6 +111,17 @@ namespace UIEditor.Editor.States {
 
         private void Box1_OnClose(UIActionEvent e, UIElement sender) {
             this.IsActive = false;
+        }
+
+        public override void DrawSelf(SpriteBatch sb) {
+            base.DrawSelf(sb);
+            //sb.End();
+            //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+            //    DepthStencilState.None, RasterizerState.CullNone, null, Matrix.CreateScale(1) * Matrix.CreateRotationZ(0) * Matrix.CreateTranslation(new Vector3(10, 10, 0)) * Main.UIScaleMatrix);
+
+            // sb.End();
+            //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+            //    DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
         private UIElement _lastFocusElement = null;

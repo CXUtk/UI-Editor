@@ -19,19 +19,25 @@ namespace UIEditor.UILib {
         public static Texture2D CollapseButtonUp;
         public static Texture2D CollapseButtonDown;
         public static Texture2D CheckBox;
-        public static Texture2D CheckBoxChecked;
+        public static Texture2D CheckBox_White;
+        public static Texture2D CheckBox_Checked;
+        public static Texture2D CogTexture;
+        public static Texture2D CogTexture_White;
         public static Mod CurrentMod;
         public static void Initialize(Mod mod) {
             CurrentMod = mod;
-            PanelDefaultBackTexture = CurrentMod.GetTexture("Images/AdvInvBack1");
-            ButtonDefaultBackTexture = CurrentMod.GetTexture("Images/AdvInvBack1");
+            PanelDefaultBackTexture = CurrentMod.GetTexture("Images/UI/AdvInvBack1");
+            ButtonDefaultBackTexture = PanelDefaultBackTexture;
             DefaultBoxTexture = CurrentMod.GetTexture("Images/Box");
             DefaultBox2Texture = CurrentMod.GetTexture("Images/Box2");
-            CloseButtonTexture = CurrentMod.GetTexture("Images/CloseButton");
-            CollapseButtonUp = CurrentMod.GetTexture("Images/CollapseButtonUp");
-            CollapseButtonDown = CurrentMod.GetTexture("Images/CollapseButtonDown");
-            CheckBox = CurrentMod.GetTexture("Images/CheckBox");
-            CheckBoxChecked = CurrentMod.GetTexture("Images/CheckBox_Checked");
+            CloseButtonTexture = CurrentMod.GetTexture("Images/UI/CloseButton");
+            CollapseButtonUp = CurrentMod.GetTexture("Images/UI/CollapseButtonUp");
+            CollapseButtonDown = CurrentMod.GetTexture("Images/UI/CollapseButtonDown");
+            CheckBox = CurrentMod.GetTexture("Images/UI/CheckBox");
+            CheckBox_White = CurrentMod.GetTexture("Images/UI/CheckBox_White");
+            CheckBox_Checked = CurrentMod.GetTexture("Images/UI/CheckBox_Checked");
+            CogTexture = CurrentMod.GetTexture("Images/Cog");
+            CogTexture_White = CurrentMod.GetTexture("Images/Cog_White");
         }
         public static void Unload() {
             CurrentMod = null;
