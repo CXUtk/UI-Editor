@@ -65,8 +65,26 @@ namespace UIEditor.UILib.Components {
                 NoEvent = true,
             };
             _offsetL = _offsetR = 0;
+            OnClick += FindCarrot;
             AppendChild(_label);
         }
+
+        private void FindCarrot(UIMouseEvent e, UIElement sender) {
+            var localMousePos = _label.ScreenPositionToNode(e.MouseScreen);
+            int l = 0, r = Text.Length;
+            int ans = 0;
+            while (l <= r) {
+                int mid = (l + r) / 2;
+                if (_label.Position.X + _label.MeasureSize(Text.Substring(0, mid)).X >= localMousePos.X) {
+                    r = mid - 1;
+                    ans = mid;
+                } else {
+                    l = mid + 1;
+                }
+            }
+            _carrot = ans;
+        }
+
         public override void FocusOn(UIActionEvent e) {
             _shouldBlink = true;
             _timer = 0;
@@ -102,7 +120,7 @@ namespace UIEditor.UILib.Components {
             if (IsFocused) {
                 InputText();
 
-                // 5像素的偏移是留给光标的
+                // 10像素的偏移是留给光标的
                 float carrotpos = _label.MeasureSize(Text.Substring(0, _carrot)).X;
                 if (carrotpos >= _offsetR - 10f * TextScale) {
                     _offsetR = carrotpos + 10f * TextScale;
