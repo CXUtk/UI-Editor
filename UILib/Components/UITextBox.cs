@@ -134,6 +134,8 @@ namespace UIEditor.UILib.Components {
                 _label.Recalculate();
                 DrawIME();
             }
+
+            Drawing.DrawAdvBox(sb, 0, 0, Width, Height, Color.White, FrameTexture, new Vector2(8, 8));
             base.DrawSelf(sb);
         }
 
