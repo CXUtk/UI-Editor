@@ -17,10 +17,12 @@ namespace UIEditor.UILib {
 
 
         private UIElement _previousHoverElement;
-        private UIElement _lastDownElement;
+        private UIElement _lastLeftDownElement;
+        private UIElement _lastRightDownElement;
         private UIElement _lastFocusElement;
 
-        private bool _wasMouseDown;
+        private bool _wasMouseLeftDown;
+        private bool _wasMouseRightDown;
 
         private long _timer;
         private UIState _currentFocus;
@@ -28,7 +30,7 @@ namespace UIEditor.UILib {
         private bool _shouldDrawIME;
 
         public UIStateMachine() {
-            _wasMouseDown = false;
+            _wasMouseLeftDown = false;
             _previousHoverElement = null;
             _timer = 0;
             _tooltip = "";
@@ -61,6 +63,7 @@ namespace UIEditor.UILib {
 
         public void HandleMouseEvent(GameTime gameTime) {
             bool mouseLeftDown = Main.mouseLeft && Main.hasFocus;
+            bool mouseRightDown = Main.mouseRight && Main.hasFocus;
             // 响应鼠标事件的时候一定是从后往前，前端的窗口一定是第一个响应鼠标事件的
             // 如果有多个前端窗口，那么优先响应当前焦点窗口
             UIElement hoverElement = null;
@@ -71,7 +74,7 @@ namespace UIEditor.UILib {
                     var element = state.ElementAt(Main.MouseScreen);
                     if (element != state) {
                         hoverElement = element;
-                        if (!_wasMouseDown && mouseLeftDown) {
+                        if (!_wasMouseLeftDown && mouseLeftDown) {
                             _currentFocus = state;
                             _currentFocus.TimeGetFocus = _timer;
                         }
@@ -91,32 +94,52 @@ namespace UIEditor.UILib {
             if (_previousHoverElement != null && hoverElement != _previousHoverElement)
                 _previousHoverElement.MouseOut(new UIMouseEvent(_previousHoverElement, gameTime.TotalGameTime, Main.MouseScreen));
 
-            if (!_wasMouseDown && mouseLeftDown) {
+            if (!_wasMouseLeftDown && mouseLeftDown) {
                 if (hoverElement == null || _lastFocusElement != hoverElement) {
-                    _lastFocusElement?.UnFocus(new UIActionEvent(_lastDownElement, gameTime.TotalGameTime));
+                    _lastFocusElement?.UnFocus(new UIActionEvent(_lastLeftDownElement, gameTime.TotalGameTime));
                 }
             }
-            if (!_wasMouseDown && mouseLeftDown && hoverElement != null) {
+
+
+            // 鼠标左键
+            if (!_wasMouseLeftDown && mouseLeftDown && hoverElement != null) {
                 hoverElement.MouseDown(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 hoverElement.FocusOn(new UIActionEvent(hoverElement, gameTime.TotalGameTime));
-                _lastDownElement = hoverElement;
+                _lastLeftDownElement = hoverElement;
                 _lastFocusElement = hoverElement;
             }
 
-            if (_wasMouseDown && Main.mouseLeftRelease) {
-                _lastDownElement?.MouseUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
-                if (_wasMouseDown && Main.mouseLeftRelease && hoverElement != null && _lastDownElement == hoverElement) {
+            if (_wasMouseLeftDown && Main.mouseLeftRelease) {
+                _lastLeftDownElement?.MouseUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                if (_wasMouseLeftDown && Main.mouseLeftRelease && hoverElement != null && _lastLeftDownElement == hoverElement) {
                     hoverElement.MouseClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 }
-                _lastDownElement = null;
+                _lastLeftDownElement = null;
             }
+
+
+            // 鼠标右键
+            if (!_wasMouseRightDown && mouseRightDown && hoverElement != null) {
+                hoverElement.MouseRightDown(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                _lastRightDownElement = hoverElement;
+            }
+
+            if (_wasMouseRightDown && Main.mouseRightRelease) {
+                _lastRightDownElement?.MouseRightUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                if (hoverElement != null && _lastRightDownElement == hoverElement)
+                    hoverElement.MouseRightClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                _lastRightDownElement = null;
+            }
+
+
             // 滚轮
             if (PlayerInput.ScrollWheelDeltaForUI != 0)
                 hoverElement?.ScrollWheel(new UIScrollWheelEvent(hoverElement, gameTime.TotalGameTime, PlayerInput.ScrollWheelDeltaForUI));
 
 
             _previousHoverElement = hoverElement;
-            _wasMouseDown = Main.mouseLeft;
+            _wasMouseLeftDown = Main.mouseLeft;
+            _wasMouseRightDown = Main.mouseRight;
         }
 
         public void Update(GameTime gameTime) {

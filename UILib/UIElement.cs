@@ -136,14 +136,17 @@ namespace UIEditor.UILib {
 
         #region 事件
         public event MouseEvent OnMouseEnter;
-        public event MouseEvent OnMouseOver;
         public event MouseEvent OnMouseOut;
         public event MouseEvent OnMouseDown;
         public event MouseEvent OnMouseUp;
         public event MouseEvent OnClick;
+        public event MouseEvent OnMouseRightDown;
+        public event MouseEvent OnMouseRightUp;
+        public event MouseEvent OnRightClick;
         public event ScrollEvent OnScrollWheel;
         public event ActionEvent OnFocused;
         public event ActionEvent OnUnFocused;
+
         #endregion
 
 
@@ -301,6 +304,13 @@ namespace UIEditor.UILib {
                 Parent?.MouseDown(e);
         }
 
+        public void MouseRightDown(UIMouseEvent e) {
+            //Main.NewText("右键按下");
+            OnMouseRightDown?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.MouseRightDown(e);
+        }
+
         public void MouseUp(UIMouseEvent e) {
             //Main.NewText("抬起");
             _mouseDownedLeft = false;
@@ -308,11 +318,24 @@ namespace UIEditor.UILib {
             if (!BlockPropagation)
                 Parent?.MouseUp(e);
         }
+
+        public void MouseRightUp(UIMouseEvent e) {
+            //Main.NewText("右键按下");
+            OnMouseRightUp?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.MouseRightUp(e);
+        }
         public void MouseClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnClick?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseClick(e);
+        }
+        public void MouseRightClick(UIMouseEvent e) {
+            //Main.NewText("点击");
+            OnRightClick?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.MouseRightClick(e);
         }
 
         public void ScrollWheel(UIScrollWheelEvent e) {
@@ -375,8 +398,13 @@ namespace UIEditor.UILib {
             Tooltip = "";
             _selfHitbox = new QuadrilateralHitbox();
             Recalculate();
+            if (DEBUG_MODE)
+                OnRightClick += UIElement_OnRightClick;
         }
 
+        private void UIElement_OnRightClick(UIMouseEvent e, UIElement sender) {
+            throw new NotImplementedException();
+        }
 
         public void AppendChild(UIElement element) {
             element.SplitFromParent();
