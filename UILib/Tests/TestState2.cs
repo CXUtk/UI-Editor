@@ -24,47 +24,47 @@ namespace UIEditor.UILib.Tests {
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 Position = new Vector2(100, 100)
             };
-            var textbox = new UITextArea {
+            var textbox = new UITextBox {
                 Name = "emmm",
                 Size = new Vector2(20 * 16, 3 * 16),
                 Position = new Vector2(0, 300),
                 Pivot = new Vector2(0.5f, 0),
                 AnchorPoint = new Vector2(0.5f, 0),
-                TextAlign = Enums.Align.TopLeft
+                //TextAlign = Enums.Align.TopLeft
             };
             var checkbox = new UICheckBox {
                 Name = "test checkbox",
                 Position = new Vector2(70, 70)
             };
-            button.OnClick += (e, sender) => {
-                switch (textbox.TextAlign) {
-                    case Enums.Align.Top:
-                        textbox.TextAlign = Enums.Align.TopRight;
-                        break;
-                    case Enums.Align.TopRight:
-                        textbox.TextAlign = Enums.Align.Right;
-                        break;
-                    case Enums.Align.Right:
-                        textbox.TextAlign = Enums.Align.BottomRight;
-                        break;
-                    case Enums.Align.BottomRight:
-                        textbox.TextAlign = Enums.Align.Bottom;
-                        break;
-                    case Enums.Align.Bottom:
-                        textbox.TextAlign = Enums.Align.BottomLeft;
-                        break;
-                    case Enums.Align.BottomLeft:
-                        textbox.TextAlign = Enums.Align.Left;
-                        break;
-                    case Enums.Align.Left:
-                        textbox.TextAlign = Enums.Align.TopLeft;
-                        break;
-                    case Enums.Align.TopLeft:
-                        textbox.TextAlign = Enums.Align.Top;
-                        break;
-                }
-                button.Text = textbox.TextAlign.ToString();
-            };
+            //button.OnClick += (e, sender) => {
+            //    switch (textbox.TextAlign) {
+            //        case Enums.Align.Top:
+            //            textbox.TextAlign = Enums.Align.TopRight;
+            //            break;
+            //        case Enums.Align.TopRight:
+            //            textbox.TextAlign = Enums.Align.Right;
+            //            break;
+            //        case Enums.Align.Right:
+            //            textbox.TextAlign = Enums.Align.BottomRight;
+            //            break;
+            //        case Enums.Align.BottomRight:
+            //            textbox.TextAlign = Enums.Align.Bottom;
+            //            break;
+            //        case Enums.Align.Bottom:
+            //            textbox.TextAlign = Enums.Align.BottomLeft;
+            //            break;
+            //        case Enums.Align.BottomLeft:
+            //            textbox.TextAlign = Enums.Align.Left;
+            //            break;
+            //        case Enums.Align.Left:
+            //            textbox.TextAlign = Enums.Align.TopLeft;
+            //            break;
+            //        case Enums.Align.TopLeft:
+            //            textbox.TextAlign = Enums.Align.Top;
+            //            break;
+            //    }
+            //    button.Text = textbox.TextAlign.ToString();
+            //};
             box13.OnClose += Box1_OnClose;
             AppendChild(box13);
             box13.AppendChild(textbox);
