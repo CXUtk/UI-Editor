@@ -16,7 +16,7 @@ namespace UIEditor.UILib {
             StringBuilder sb = new StringBuilder();
             foreach (var c in text) {
                 sb.Append(c);
-                if (font.MeasureString(sb.ToString()).X * scale > maxLength) {
+                if (font.MeasureString(sb.ToString()).X * scale > maxLength && sb.Length >= 2) {
                     sb.Remove(sb.Length - 2, 2);
                     sb.Append("...");
                     break;
@@ -29,7 +29,7 @@ namespace UIEditor.UILib {
             StringBuilder sb = new StringBuilder();
             foreach (var c in text) {
                 sb.Append(c);
-                if (font.MeasureString(sb.ToString()).X * scale > maxLength) {
+                if (font.MeasureString(sb.ToString()).X * scale > maxLength && sb.Length >= 1) {
                     sb.Remove(sb.Length - 1, 1);
                     break;
                 }

@@ -20,8 +20,6 @@ namespace UIEditor.UILib.Components.Composite {
 
         private void _addElement(UIElement element) {
             base.AddElement(element);
-            element.Parent = _viewPort;
-            element.Recalculate();
         }
         private float _maxLeftPadding;
         private void _dfsCalculate(UITreeNode node, float leftPadding) {

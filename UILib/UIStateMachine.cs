@@ -12,8 +12,10 @@ using Terraria.GameInput;
 namespace UIEditor.UILib {
     public class UIStateMachine {
         public int ActiveStateNumber => uiRunningStack.Count;
+        public UIElement FocusedElement { get { return _lastFocusElement; } }
         private List<UIState> uiRunningStack = new List<UIState>();
         private List<UIState> uiStates = new List<UIState>();
+
 
 
         private UIElement _previousHoverElement;
@@ -225,13 +227,5 @@ namespace UIEditor.UILib {
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, Main.fontMouseText, _tooltip, drawPos.X, drawPos.Y, Color.White, Color.Black, Vector2.Zero, 1f);
             }
         }
-
-        //public void RegisterState<T>() where T : UIState {
-        //    var name = typeof(T).FullName;
-        //    if (stateDict.ContainsKey(name)) throw new ArgumentException("这个状态已经注册过了");
-        //    var state = (T)Activator.CreateInstance(typeof(T), new[] { this });
-        //    uiStates.Add(state);
-        //    stateDict.Add(name, uiStates.Count);
-        //}
     }
 }

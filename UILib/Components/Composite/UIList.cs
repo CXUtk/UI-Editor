@@ -112,7 +112,7 @@ namespace UIEditor.UILib.Components.Composite {
             foreach (var element in _elements) {
                 element.Position = new Vector2(0, _totHeight);
                 _totHeight += element.Height + ItemMargin;
-                _maxWidth = Math.Max(_maxWidth, element.Position.X + element.Width);
+                _maxWidth = Math.Max(_maxWidth, element.Width);
             }
             CalculateViewPortScrollRelated();
         }
@@ -173,9 +173,10 @@ namespace UIEditor.UILib.Components.Composite {
         public virtual void AddElement(UIElement element) {
             element.Pivot = new Vector2(0f, 0f);
             element.AnchorPoint = new Vector2(0f, 0f);
+            element.Parent = _viewPort;
+            element.Recalculate();
             _elements.Add(element);
         }
-
 
     }
 }
