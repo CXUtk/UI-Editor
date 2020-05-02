@@ -18,6 +18,8 @@ namespace UIEditor.UILib.Components.Composite {
             _roots.Add((UITreeNode)treeNode);
         }
 
+        public void ClearRoots() { _roots.Clear(); Clear(); }
+
         private void _addElement(UIElement element) {
             base.AddElement(element);
         }

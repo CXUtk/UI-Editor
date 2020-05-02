@@ -401,13 +401,8 @@ namespace UIEditor.UILib {
             Tooltip = "";
             _selfHitbox = new QuadrilateralHitbox();
             Recalculate();
-            if (DEBUG_MODE)
-                OnRightClick += UIElement_OnRightClick;
         }
 
-        private void UIElement_OnRightClick(UIMouseEvent e, UIElement sender) {
-            throw new NotImplementedException();
-        }
 
         public void AppendChild(UIElement element) {
             element.SplitFromParent();

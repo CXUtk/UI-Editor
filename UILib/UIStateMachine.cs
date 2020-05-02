@@ -13,6 +13,7 @@ namespace UIEditor.UILib {
     public class UIStateMachine {
         public int ActiveStateNumber => uiRunningStack.Count;
         public UIElement FocusedElement { get { return _lastFocusElement; } }
+        public UIElement LastRightClickElement { get { return _lastRightClickElement; } }
         private readonly List<UIState> uiRunningStack = new List<UIState>();
         private readonly List<UIState> uiStates = new List<UIState>();
 
@@ -20,6 +21,7 @@ namespace UIEditor.UILib {
 
         private UIElement _previousHoverElement;
         private UIElement _lastLeftDownElement;
+        private UIElement _lastRightClickElement;
         private UIElement _lastRightDownElement;
         private UIElement _lastFocusElement;
 
@@ -128,8 +130,10 @@ namespace UIEditor.UILib {
 
             if (_wasMouseRightDown && Main.mouseRightRelease) {
                 _lastRightDownElement?.MouseRightUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
-                if (hoverElement != null && _lastRightDownElement == hoverElement)
+                if (hoverElement != null && _lastRightDownElement == hoverElement) {
                     hoverElement.MouseRightClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                    _lastRightClickElement = hoverElement;
+                }
                 _lastRightDownElement = null;
             }
 

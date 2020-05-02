@@ -29,8 +29,9 @@ namespace UIEditor.UILib.Resources {
         }
 
         public void Save() {
-            using var sw = new StreamWriter(_filePath);
-            sw.Write(JsonConvert.SerializeObject(_texturePath));
+            using (var sw = new StreamWriter(_filePath)) {
+                sw.Write(JsonConvert.SerializeObject(_texturePath));
+            }
         }
 
         public Texture2D TryGetTexture(string name) {
