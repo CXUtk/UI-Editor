@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor.UILib.Components.Composite {
     public class UIWindow : UIPanel {
-        private UIImageButton _closeButton;
+        private readonly UIImageButton _closeButton;
         private bool _isDragging;
         private Vector2 _dragOffset;
 

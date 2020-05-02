@@ -14,8 +14,8 @@ namespace UIEditor.UILib.Components.Advanced {
         public bool IsFolded { get; set; }
         public float LeftOffset { get; set; }
         public bool CanFold { get; set; }
-        private UIImageButton _foldButton;
-        private UILabel _label;
+        private readonly UIImageButton _foldButton;
+        private readonly UILabel _label;
         public UITreeNodeDisplay(string text) : base() {
             IsFolded = true;
             CanFold = false;

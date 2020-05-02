@@ -240,8 +240,7 @@ namespace UIEditor.UILib {
             return pos;
         }
         public void RecalculateLocation() {
-            _parentRect = Parent == null ? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight) :
-                 Parent.InnerRectangleScreen;
+            _parentRect = Parent?.InnerRectangleScreen ?? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
             _baseTopLeftScreen = getBaseRectScreen() + Position - PivotOffset;
             _realPosition = (Parent == null) ? Position : new Vector2(Parent.Width, Parent.Height) * AnchorPoint
                 + Position - new Vector2(Width * Pivot.X, Height * Pivot.Y);
@@ -276,13 +275,13 @@ namespace UIEditor.UILib {
 
         private Vector2 _baseTopLeftScreen;
         private Vector2 _realPosition;
-        private QuadrilateralHitbox _selfHitbox;
+        private readonly QuadrilateralHitbox _selfHitbox;
         private Matrix _selfTransform;
         private Rectangle _parentRect;
         private int _mouseDownTimeLeft;
         private bool _mouseDownedLeft;
 
-        private RasterizerState _selfRasterizerState;
+        private readonly RasterizerState _selfRasterizerState;
 
 
 
@@ -437,9 +436,9 @@ namespace UIEditor.UILib {
 
         private Matrix ApplyTransform(Matrix prev) {
             int w = Width, h = Height;
-            Matrix m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3((int)(_realPosition.X + w * Pivot.X),
+            var m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3((int)(_realPosition.X + w * Pivot.X),
                 (int)(_realPosition.Y + h * Pivot.Y), 0)) * prev;
-            Matrix m2 = Matrix.CreateTranslation(new Vector3((int)(-w * Pivot.X), (int)(-h * Pivot.Y), 0f)) * Matrix.CreateRotationZ(Rotation);
+            var m2 = Matrix.CreateTranslation(new Vector3((int)(-w * Pivot.X), (int)(-h * Pivot.Y), 0f)) * Matrix.CreateRotationZ(Rotation);
             return m2 * m1;
         }
 
@@ -498,10 +497,8 @@ namespace UIEditor.UILib {
             }
         }
         public virtual void UpdateChildren(GameTime gameTime) {
-            foreach (var child in Children) {
-                if (child.IsActive) {
-                    child.Update(gameTime);
-                }
+            foreach (var child in Children.Where(child => child.IsActive)) {
+                child.Update(gameTime);
             }
         }
 

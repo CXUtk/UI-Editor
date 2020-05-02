@@ -18,10 +18,10 @@ namespace UIEditor.UILib.Components.Composite {
             get { return _toolPanel.PanelTexture; }
             set { _toolPanel.PanelTexture = value; }
         }
-        private UIPanel _toolPanel;
+        private readonly UIPanel _toolPanel;
         private bool _collapseOn;
         private float _timer;
-        private UIImageButton _openButton;
+        private readonly UIImageButton _openButton;
 
         public UIToolBarH() : base() {
             _timer = 0;

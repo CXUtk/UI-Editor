@@ -62,8 +62,8 @@ namespace UIEditor.UILib.Components {
 
         private float _currentValue;
 
-        private UIBar _innerBar;
-        private UIBar _outerBar;
+        private readonly UIBar _innerBar;
+        private readonly UIBar _outerBar;
 
         private bool _isMouseOver;
         private bool _isMouseDown;

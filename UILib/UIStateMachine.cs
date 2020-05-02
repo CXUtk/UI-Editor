@@ -13,8 +13,8 @@ namespace UIEditor.UILib {
     public class UIStateMachine {
         public int ActiveStateNumber => uiRunningStack.Count;
         public UIElement FocusedElement { get { return _lastFocusElement; } }
-        private List<UIState> uiRunningStack = new List<UIState>();
-        private List<UIState> uiStates = new List<UIState>();
+        private readonly List<UIState> uiRunningStack = new List<UIState>();
+        private readonly List<UIState> uiStates = new List<UIState>();
 
 
 

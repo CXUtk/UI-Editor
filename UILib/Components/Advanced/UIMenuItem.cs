@@ -11,8 +11,8 @@ namespace UIEditor.UILib.Components {
     // Pivot和Anchor得用(0, 0)
     public class UIMenuItem : UIElement {
         #region Fields
-        private List<UIMenuItem> items;
-        private UILabel label;
+        private readonly List<UIMenuItem> items;
+        private readonly UILabel label;
         #endregion
         #region Properties
         public float ItemsPadding {

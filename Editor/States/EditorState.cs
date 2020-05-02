@@ -106,9 +106,7 @@ namespace UIEditor.Editor.States {
         UITreeNode _build(UITreeNode node, int level) {
             tot++;
             List<UITreeNode> nodes = new List<UITreeNode>();
-            if (node == null) {
-                node = new UITreeNode(tot.ToString(), nodes);
-            }
+            node ??= new UITreeNode(tot.ToString(), nodes);
             if (level == 6) return node;
             for (int i = 0; i < 2; i++) {
                 UITreeNode child = null;

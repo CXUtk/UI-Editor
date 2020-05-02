@@ -17,7 +17,7 @@ namespace UIEditor.UILib.Components {
         public Color TextDefaultColor { get; set; }
         public Color TextMouseOverColor { get; set; }
 
-        private UILabel _label;
+        private readonly UILabel _label;
         private bool _isMouseOver;
         private int _timer;
 

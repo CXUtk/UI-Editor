@@ -20,7 +20,7 @@ namespace UIEditor.UILib.Components {
     /// 单行输入的文本框
     /// </summary>
     public class UITextBox : UIPanel {
-        private UILabel _label;
+        private readonly UILabel _label;
         private string _text;
         private int _carrot;
         private float _timer;
