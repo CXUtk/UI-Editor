@@ -17,6 +17,7 @@ namespace UIEditor.UILib.Components.Composite {
         public event ActionEvent OnClose;
 
         public UIWindow() : base() {
+            Name = "窗口";
             this.OnMouseDown += UIWindow_OnMouseDown;
             this.OnMouseUp += UIWindow_OnMouseUp;
             BlockPropagation = true;

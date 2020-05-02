@@ -72,6 +72,7 @@ namespace UIEditor.UILib.Components {
 
         private const float PADDING = 5;
         public UIScrollBarV() : base() {
+            Name = "垂直滚动条";
             BlockPropagation = true;
             SizeFactor = new Vector2(0, 1);
             Size = new Vector2(10, -PADDING * 2);

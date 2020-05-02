@@ -32,6 +32,7 @@ namespace UIEditor.UILib.Components {
         public event CheckedChangeHandler OnCheckedChange;
 
         public UICheckBox() {
+            Name = "复选框";
             BlockPropagation = true;
             Size = new Vector2(30, 30);
 

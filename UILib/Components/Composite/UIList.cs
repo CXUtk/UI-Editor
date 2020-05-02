@@ -32,6 +32,7 @@ namespace UIEditor.UILib.Components.Composite {
 
 
         public UIList() : base() {
+            Name = "列表";
             Overflow = OverflowType.Hidden;
             _viewPort = new UIListViewPort() {
                 AnchorPoint = new Vector2(0f, 0f),

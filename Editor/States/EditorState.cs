@@ -166,7 +166,6 @@ namespace UIEditor.Editor.States {
             _propertyInspector.Position = new Vector2(_hierbrowser.Width, _viewer.Height);
             if (_lastFocusElement != UIEditor.Instance.UIStateMachine.LastRightClickElement) {
                 var e = UIEditor.Instance.UIStateMachine.LastRightClickElement;
-
                 _list.ClearRoots();
                 if (e != null) {
                     _list.AddElement(_copy(e));

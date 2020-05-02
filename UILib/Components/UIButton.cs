@@ -30,6 +30,7 @@ namespace UIEditor.UILib.Components {
             _label.NoEvent = true;
         }
         public UIButton() : base() {
+            Name = "按钮";
             Text = "按钮";
             DrawPanel = true;
             PanelDefaultColor = Color.Gray * 1.2f;

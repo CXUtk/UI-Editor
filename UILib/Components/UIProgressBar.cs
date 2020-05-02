@@ -27,6 +27,7 @@ namespace UIEditor.UILib.Components {
         private float _value;
 
         public UIProgressBar() : base() {
+            Name = "进度条";
             FrameTexture = UIEditor.Instance.SkinManager.GetTexture("ProgressBar_Default");
             FrameCornerSize = new Vector2(8f, 8f);
             BackgroundColor = new Color(90, 90, 112);

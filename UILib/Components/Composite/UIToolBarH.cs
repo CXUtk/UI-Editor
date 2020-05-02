@@ -24,6 +24,7 @@ namespace UIEditor.UILib.Components.Composite {
         private readonly UIImageButton _openButton;
 
         public UIToolBarH() : base() {
+            Name = "水平工具栏";
             _timer = 0;
             _collapseOn = false;
             CollapseButtonUpTexture = UIEditor.Instance.SkinManager.GetTexture("MoveUpButton");

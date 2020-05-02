@@ -23,6 +23,7 @@ namespace UIEditor.UILib.Components {
 
 
         public UIImageButton() : base() {
+            Name = "图标按钮";
             SizeStyle = SizeStyle.Inline;
             TextureScale = 1f;
             Texture = Main.magicPixel;

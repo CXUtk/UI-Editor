@@ -70,6 +70,7 @@ namespace UIEditor.UILib.Components {
 
         private const float PADDING = 5;
         public UIScrollBarH() : base() {
+            Name = "水平滚动条";
             BlockPropagation = true;
             SizeFactor = new Vector2(1, 0);
             Size = new Vector2(-PADDING * 2, 10);
@@ -80,8 +81,7 @@ namespace UIEditor.UILib.Components {
                 Texture = tex,
                 SizeFactor = new Vector2(1f, 1f),
                 AnchorPoint = new Vector2(0.5f, 0.5f),
-                EndSize = 6,
-                DrawStyle = DrawStyle.Horizontal,
+                EndSize = 6
             };
             ViewSize = 0.5f;
             _innerBar = new UIBar() {
@@ -90,8 +90,7 @@ namespace UIEditor.UILib.Components {
                 SizeFactor = new Vector2(0.5f, 1f),
                 Pivot = new Vector2(0f, 0.5f),
                 AnchorPoint = new Vector2(0f, 0.5f),
-                EndSize = 6,
-                DrawStyle = DrawStyle.Horizontal,
+                EndSize = 6
             };
             BackgroundColor = Color.Gray;
             DefaultInnerColor = Color.White * 0.5f;

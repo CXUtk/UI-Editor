@@ -52,6 +52,7 @@ namespace UIEditor.UILib.Components {
         private static UIStateMachine StateMachine => UIEditor.Instance.UIStateMachine;
         public event TextChangeEvent OnTextChange;
         public UITextBox() : base() {
+            Name = "文本框";
             Overflow = OverflowType.Hidden;
             BlockPropagation = true;
             _text = string.Empty;
@@ -140,15 +141,13 @@ namespace UIEditor.UILib.Components {
 
             OnTextChange?.Invoke(e, this);
         }
-
+        private bool KeyDown(Keys key) {
+            return Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
+        }
         private void InputText() {
             PlayerInput.WritingText = true;
             Main.instance.HandleIME();
-            #region KeyDown
-            bool KeyDown(Keys key) {
-                return Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
-            }
-            #endregion
+
             if (KeyDown(Keys.End)) {
                 _carrot = Text.Length;
             } else if (KeyDown(Keys.Home)) {

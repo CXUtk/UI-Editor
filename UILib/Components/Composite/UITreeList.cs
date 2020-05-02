@@ -10,6 +10,7 @@ namespace UIEditor.UILib.Components.Composite {
         public float LayerPaddingLeft { get; set; }
         private List<UITreeNode> _roots;
         public UITreeList() : base() {
+            Name = "树状列表";
             LayerPaddingLeft = 20f;
             _roots = new List<UITreeNode>();
         }
