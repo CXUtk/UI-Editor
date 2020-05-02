@@ -11,42 +11,42 @@ using UIEditor;
 
 namespace UIEditor.UILib {
     public static class Drawing {
-        public static Texture2D PanelDefaultBackTexture;
-        public static Texture2D ButtonDefaultBackTexture;
-        public static Texture2D DefaultBoxTexture;
-        public static Texture2D DefaultBox2Texture;
-        public static Texture2D CloseButtonTexture;
-        public static Texture2D CloseButtonTexture_Change;
-        public static Texture2D CollapseButtonUp;
-        public static Texture2D CollapseButtonDown;
-        public static Texture2D CheckBox;
-        public static Texture2D CheckBox_White;
-        public static Texture2D CheckBox_Checked;
-        public static Texture2D CogTexture;
-        public static Texture2D CogTexture_White;
-        public static Texture2D ToolBarBoxTexture;
-        public static Texture2D ProgressBarTexture;
-        public static Mod CurrentMod;
-        public static void Initialize(Mod mod) {
-            CurrentMod = mod;
-            PanelDefaultBackTexture = CurrentMod.GetTexture("Images/UI/Box");
-            ButtonDefaultBackTexture = PanelDefaultBackTexture;
-            DefaultBoxTexture = CurrentMod.GetTexture("Images/UI/Box");
-            DefaultBox2Texture = CurrentMod.GetTexture("Images/Box2");
-            CloseButtonTexture = CurrentMod.GetTexture("Images/UI/CloseButton");
-            CloseButtonTexture_Change = CurrentMod.GetTexture("Images/UI/CloseButton_Change");
-            CollapseButtonUp = CurrentMod.GetTexture("Images/UI/CollapseButtonUp");
-            CollapseButtonDown = CurrentMod.GetTexture("Images/UI/CollapseButtonDown");
-            CheckBox = CurrentMod.GetTexture("Images/UI/CheckBox");
-            CheckBox_White = CurrentMod.GetTexture("Images/UI/CheckBox_White");
-            CheckBox_Checked = CurrentMod.GetTexture("Images/UI/CheckBox_Checked");
-            CogTexture = CurrentMod.GetTexture("Images/Cog");
-            CogTexture_White = CurrentMod.GetTexture("Images/Cog_White");
-            ToolBarBoxTexture = CurrentMod.GetTexture("Images/UI/ButtomBarBox");
-            ProgressBarTexture = CurrentMod.GetTexture("Images/UI/ProgressBar");
-        }
+        //public static Texture2D PanelDefaultBackTexture;
+        //public static Texture2D ButtonDefaultBackTexture;
+        //public static Texture2D DefaultBoxTexture;
+        //public static Texture2D DefaultBox2Texture;
+        //public static Texture2D CloseButtonTexture;
+        //public static Texture2D CloseButtonTexture_Change;
+        //public static Texture2D CollapseButtonUp;
+        //public static Texture2D CollapseButtonDown;
+        //public static Texture2D CheckBox;
+        //public static Texture2D CheckBox_White;
+        //public static Texture2D CheckBox_Checked;
+        //public static Texture2D CogTexture;
+        //public static Texture2D CogTexture_White;
+        //public static Texture2D ToolBarBoxTexture;
+        //public static Texture2D ProgressBarTexture;
+        //public static Mod CurrentMod;
+        //public static void Initialize(Mod mod) {
+        //    CurrentMod = mod;
+        //    PanelDefaultBackTexture = CurrentMod.GetTexture("Images/UI/Box");
+        //    ButtonDefaultBackTexture = PanelDefaultBackTexture;
+        //    DefaultBoxTexture = CurrentMod.GetTexture("Images/UI/Box");
+        //    DefaultBox2Texture = CurrentMod.GetTexture("Images/Box2");
+        //    CloseButtonTexture = CurrentMod.GetTexture("Images/UI/CloseButton");
+        //    CloseButtonTexture_Change = CurrentMod.GetTexture("Images/UI/CloseButton_Change");
+        //    CollapseButtonUp = CurrentMod.GetTexture("Images/UI/CollapseButtonUp");
+        //    CollapseButtonDown = CurrentMod.GetTexture("Images/UI/CollapseButtonDown");
+        //    CheckBox = CurrentMod.GetTexture("Images/UI/CheckBox");
+        //    CheckBox_White = CurrentMod.GetTexture("Images/UI/CheckBox_White");
+        //    CheckBox_Checked = CurrentMod.GetTexture("Images/UI/CheckBox_Checked");
+        //    CogTexture = CurrentMod.GetTexture("Images/Cog");
+        //    CogTexture_White = CurrentMod.GetTexture("Images/Cog_White");
+        //    ToolBarBoxTexture = CurrentMod.GetTexture("Images/UI/ButtomBarBox");
+        //    ProgressBarTexture = CurrentMod.GetTexture("Images/UI/ProgressBar");
+        //}
         public static void Unload() {
-            CurrentMod = null;
+            //CurrentMod = null;
         }
         public static Color DefaultBoxColor {
             get {

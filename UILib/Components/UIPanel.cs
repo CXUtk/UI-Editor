@@ -21,7 +21,7 @@ namespace UIEditor.UILib.Components {
             get; set;
         }
         public UIPanel() : base() {
-            PanelTexture = Drawing.PanelDefaultBackTexture;
+            PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Panel_Default");
             PanelBorderTexture = null;
             CornerSize = new Vector2(8f, 8f);
             Color = Color.White;

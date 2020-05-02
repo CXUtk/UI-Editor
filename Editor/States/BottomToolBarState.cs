@@ -30,7 +30,7 @@ namespace UIEditor.Editor.States {
             ZIndex = 1f;
 
             var button = new UIImageButton() {
-                Texture = Drawing.CogTexture,
+                Texture = UIEditor.Instance.SkinManager.GetTexture("EditorIcon"),
                 Size = new Vector2(30f, 30f),
                 SizeStyle = SizeStyle.Block,
                 DefaultColor = Color.White * 0.8f,
@@ -45,7 +45,7 @@ namespace UIEditor.Editor.States {
 
         private void Button_PostDrawSelf(UIDrawEvent e, UIElement sender) {
             if (sender.IsMouseHover) {
-                e.SpriteBatch.Draw(Drawing.CogTexture_White, Vector2.Zero, null, Color.White, 0, Vector2.Zero,
+                e.SpriteBatch.Draw(UIEditor.Instance.SkinManager.GetTexture("EditorIcon_White"), Vector2.Zero, null, Color.White, 0, Vector2.Zero,
                     new Vector2(1, 1), SpriteEffects.None, 0f);
             }
         }

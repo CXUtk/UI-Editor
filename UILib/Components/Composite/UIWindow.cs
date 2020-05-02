@@ -25,9 +25,9 @@ namespace UIEditor.UILib.Components.Composite {
                 Pivot = new Vector2(1, 0),
                 AnchorPoint = new Vector2(1, 0),
                 Position = new Vector2(-10, 10),
-                Texture = Drawing.CloseButtonTexture,
+                Texture = UIEditor.Instance.SkinManager.GetTexture("CloseButton"),
                 DefaultColor = Color.White * 0.8f,
-                WhiteTexture = Drawing.CloseButtonTexture_Change,
+                WhiteTexture = UIEditor.Instance.SkinManager.GetTexture("CloseButton_Change"),
                 Scale = new Vector2(0.9f, 0.9f)
             };
             _closeButton.OnClick += _closeButton_OnClick;

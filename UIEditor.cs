@@ -7,6 +7,7 @@ using Terraria.UI;
 using UIEditor.UILib;
 using UIEditor.UILib.Tests;
 using UIEditor.Editor.States;
+using UIEditor.UILib.Resources;
 
 namespace UIEditor {
     public class UIEditor : Mod {
@@ -16,6 +17,7 @@ namespace UIEditor {
         public static UIEditor Instance;
 
         public UIStateMachine UIStateMachine;
+        public SkinManager SkinManager;
 
         public UIEditor() {
 
@@ -23,7 +25,9 @@ namespace UIEditor {
 
         public override void Load() {
             Instance = this;
-            Drawing.Initialize(this);
+            SkinManager = new SkinManager();
+            SkinManager.Load();
+
             UIStateMachine = new UIStateMachine();
             UIStateMachine.Add(new EditorState("Editor"));
             UIStateMachine.Add(new BottomToolBarState("ToolbarBottom"));
@@ -33,7 +37,7 @@ namespace UIEditor {
         public override void Unload() {
             Instance = null;
             UIStateMachine = null;
-            Drawing.Unload();
+            SkinManager = null;
             base.Unload();
         }
 

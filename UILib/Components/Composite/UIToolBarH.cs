@@ -26,8 +26,8 @@ namespace UIEditor.UILib.Components.Composite {
         public UIToolBarH() : base() {
             _timer = 0;
             _collapseOn = false;
-            CollapseButtonUpTexture = Drawing.CollapseButtonUp;
-            CollapseButtonDownTexture = Drawing.CollapseButtonDown;
+            CollapseButtonUpTexture = UIEditor.Instance.SkinManager.GetTexture("MoveUpButton");
+            CollapseButtonDownTexture = UIEditor.Instance.SkinManager.GetTexture("MoveDownButton");
             _openButton = new UIImageButton() {
                 Texture = CollapseButtonUpTexture,
                 AnchorPoint = new Vector2(0.5f, 0f),
@@ -38,7 +38,7 @@ namespace UIEditor.UILib.Components.Composite {
                 SizeFactor = new Vector2(1, 1),
                 AnchorPoint = new Vector2(0.5f, 0f),
                 Pivot = new Vector2(0.5f, 0f),
-                PanelTexture = Drawing.ToolBarBoxTexture,
+                PanelTexture = UIEditor.Instance.SkinManager.GetTexture("ToolBar_Default"),
                 CornerSize = new Vector2(6f, 6f),
             };
 

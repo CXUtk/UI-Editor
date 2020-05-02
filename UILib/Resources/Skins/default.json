@@ -1,0 +1,18 @@
+﻿{
+    "Box_Default": "Images/UI/Box",
+    "Box2_Default": "Images/Box2",
+    "BoxFrame_Default": "Images/UI/BoxFrame",
+    "Button_Default": "Images/UI/Box",
+    "Panel_Default": "Images/UI/Box",
+    "CloseButton": "Images/UI/CloseButton",
+    "CloseButton_Change": "Images/UI/CloseButton_Change",
+    "MoveUpButton": "Images/UI/CollapseButtonUp",
+    "MoveDownButton": "Images/UI/CollapseButtonDown",
+    "CheckBox_Default": "Images/UI/CheckBox",
+    "CheckBox_White": "Images/UI/CheckBox_White",
+    "CheckBox_Checked": "Images/UI/CheckBox_Checked",
+    "EditorIcon": "Images/Cog",
+    "EditorIcon_White": "Images/Cog_White",
+    "ToolBar_Default": "Images/UI/ButtomBarBox",
+    "ProgressBar_Default": "Images/UI/ProgressBar",
+}

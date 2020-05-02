@@ -49,11 +49,11 @@ namespace UIEditor.UILib.Components {
 
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            var texture = Checked ? Drawing.CheckBox_Checked : Drawing.CheckBox;
+            var texture = UIEditor.Instance.SkinManager.GetTexture(Checked ? "CheckBox_Checked" : "CheckBox_Default");
             sb.Draw(texture, Pivot * new Vector2(Width, Height), null, Color.White, 0, Pivot * texture.Size(),
                     new Vector2(1, 1), SpriteEffects.None, 0f);
             if (IsMouseHover) {
-                sb.Draw(Drawing.CheckBox_White, Vector2.Zero, null, Color.White, 0, Vector2.Zero,
+                sb.Draw(UIEditor.Instance.SkinManager.GetTexture("CheckBox_White"), Vector2.Zero, null, Color.White, 0, Vector2.Zero,
                     new Vector2(1, 1), SpriteEffects.None, 0f);
             }
         }

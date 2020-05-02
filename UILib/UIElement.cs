@@ -435,9 +435,9 @@ namespace UIEditor.UILib {
 
         private Matrix ApplyTransform(Matrix prev) {
             int w = Width, h = Height;
-            Matrix m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3(_realPosition.X + w * Pivot.X,
-                _realPosition.Y + h * Pivot.Y, 0)) * prev;
-            Matrix m2 = Matrix.CreateTranslation(new Vector3(-w * Pivot.X, -h * Pivot.Y, 0f)) * Matrix.CreateRotationZ(Rotation);
+            Matrix m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3((int)(_realPosition.X + w * Pivot.X),
+                (int)(_realPosition.Y + h * Pivot.Y), 0)) * prev;
+            Matrix m2 = Matrix.CreateTranslation(new Vector3((int)(-w * Pivot.X), (int)(-h * Pivot.Y), 0f)) * Matrix.CreateRotationZ(Rotation);
             return m2 * m1;
         }
 

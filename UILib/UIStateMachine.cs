@@ -225,7 +225,7 @@ namespace UIEditor.UILib {
                 if (drawPos.X > Main.screenWidth - size.X)
                     drawPos.X = Main.screenWidth - size.X - 30.0f;
                 Drawing.DrawAdvBox(Main.spriteBatch, (int)drawPos.X - 5, (int)drawPos.Y - 10, (int)size.X + 10, (int)size.Y + 10,
-                    Color.White * 0.75f, Drawing.DefaultBox2Texture, new Vector2(8, 8));
+                    Color.White * 0.75f, UIEditor.Instance.SkinManager.GetTexture("Box2_Default"), new Vector2(8, 8));
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, Main.fontMouseText, _tooltip, drawPos.X, drawPos.Y, Color.White, Color.Black, Vector2.Zero, 1f);
             }
         }

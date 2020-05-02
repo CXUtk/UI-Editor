@@ -36,10 +36,6 @@ namespace UIEditor.UILib.Tests {
                 Name = "test checkbox",
                 Position = new Vector2(90, 90)
             };
-            var button2 = new UIImageButton() {
-                Position = new Vector2(120, 50),
-                Texture = Drawing.CheckBox_White,
-            };
             button.OnClick += (e, sender) => {
                 switch (textbox.TextAlign) {
                     case Enums.Align.Top:
@@ -82,7 +78,6 @@ namespace UIEditor.UILib.Tests {
             box13.AppendChild(scrollBarH);
             box13.AppendChild(button);
             box13.AppendChild(checkbox);
-            box13.AppendChild(button2);
         }
 
         private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {

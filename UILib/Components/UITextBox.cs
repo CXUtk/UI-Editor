@@ -58,7 +58,7 @@ namespace UIEditor.UILib.Components {
             BlockPropagation = true;
             _text = string.Empty;
             _shouldBlink = false;
-            FrameTexture = Drawing.DefaultBoxTexture;
+            FrameTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default");
             _label = new UILabel() {
                 AnchorPoint = new Vector2(0, 0.5f),
                 Pivot = new Vector2(0, 0.5f),
