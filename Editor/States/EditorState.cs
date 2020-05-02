@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using System.Reflection;
 using UIEditor.UILib;
 using UIEditor.UILib.Components;
 using UIEditor.UILib.Components.Advanced;
 using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor.Editor.States {
     public class EditorState : UIState {
@@ -36,7 +38,7 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-PADDING_BODY * 2, -32 - PADDING_BODY),
             };
-            _list = new UITreeList() {
+            _list = new UIList() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
                 SizeFactor = new Vector2(0.4f, 1f),
@@ -75,6 +77,9 @@ namespace UIEditor.Editor.States {
             _body.AppendChild(progress);
             _body.AppendChild(textbox);
 
+
+
+
             //for (int j = 0; j < 2; j++) {
             //    var list = new List<UITreeNode>();
             //    for (int i = 0; i < 10; i++) {
@@ -83,10 +88,10 @@ namespace UIEditor.Editor.States {
             //    var root = new UITreeNode("Root", list);
             //    _list.AddElement(root);
             //}
-            UITreeNode node = null;
-            node = _build(node, 0);
-            node.Name = "根节点";
-            _list.AddElement(node);
+            //UITreeNode node = null;
+            //node = _build(node, 0);
+            //node.Name = "根节点";
+            //_list.AddElement(node);
         }
         int tot = 0;
         UITreeNode _build(UITreeNode node, int level) {
@@ -108,11 +113,47 @@ namespace UIEditor.Editor.States {
             this.IsActive = false;
         }
 
+        public override void DrawSelf(SpriteBatch sb) {
+            base.DrawSelf(sb);
+            //sb.End();
+            //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+            //    DepthStencilState.None, RasterizerState.CullNone, null, Matrix.CreateScale(1) * Matrix.CreateRotationZ(0) * Matrix.CreateTranslation(new Vector3(10, 10, 0)) * Main.UIScaleMatrix);
+
+            // sb.End();
+            //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+            //    DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+        }
+
+        private UIElement _lastFocusElement = null;
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
+            if (_lastFocusElement != UIEditor.Instance.UIStateMachine.FocusedElement) {
+                var e = UIEditor.Instance.UIStateMachine.FocusedElement;
+
+                _list.Clear();
+                if (e != null) {
+                    foreach (var info in e.GetType().GetProperties()) {
+
+                        if (info.IsDefined(typeof(Editor.Attributes.EditorPropertyIgnoreAttribute), true))
+                            continue;
+                        var text = new UILabel() {
+                            Text = info.Name + ": " + info.GetValue(e)?.ToString(),
+                            SizeFactor = new Vector2(1f, 0f),
+                            Size = new Vector2(0, 30),
+                            SizeStyle = SizeStyle.Block,
+                        };
+                        _list.AddElement(text);
+
+                    }
+                }
+            }
+            _lastFocusElement = UIEditor.Instance.UIStateMachine.FocusedElement;
             //var progress = _body.GetChildByName("Progress") as UIProgressBar;
             //progress.CurrentValue = (float)Math.Abs(Math.Sin(gameTime.TotalGameTime.TotalSeconds * 0.5f));
             //progress.Rotation = -progress.CurrentValue;
         }
+
+
+
     }
 }

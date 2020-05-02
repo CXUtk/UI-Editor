@@ -17,11 +17,7 @@ namespace UIEditor.UILib.Components {
         public Color TextColor { get; set; }
         public float TextScale { get; set; }
         public bool IsLargeText { get; set; }
-        /// <summary>
-        /// 最大显示宽度，如果文本超过这个宽度就会被省略
-        /// 如果设为-1就是不限制
-        /// </summary>
-        public float MaxWidth { get; set; }
+        public SizeStyle SizeStyle { get; set; }
 
         private string _displayString;
 
@@ -30,17 +26,21 @@ namespace UIEditor.UILib.Components {
             TextScale = 1f;
             TextColor = Color.White;
             IsLargeText = false;
-            MaxWidth = -1;
+            SizeStyle = SizeStyle.Inline;
         }
+        public Vector2 MeasureSize(string str) {
+            var font = IsLargeText ? Main.fontDeathText : Main.fontMouseText;
+            return new Vector2(font.MeasureString(str).X, IsLargeText ? 42f : 18f) * TextScale;
 
+        }
         public void CalculateSize() {
             _displayString = Text;
             var font = IsLargeText ? Main.fontDeathText : Main.fontMouseText;
-            Size = new Vector2(font.MeasureString(Text).X, IsLargeText ? 42f : 18f) * TextScale;
-
-            if (MaxWidth != -1) {
-                _displayString = StringProcess.GetClampStringWithEllipses(font, _displayString, TextScale, MaxWidth);
-                Size = new Vector2(font.MeasureString(_displayString).X, Size.Y);
+            if (SizeStyle == SizeStyle.Inline)
+                Size = MeasureSize(Text);
+            else {
+                _displayString = StringProcess.GetClampStringWithEllipses(font, _displayString, TextScale, Width);
+                Size = new Vector2(0, Size.Y);
             }
         }
         public override void UpdateSelf(GameTime gameTime) {

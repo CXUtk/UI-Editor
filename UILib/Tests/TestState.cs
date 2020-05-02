@@ -25,7 +25,6 @@ namespace UIEditor.UILib.Tests {
             var box12 = new UILabel() {
                 Name = "label",
                 Text = "哈哈哈哈哈哈哈哈",
-                MaxWidth = 100,
                 IsLargeText = false,
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 //Rotation = 0.5f

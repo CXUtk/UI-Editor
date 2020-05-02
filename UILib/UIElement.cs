@@ -16,6 +16,7 @@ namespace UIEditor.UILib {
         public delegate void MouseEvent(UIMouseEvent e, UIElement sender);
         public delegate void ScrollEvent(UIScrollWheelEvent e, UIElement sender);
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
+        public delegate void DrawEvent(UIDrawEvent e, UIElement sender);
 
         public static bool DEBUG_MODE = true;
 
@@ -136,14 +137,18 @@ namespace UIEditor.UILib {
 
         #region 事件
         public event MouseEvent OnMouseEnter;
-        public event MouseEvent OnMouseOver;
         public event MouseEvent OnMouseOut;
         public event MouseEvent OnMouseDown;
         public event MouseEvent OnMouseUp;
         public event MouseEvent OnClick;
+        public event MouseEvent OnMouseRightDown;
+        public event MouseEvent OnMouseRightUp;
+        public event MouseEvent OnRightClick;
         public event ScrollEvent OnScrollWheel;
         public event ActionEvent OnFocused;
         public event ActionEvent OnUnFocused;
+        public event DrawEvent PostDrawSelf;
+
         #endregion
 
 
@@ -279,21 +284,21 @@ namespace UIEditor.UILib {
 
 
 
-        public void MouseEnter(UIMouseEvent e) {
+        public virtual void MouseEnter(UIMouseEvent e) {
             // Main.NewText("进入");
             OnMouseEnter?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseEnter(e);
         }
 
-        public void MouseOut(UIMouseEvent e) {
+        public virtual void MouseOut(UIMouseEvent e) {
             //Main.NewText("离开");
             OnMouseOut?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseOut(e);
         }
 
-        public void MouseDown(UIMouseEvent e) {
+        public virtual void MouseDown(UIMouseEvent e) {
             //Main.NewText("按下");
             _mouseDownedLeft = true;
             OnMouseDown?.Invoke(e, this);
@@ -301,21 +306,41 @@ namespace UIEditor.UILib {
                 Parent?.MouseDown(e);
         }
 
-        public void MouseUp(UIMouseEvent e) {
+        public virtual void MouseRightDown(UIMouseEvent e) {
+            //Main.NewText("右键按下");
+            OnMouseRightDown?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.MouseRightDown(e);
+        }
+
+        public virtual void MouseUp(UIMouseEvent e) {
             //Main.NewText("抬起");
             _mouseDownedLeft = false;
             OnMouseUp?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseUp(e);
         }
-        public void MouseClick(UIMouseEvent e) {
+
+        public virtual void MouseRightUp(UIMouseEvent e) {
+            //Main.NewText("右键按下");
+            OnMouseRightUp?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.MouseRightUp(e);
+        }
+        public virtual void MouseClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnClick?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseClick(e);
         }
+        public virtual void MouseRightClick(UIMouseEvent e) {
+            //Main.NewText("点击");
+            OnRightClick?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.MouseRightClick(e);
+        }
 
-        public void ScrollWheel(UIScrollWheelEvent e) {
+        public virtual void ScrollWheel(UIScrollWheelEvent e) {
             OnScrollWheel?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.ScrollWheel(e);
@@ -375,8 +400,13 @@ namespace UIEditor.UILib {
             Tooltip = "";
             _selfHitbox = new QuadrilateralHitbox();
             Recalculate();
+            if (DEBUG_MODE)
+                OnRightClick += UIElement_OnRightClick;
         }
 
+        private void UIElement_OnRightClick(UIMouseEvent e, UIElement sender) {
+            throw new NotImplementedException();
+        }
 
         public void AppendChild(UIElement element) {
             element.SplitFromParent();
@@ -405,8 +435,9 @@ namespace UIEditor.UILib {
 
         private Matrix ApplyTransform(Matrix prev) {
             int w = Width, h = Height;
-            Matrix m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3(_realPosition.X + w * Pivot.X, _realPosition.Y + h * Pivot.Y, 0)) * prev;
-            Matrix m2 = Matrix.CreateTranslation(new Vector3(-w * Pivot.X, -h * Pivot.Y, 0f)) * Matrix.CreateRotationZ(Rotation);
+            Matrix m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3((int)(_realPosition.X + w * Pivot.X),
+                (int)(_realPosition.Y + h * Pivot.Y), 0)) * prev;
+            Matrix m2 = Matrix.CreateTranslation(new Vector3((int)(-w * Pivot.X), (int)(-h * Pivot.Y), 0f)) * Matrix.CreateRotationZ(Rotation);
             return m2 * m1;
         }
 
@@ -419,30 +450,32 @@ namespace UIEditor.UILib {
         }
         public virtual void Draw(SpriteBatch sb) {
             Rectangle scissorRectangle = sb.GraphicsDevice.ScissorRectangle;
+            var defaultstate = sb.GraphicsDevice.RasterizerState;
             if (IsVisible) {
                 sb.End();
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
-                    DepthStencilState.None, _selfRasterizerState, null, _selfTransform);
+                    DepthStencilState.None, defaultstate, null, _selfTransform);
                 DrawSelf(sb);
+                PostDrawSelf?.Invoke(new UIDrawEvent(this, Main._drawInterfaceGameTime.TotalGameTime, sb), this);
             }
             if (Overflow == OverflowType.Hidden) {
                 sb.End();
-                sb.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(sb.GraphicsDevice.ScissorRectangle, GetClippingRectangle(sb));
+                sb.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRectangle, GetClippingRectangle(sb));
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                     DepthStencilState.None, _selfRasterizerState, null, _selfTransform);
             }
             DrawChildren(sb);
             if (Overflow == OverflowType.Hidden) {
                 sb.End();
-                var defaultstate = sb.GraphicsDevice.RasterizerState;
                 sb.GraphicsDevice.ScissorRectangle = scissorRectangle;
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                    DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
+            } else {
+                sb.End();
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                     DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
             }
             if (DEBUG_MODE) {
-                sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
-                    DepthStencilState.None, _selfRasterizerState, null, Main.UIScaleMatrix);
                 _selfHitbox.Draw(sb);
                 Drawing.StrokeRect(sb, GetClippingRectangle(sb), 1, Color.Yellow);
                 if (IsFocused) Drawing.StrokeRect(sb, GetClippingRectangle(sb), 2, Color.Red);

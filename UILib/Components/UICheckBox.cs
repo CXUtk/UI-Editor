@@ -34,11 +34,13 @@ namespace UIEditor.UILib.Components {
         public UICheckBox() {
             BlockPropagation = true;
             Size = new Vector2(30, 30);
-            OnClick += UICheckBox_OnClick;
+
         }
 
-        private void UICheckBox_OnClick(UIMouseEvent e, UIElement sender) {
+
+        public override void MouseClick(UIMouseEvent e) {
             Checked ^= true;
+            base.MouseClick(e);
         }
 
         public void CheckedChange(UICheckBoxEvent e) {
@@ -47,9 +49,13 @@ namespace UIEditor.UILib.Components {
 
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            var texture = Checked ? Drawing.CheckBoxChecked : Drawing.CheckBox;
+            var texture = Checked ? Drawing.CheckBox_Checked : Drawing.CheckBox;
             sb.Draw(texture, Pivot * new Vector2(Width, Height), null, Color.White, 0, Pivot * texture.Size(),
-                    new Vector2(Width / (float)texture.Width, Height / (float)texture.Height), SpriteEffects.None, 0f);
+                    new Vector2(1, 1), SpriteEffects.None, 0f);
+            if (IsMouseHover) {
+                sb.Draw(Drawing.CheckBox_White, Vector2.Zero, null, Color.White, 0, Vector2.Zero,
+                    new Vector2(1, 1), SpriteEffects.None, 0f);
+            }
         }
     }
 }
