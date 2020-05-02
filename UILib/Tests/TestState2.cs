@@ -32,8 +32,7 @@ namespace UIEditor.UILib.Tests {
                 AnchorPoint = new Vector2(0.5f, 0),
                 TextAlign = Enums.Align.TopLeft
             };
-            var menu = new UIMenu()
-            {
+            var menu = new UIMenu() {
                 Name = "text menu",
                 Pivot = new Vector2(0.5f, 0),
                 AnchorPoint = new Vector2(0.5f, 0),
@@ -108,12 +107,13 @@ namespace UIEditor.UILib.Tests {
             box13.AppendChild(scrollBarH);
             box13.AppendChild(button);
             box13.AppendChild(checkbox);
+            //box13.AppendChild(button2);
+            box13.AppendChild(menu);
         }
 
         private void Checkbox_OnCheckedChange(Events.UICheckBoxEvent e, UIElement sender) {
             UIElement.DEBUG_MODE = !e.Value;
-            box13.AppendChild(button2);
-            box13.AppendChild(menu);
+
         }
 
         private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {
