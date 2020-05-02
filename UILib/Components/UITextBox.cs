@@ -19,15 +19,13 @@ namespace UIEditor.UILib.Components {
     /// <summary>
     /// 单行输入的文本框
     /// </summary>
-    public class UITextBox : UIElement {
+    public class UITextBox : UIPanel {
         private UILabel _label;
         private string _text;
         private int _carrot;
         private float _timer;
         private bool _shouldBlink;
         private float _offsetR, _offsetL;
-
-        public Texture2D FrameTexture { get; set; }
         public string Text {
             get {
                 return _text;
@@ -58,7 +56,7 @@ namespace UIEditor.UILib.Components {
             BlockPropagation = true;
             _text = string.Empty;
             _shouldBlink = false;
-            FrameTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default");
+            PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default");
             _label = new UILabel() {
                 AnchorPoint = new Vector2(0, 0.5f),
                 Pivot = new Vector2(0, 0.5f),
@@ -86,11 +84,13 @@ namespace UIEditor.UILib.Components {
         }
 
         public override void FocusOn(UIActionEvent e) {
+            PanelBorderTexture = UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default");
             _shouldBlink = true;
             _timer = 0;
             base.FocusOn(e);
         }
         public override void UnFocus(UIActionEvent e) {
+            PanelBorderTexture = null;
             _shouldBlink = false;
             _timer = 0;
             // Carrot = Text.Length;
@@ -133,8 +133,6 @@ namespace UIEditor.UILib.Components {
                 _label.Recalculate();
                 DrawIME();
             }
-
-            Drawing.DrawAdvBox(sb, 0, 0, Width, Height, Color.White, FrameTexture, new Vector2(8, 8));
             base.DrawSelf(sb);
         }
 

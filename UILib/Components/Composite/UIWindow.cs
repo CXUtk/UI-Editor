@@ -28,7 +28,8 @@ namespace UIEditor.UILib.Components.Composite {
                 Texture = UIEditor.Instance.SkinManager.GetTexture("CloseButton"),
                 DefaultColor = Color.White * 0.8f,
                 WhiteTexture = UIEditor.Instance.SkinManager.GetTexture("CloseButton_Change"),
-                Scale = new Vector2(0.9f, 0.9f)
+                Scale = new Vector2(0.9f, 0.9f),
+                BlockPropagation = true,
             };
             _closeButton.OnClick += _closeButton_OnClick;
             AppendChild(_closeButton);

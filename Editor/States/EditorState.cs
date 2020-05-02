@@ -38,10 +38,18 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-PADDING_BODY * 2, -32 - PADDING_BODY),
             };
-            _list = new UIList() {
+            var panel2 = new UIPanel() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
                 SizeFactor = new Vector2(0.4f, 1f),
+                PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default"),
+            };
+            _list = new UIList() {
+                AnchorPoint = new Vector2(0, 0),
+                Pivot = new Vector2(0, 0),
+                Position = new Vector2(5f, 5f),
+                SizeFactor = new Vector2(1f, 1f),
+                Size = new Vector2(-5f, -5f),
             };
             scrollBar = new UIScrollBarV() {
                 Name = "ScrollBar",
@@ -70,10 +78,11 @@ namespace UIEditor.Editor.States {
             };
             _list.SetScrollBarV(scrollBar);
             _list.SetScrollBarH(scrollBarH);
+            panel2.AppendChild(_list);
             window.OnClose += Box1_OnClose;
             AppendChild(window);
             window.AppendChild(_body);
-            _body.AppendChild(_list);
+            _body.AppendChild(panel2);
             _body.AppendChild(progress);
             _body.AppendChild(textbox);
 

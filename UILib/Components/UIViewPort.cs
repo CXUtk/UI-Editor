@@ -7,10 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace UIEditor.UILib.Components {
-    public class UIListViewPort : UIPanel {
+    public class UIListViewPort : UIElement {
         public UIListViewPort() : base() {
             Overflow = OverflowType.Hidden;
-            PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default");
         }
         public void RemoveAll() {
             Children.Clear();
