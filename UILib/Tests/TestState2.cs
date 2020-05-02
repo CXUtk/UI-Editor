@@ -32,6 +32,12 @@ namespace UIEditor.UILib.Tests {
                 AnchorPoint = new Vector2(0.5f, 0),
                 TextAlign = Enums.Align.TopLeft
             };
+            var menu = new UIMenu()
+            {
+                Name = "text menu",
+                Pivot = new Vector2(0.5f, 0),
+                AnchorPoint = new Vector2(0.5f, 0),
+            };
             var checkbox = new UICheckBox {
                 Tooltip = "Debug模式",
                 Name = "test checkbox",
@@ -70,6 +76,28 @@ namespace UIEditor.UILib.Tests {
             box13.OnClose += Box1_OnClose;
             AppendChild(box13);
             box13.AppendChild(textbox);
+            {
+                var item1 = new UIMenuItem();
+                item1.Text = nameof(item1);
+                item1.AddItem(new UIMenuItem { Text = "item1.item1" });
+                item1.AddItem(new UIMenuItem { Text = "item1.item2" });
+                item1.AddItem(new UIMenuItem { Text = "item1.item3" });
+                menu.AddItem(item1);
+                var item2 = new UIMenuItem();
+                item2.Text = nameof(item2);
+                item2.AddItem(new UIMenuItem { Text = "item2.item1" });
+                item2.AddItem(new UIMenuItem { Text = "item2.item2" });
+                menu.AddItem(item2);
+                {
+                    var item2_3 = new UIMenuItem();
+                    item2_3.Text = "item2.item3";
+                    item2_3.AddItem(new UIMenuItem { Text = "item231" });
+                    item2_3.AddItem(new UIMenuItem { Text = "item232" });
+                    item2_3.AddItem(new UIMenuItem { Text = "item233" });
+                    item2_3.AddItem(new UIMenuItem { Text = "item234" });
+                    item2.AddItem(item2_3);
+                }
+            }
 
             var scrollBarH = new UIScrollBarH() {
                 AnchorPoint = new Vector2(0.5f, 1),
@@ -84,6 +112,8 @@ namespace UIEditor.UILib.Tests {
 
         private void Checkbox_OnCheckedChange(Events.UICheckBoxEvent e, UIElement sender) {
             UIElement.DEBUG_MODE = !e.Value;
+            box13.AppendChild(button2);
+            box13.AppendChild(menu);
         }
 
         private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {
