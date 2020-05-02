@@ -32,6 +32,7 @@ namespace UIEditor.UILib.Components.Composite {
                 Texture = CollapseButtonUpTexture,
                 AnchorPoint = new Vector2(0.5f, 0f),
                 Pivot = new Vector2(0.5f, 0f),
+                DefaultColor = new Color(150, 150, 150),
             };
             _openButton.OnClick += _openButton_OnClick;
             _toolPanel = new UIPanel() {

@@ -33,9 +33,11 @@ namespace UIEditor.UILib.Tests {
                 TextAlign = Enums.Align.TopLeft
             };
             var checkbox = new UICheckBox {
+                Tooltip = "Debug模式",
                 Name = "test checkbox",
                 Position = new Vector2(90, 90)
             };
+            checkbox.OnCheckedChange += Checkbox_OnCheckedChange;
             button.OnClick += (e, sender) => {
                 switch (textbox.TextAlign) {
                     case Enums.Align.Top:
@@ -78,6 +80,10 @@ namespace UIEditor.UILib.Tests {
             box13.AppendChild(scrollBarH);
             box13.AppendChild(button);
             box13.AppendChild(checkbox);
+        }
+
+        private void Checkbox_OnCheckedChange(Events.UICheckBoxEvent e, UIElement sender) {
+            UIElement.DEBUG_MODE = !e.Value;
         }
 
         private void Box1_OnClose(Events.UIActionEvent e, UIElement sender) {

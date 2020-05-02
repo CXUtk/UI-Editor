@@ -21,24 +21,19 @@ namespace UIEditor.UILib.Components.Composite {
         private void _addElement(UIElement element) {
             base.AddElement(element);
         }
+
         private float _maxLeftPadding;
-        private void _dfsCalculate(UITreeNode node, float leftPadding) {
+        private void _dfsCalculate(UITreeNode node, float leftPadding, GameTime gameTime) {
             _maxLeftPadding = Math.Max(_maxLeftPadding, leftPadding);
-            node.DisplayElement.Position = new Vector2(leftPadding, _totHeight);
+            node.DisplayElement.LeftOffset = leftPadding;
+            node.DisplayElement.Position = new Vector2(0, _totHeight);
+            node.DisplayElement.Update(gameTime);
             _addElement(node.DisplayElement);
             _totHeight += node.DisplayElement.Height + ItemMargin;
-            if (node.TreeNodes.Count == 0) {
-                node.DisplayElement._foldButton.Texture = ModContent.GetTexture("UIEditor/Images/Trans");
-                return;
-            }
-            if (node.IsFolded) {
-                node.DisplayElement._foldButton.Texture = ModContent.GetTexture("UIEditor/Images/FoldOn");
-                return;
-            } else {
-                node.DisplayElement._foldButton.Texture = ModContent.GetTexture("UIEditor/Images/FoldOff");
-            }
+            node.CanFold = node.TreeNodes.Count != 0;
+            if (node.DisplayElement.IsFolded) return;
             foreach (var child in node.TreeNodes) {
-                _dfsCalculate(child, leftPadding + LayerPaddingLeft);
+                _dfsCalculate(child, leftPadding + LayerPaddingLeft, gameTime);
             }
         }
 
@@ -48,7 +43,7 @@ namespace UIEditor.UILib.Components.Composite {
             _maxLeftPadding = 0;
             _maxWidth = 0;
             foreach (var root in _roots)
-                _dfsCalculate(root, 0);
+                _dfsCalculate(root, 0, gameTime);
             foreach (var element in _elements) {
                 element.Size = new Vector2(_maxLeftPadding, element.Size.Y);
                 _maxWidth = Math.Max(_maxWidth, element.Width);

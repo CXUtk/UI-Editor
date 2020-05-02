@@ -25,7 +25,7 @@ namespace UIEditor.UILib.Components {
                 if (_checked == value)
                     return;
                 _checked = value;
-                CheckedChange(new UICheckBoxEvent(this, Main._drawInterfaceGameTime.TotalGameTime));
+                CheckedChange(new UICheckBoxEvent(this, Main._drawInterfaceGameTime.TotalGameTime, _checked));
             }
         }
 

@@ -7,7 +7,9 @@ using UIEditor.UILib.Components;
 
 namespace UIEditor.UILib.Events {
     public class UICheckBoxEvent : UIEvent {
-        public UICheckBoxEvent(UIElement sender, TimeSpan timestamp) : base(sender, timestamp) {
+        public bool Value { get; set; }
+        public UICheckBoxEvent(UIElement sender, TimeSpan timestamp, bool value) : base(sender, timestamp) {
+            Value = value;
         }
     }
 }

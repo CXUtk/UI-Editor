@@ -44,7 +44,7 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(0.4f, 1f),
                 PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default"),
             };
-            _list = new UIList() {
+            _list = new UITreeList() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
                 Position = new Vector2(5f, 5f),
@@ -97,10 +97,10 @@ namespace UIEditor.Editor.States {
             //    var root = new UITreeNode("Root", list);
             //    _list.AddElement(root);
             //}
-            //UITreeNode node = null;
-            //node = _build(node, 0);
-            //node.Name = "根节点";
-            //_list.AddElement(node);
+            UITreeNode node = null;
+            node = _build(node, 0);
+            node.Name = "根节点";
+            _list.AddElement(node);
         }
         int tot = 0;
         UITreeNode _build(UITreeNode node, int level) {
@@ -136,6 +136,7 @@ namespace UIEditor.Editor.States {
         private UIElement _lastFocusElement = null;
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
+            return;
             if (_lastFocusElement != UIEditor.Instance.UIStateMachine.FocusedElement) {
                 var e = UIEditor.Instance.UIStateMachine.FocusedElement;
 

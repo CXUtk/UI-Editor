@@ -18,7 +18,7 @@ namespace UIEditor.UILib {
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
         public delegate void DrawEvent(UIDrawEvent e, UIElement sender);
 
-        public static bool DEBUG_MODE = false;
+        public static bool DEBUG_MODE = true;
 
 
         #region 基础属性
@@ -180,7 +180,9 @@ namespace UIEditor.UILib {
                 return (int)(SizeFactor.Y * _parentRect.Height + Size.Y);
             }
         }
-
+        /// <summary>
+        /// 如果鼠标位置在这个UI元素上面
+        /// </summary>
         public bool IsMouseHover {
             get {
                 return _selfHitbox.Contains(Main.MouseScreen);

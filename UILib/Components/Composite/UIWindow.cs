@@ -24,7 +24,7 @@ namespace UIEditor.UILib.Components.Composite {
             _closeButton = new UIImageButton() {
                 Pivot = new Vector2(1, 0),
                 AnchorPoint = new Vector2(1, 0),
-                Position = new Vector2(-10, 10),
+                Position = new Vector2(-10, 5),
                 Texture = UIEditor.Instance.SkinManager.GetTexture("CloseButton"),
                 DefaultColor = Color.White * 0.8f,
                 WhiteTexture = UIEditor.Instance.SkinManager.GetTexture("CloseButton_Change"),

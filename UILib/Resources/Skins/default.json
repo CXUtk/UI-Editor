@@ -15,4 +15,7 @@
     "EditorIcon_White": "Images/Cog_White",
     "ToolBar_Default": "Images/UI/ButtomBarBox",
     "ProgressBar_Default": "Images/UI/ProgressBar",
+    "NoTexture": "Images/Trans",
+    "Fold_On": "Images/UI/Fold_On",
+    "Fold_Off": "Images/UI/Fold_Off",
 }
