@@ -38,6 +38,8 @@ namespace UIEditor.UILib.Components.Composite {
                 SizeFactor = new Vector2(1, 1),
                 AnchorPoint = new Vector2(0.5f, 0f),
                 Pivot = new Vector2(0.5f, 0f),
+                PanelTexture = Drawing.ToolBarBoxTexture,
+                CornerSize = new Vector2(6f, 6f),
             };
 
             AppendChild(_toolPanel);
@@ -70,8 +72,8 @@ namespace UIEditor.UILib.Components.Composite {
                 }
             }
             Position = Vector2.Lerp(lowerPos, upperPos, _timer / 300.0f);
-            _toolPanel.Position = new Vector2(0, _openButton.Height);
-            _toolPanel.Size = new Vector2(-20, -_openButton.Height);
+            _toolPanel.Position = new Vector2(0, _openButton.Height - 2);
+            _toolPanel.Size = new Vector2(-20, -_openButton.Height + 2);
         }
     }
 }

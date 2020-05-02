@@ -26,14 +26,13 @@ namespace UIEditor.UILib.Components.Composite {
                 AnchorPoint = new Vector2(1, 0),
                 Position = new Vector2(-10, 10),
                 Texture = Drawing.CloseButtonTexture,
-                DefaultColor = Color.Gray * 1.2f,
-                MouseOverColor = Color.Red,
-                Scale = new Vector2(1.25f, 1.25f),
+                DefaultColor = Color.White * 0.8f,
+                WhiteTexture = Drawing.CloseButtonTexture_Change,
+                Scale = new Vector2(0.9f, 0.9f)
             };
             _closeButton.OnClick += _closeButton_OnClick;
             AppendChild(_closeButton);
         }
-
 
         private void _closeButton_OnClick(UIMouseEvent e, UIElement sender) {
             OnClose?.Invoke(new UIActionEvent(this, e.TimeStamp), sender);

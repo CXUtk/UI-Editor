@@ -18,7 +18,7 @@ namespace UIEditor.UILib {
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
         public delegate void DrawEvent(UIDrawEvent e, UIElement sender);
 
-        public static bool DEBUG_MODE = true;
+        public static bool DEBUG_MODE = false;
 
 
         #region 基础属性
@@ -453,7 +453,7 @@ namespace UIEditor.UILib {
             var defaultstate = sb.GraphicsDevice.RasterizerState;
             if (IsVisible) {
                 sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
                     DepthStencilState.None, defaultstate, null, _selfTransform);
                 DrawSelf(sb);
                 PostDrawSelf?.Invoke(new UIDrawEvent(this, Main._drawInterfaceGameTime.TotalGameTime, sb), this);
@@ -461,18 +461,18 @@ namespace UIEditor.UILib {
             if (Overflow == OverflowType.Hidden) {
                 sb.End();
                 sb.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRectangle, GetClippingRectangle(sb));
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
                     DepthStencilState.None, _selfRasterizerState, null, _selfTransform);
             }
             DrawChildren(sb);
             if (Overflow == OverflowType.Hidden) {
                 sb.End();
                 sb.GraphicsDevice.ScissorRectangle = scissorRectangle;
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
                     DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
             } else {
                 sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
                     DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
             }
             if (DEBUG_MODE) {

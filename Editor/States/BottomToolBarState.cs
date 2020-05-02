@@ -33,7 +33,7 @@ namespace UIEditor.Editor.States {
                 Texture = Drawing.CogTexture,
                 Size = new Vector2(30f, 30f),
                 SizeStyle = SizeStyle.Block,
-                DefaultColor = Color.White,
+                DefaultColor = Color.White * 0.8f,
                 Tooltip = "切换编辑器界面"
             };
             _toolElements.Add(button);

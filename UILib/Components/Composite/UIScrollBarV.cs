@@ -74,24 +74,24 @@ namespace UIEditor.UILib.Components {
         public UIScrollBarV() : base() {
             BlockPropagation = true;
             SizeFactor = new Vector2(0, 1);
-            Size = new Vector2(20, -PADDING * 2);
+            Size = new Vector2(10, -PADDING * 2);
             _currentValue = 0;
             _isMouseOver = false;
             _outerBar = new UIBar() {
-                Texture = TextureManager.Load("Images/UI/ScrollbarInner"),
+                Texture = Main.magicPixel,
                 SizeFactor = new Vector2(1f, 1f),
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 EndSize = 6
             };
             _innerBar = new UIBar() {
                 Name = "Inner",
-                Texture = TextureManager.Load("Images/UI/ScrollbarInner"),
+                Texture = Main.magicPixel,
                 SizeFactor = new Vector2(1f, 0.5f),
                 Pivot = new Vector2(0.5f, 0),
                 AnchorPoint = new Vector2(0.5f, 0),
                 EndSize = 6
             };
-            BackgroundColor = Color.Gray;
+            BackgroundColor = Color.Gray * 0.6f;
             DefaultInnerColor = Color.White * 0.5f;
             MouseMoveInnerColor = Color.White;
             _innerBar.OnMouseEnter += _innerBar_OnMouseOver;

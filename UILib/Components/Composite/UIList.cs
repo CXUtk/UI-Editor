@@ -170,6 +170,8 @@ namespace UIEditor.UILib.Components.Composite {
         public void Clear() {
             _elements.Clear();
         }
+
+
         public virtual void AddElement(UIElement element) {
             element.Pivot = new Vector2(0f, 0f);
             element.AnchorPoint = new Vector2(0f, 0f);

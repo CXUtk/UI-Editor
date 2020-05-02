@@ -72,10 +72,10 @@ namespace UIEditor.UILib.Components {
         public UIScrollBarH() : base() {
             BlockPropagation = true;
             SizeFactor = new Vector2(1, 0);
-            Size = new Vector2(-PADDING * 2, 20);
+            Size = new Vector2(-PADDING * 2, 10);
             _currentValue = 0f;
             _isMouseOver = false;
-            var tex = ModContent.GetTexture("UIEditor/Images/ScrollBarH");
+            var tex = Main.magicPixel;
             _outerBar = new UIBar() {
                 Texture = tex,
                 SizeFactor = new Vector2(1f, 1f),

@@ -27,11 +27,11 @@ namespace UIEditor.UILib.Components {
         private float _value;
 
         public UIProgressBar() : base() {
-            FrameTexture = Drawing.DefaultBox2Texture;
+            FrameTexture = Drawing.ProgressBarTexture;
             FrameCornerSize = new Vector2(8f, 8f);
-            BackgroundColor = Color.Gray;
-            FillColor = Color.Yellow;
-            CurrentValue = 0;
+            BackgroundColor = new Color(90, 90, 112);
+            FillColor = Color.White;
+            CurrentValue = 0.5f;
         }
 
         public override void DrawSelf(SpriteBatch sb) {
