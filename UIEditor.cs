@@ -26,7 +26,6 @@ namespace UIEditor {
         public override void Load() {
             Instance = this;
             SkinManager = new SkinManager();
-            SkinManager.Load();
 
             UIStateMachine = new UIStateMachine();
             UIStateMachine.Add(new EditorState("Editor"));

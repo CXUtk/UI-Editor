@@ -28,6 +28,7 @@ namespace UIEditor.UILib.Components.Advanced {
                 Text = text,
                 Pivot = new Vector2(0, 0.5f),
                 AnchorPoint = new Vector2(0, 0.5f),
+                NoEvent = true,
             };
             AppendChild(_foldButton);
             AppendChild(_label);
@@ -51,10 +52,10 @@ namespace UIEditor.UILib.Components.Advanced {
 
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            if (IsFocused) {
-                Drawing.DrawAdvBox(sb, 0, 0, Width, Height, Color.White, UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default"),
-                    new Vector2(4, 4));
-            }
+            var color = UIEditor.Instance.SkinManager.GetColor(IsFocused ? "Background2" : "Background");
+            Drawing.DrawAdvBox(sb, 0, 0, Width, Height, color, Main.magicPixel,
+                new Vector2(4, 4));
+
         }
     }
     public class UITreeNode : UIElement {

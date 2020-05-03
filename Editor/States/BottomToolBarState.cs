@@ -22,7 +22,7 @@ namespace UIEditor.Editor.States {
             base.Initialize();
             _toolElements = new List<UIElement>();
             _toolBar = new UIToolBarH() {
-                Size = new Vector2(100, 80),
+                Size = new Vector2(80, 80),
                 AnchorPoint = new Vector2(0.5f, 1f),
                 Pivot = new Vector2(0.5f, 1f),
             };

@@ -48,6 +48,7 @@ namespace UIEditor.Editor.States {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
                 SizeFactor = new Vector2(0.4f, 1f),
+                Overflow = OverflowType.Hidden,
             };
             _viewer = new UIElement() {
                 Name = "Viewer",
@@ -68,18 +69,21 @@ namespace UIEditor.Editor.States {
             _body.AppendChild(_propertyInspector);
 
 
+
             var listPanel = new UIPanel() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
                 SizeFactor = new Vector2(1f, 1f),
+                Size = new Vector2(-15f, -5f),
+                Position = new Vector2(15f, 5f),
                 PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default"),
             };
             _list = new UITreeList() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
-                Position = new Vector2(5f, 5f),
                 SizeFactor = new Vector2(1f, 1f),
-                Size = new Vector2(-5f, -5f),
+                Size = new Vector2(-1f, -1f),
+                Position = new Vector2(1f, 1f),
             };
             var scrollBar1 = new UIScrollBarV() {
                 Name = "ScrollBar",
@@ -90,7 +94,15 @@ namespace UIEditor.Editor.States {
             var scrollBar2 = new UIScrollBarH() {
                 Name = "ScrollBarH",
             };
+            var toolbar2 = new UIToolBarV() {
+                SizeFactor = new Vector2(1f, 1f),
+                AnchorPoint = new Vector2(0f, 0.5f),
+                Pivot = new Vector2(0f, 0.5f),
+                BlockPropagation = true,
+                ButtonTooltip = "工具栏",
+            };
             _hierbrowser.AppendChild(listPanel);
+            _hierbrowser.AppendChild(toolbar2);
             listPanel.AppendChild(_list);
             _list.SetScrollBarV(scrollBar1);
             _list.SetScrollBarH(scrollBar2);
