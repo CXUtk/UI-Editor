@@ -24,6 +24,7 @@
     },
     "colors": {
         "Background": "34, 34, 38, 255",
-        "Background2": "59, 59, 73, 255"
+        "Background2": "59, 59, 73, 255",
+        "Highlight": "0, 122, 204, 255",
     }
 }

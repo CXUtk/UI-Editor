@@ -14,11 +14,13 @@ namespace UIEditor.UILib.Components.Advanced {
         public bool IsFolded { get; set; }
         public float LeftOffset { get; set; }
         public bool CanFold { get; set; }
+        public bool Selected { get; set; }
         private readonly UIImageButton _foldButton;
         private readonly UILabel _label;
         public UITreeNodeDisplay(string text) : base() {
             IsFolded = true;
             CanFold = false;
+            Selected = false;
             _foldButton = new UIImageButton() {
                 Pivot = new Vector2(0, 0.5f),
                 AnchorPoint = new Vector2(0, 0.5f),
@@ -32,6 +34,7 @@ namespace UIEditor.UILib.Components.Advanced {
             };
             AppendChild(_foldButton);
             AppendChild(_label);
+            OnDoubleClick += Element_OnClick;
         }
         private void Element_OnClick(Events.UIMouseEvent e, UIElement sender) {
             IsFolded ^= true;
@@ -52,7 +55,11 @@ namespace UIEditor.UILib.Components.Advanced {
 
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            var color = UIEditor.Instance.SkinManager.GetColor(IsFocused ? "Background2" : "Background");
+            var color = UIEditor.Instance.SkinManager.GetColor(Selected ? "Background2" : "Background");
+            // 容器处于交点颜色就变成highlight
+            if (Selected && this.Parent.IsFocused) {
+                color = UIEditor.Instance.SkinManager.GetColor("Highlight");
+            }
             Drawing.DrawAdvBox(sb, 0, 0, Width, Height, color, Main.magicPixel,
                 new Vector2(4, 4));
 

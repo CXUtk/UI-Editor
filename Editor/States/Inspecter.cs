@@ -29,8 +29,8 @@ namespace UIEditor.Editor.States {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
                 SizeFactor = new Vector2(1f, 1f),
-                Size = new Vector2(-2f, -2f),
-                Position = new Vector2(1f, 1f),
+                Size = new Vector2(-10f, -10f),
+                Position = new Vector2(5f, 5f),
             };
             var scrollBar1 = new UIScrollBarV() {
                 Name = "ScrollBar",

@@ -59,10 +59,10 @@ namespace UIEditor.UILib.Components.Composite {
             }
             _verticalScrollBar = scrollBarV;
             _verticalScrollBar.SizeFactor = new Vector2(0, 1f);
-            _verticalScrollBar.Size = new Vector2(10, -INNER_PADDING * 2);
+            _verticalScrollBar.Size = new Vector2(10, 0);
             _verticalScrollBar.AnchorPoint = new Vector2(1, 0.5f);
             _verticalScrollBar.Pivot = new Vector2(1, 0.5f);
-            _verticalScrollBar.Position = new Vector2(-5, 0);
+            _verticalScrollBar.Position = new Vector2(0, 0);
             AppendChild(_verticalScrollBar);
             ShouldRecalculate = true;
         }
@@ -74,10 +74,10 @@ namespace UIEditor.UILib.Components.Composite {
             }
             _horizontalScrollBar = scrollBarH;
             _horizontalScrollBar.SizeFactor = new Vector2(1f, 0f);
-            _horizontalScrollBar.Size = new Vector2(-INNER_PADDING * 2 - 10 * 2, 10);
+            _horizontalScrollBar.Size = new Vector2(0, 10);
             _horizontalScrollBar.AnchorPoint = new Vector2(0f, 1f);
             _horizontalScrollBar.Pivot = new Vector2(0f, 1f);
-            _horizontalScrollBar.Position = new Vector2(0, -5);
+            _horizontalScrollBar.Position = new Vector2(0, 0);
             AppendChild(_horizontalScrollBar);
             ShouldRecalculate = true;
         }
@@ -100,7 +100,7 @@ namespace UIEditor.UILib.Components.Composite {
 
             // 给垂直滚动条留点空间
             if (_verticalScrollBar != null) {
-                _horizontalScrollBar.Size = new Vector2(-_verticalScrollBar.Width - 5f, _horizontalScrollBar.Size.Y);
+                _horizontalScrollBar.Size = new Vector2(-_verticalScrollBar.Width, _horizontalScrollBar.Size.Y);
             }
             var maxWidth = Math.Max(_maxWidth - _viewPort.Width, 0);
             _horizontalScrollBar.ViewSize = _viewPort.Width / _maxWidth;
@@ -125,7 +125,7 @@ namespace UIEditor.UILib.Components.Composite {
 
         protected void CalculateViewPortScrollRelated() {
             if (_verticalScrollBar != null)
-                _viewPort.Size = new Vector2(-_verticalScrollBar.Width - 5f, 0);
+                _viewPort.Size = new Vector2(-_verticalScrollBar.Width - 5f, _viewPort.Size.Y);
             if (_horizontalScrollBar != null)
                 _viewPort.Size = new Vector2(_viewPort.Size.X, -_horizontalScrollBar.Height - 5f);
         }

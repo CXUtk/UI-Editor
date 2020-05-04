@@ -25,7 +25,6 @@ namespace UIEditor.Editor.States {
         private UIElement _propertyInspector;
         private UITreeList _list;
         private UIList _toolBarList;
-        private UIScrollBarV scrollBar;
 
         private const float PADDING_BODY = 10f;
         public override void Initialize() {
@@ -70,30 +69,14 @@ namespace UIEditor.Editor.States {
             _body.AppendChild(_viewer);
             _body.AppendChild(_propertyInspector);
         }
-        private UIElement _lastFocusElement = null;
+
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             _viewer.Position = new Vector2(_hierbrowser.Width, 0);
             _propertyInspector.Position = new Vector2(_hierbrowser.Width, _viewer.Height);
-            if (_lastFocusElement != UIEditor.Instance.UIStateMachine.LastRightClickElement) {
-                var e = UIEditor.Instance.UIStateMachine.LastRightClickElement;
-                _list.ClearRoots();
-                if (e != null) {
-                    _list.AddElement(_copy(e));
-                }
-            }
-            _lastFocusElement = UIEditor.Instance.UIStateMachine.LastRightClickElement;
         }
 
 
-        private UITreeNode _copy(UIElement element) {
-            List<UITreeNode> children = new List<UITreeNode>();
-            UITreeNode node = new UITreeNode(element.Name, children);
-            foreach (var child in element.Children) {
-                children.Add(_copy(child));
-            }
-            return node;
-        }
 
         int tot = 0;
         UITreeNode _build(UITreeNode node, int level) {

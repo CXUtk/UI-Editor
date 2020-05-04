@@ -21,10 +21,12 @@ namespace UIEditor.UILib {
 
         private UIElement _previousHoverElement;
         private UIElement _lastLeftDownElement;
+        private UIElement _lastLeftClickElement;
         private UIElement _lastRightClickElement;
         private UIElement _lastRightDownElement;
         private UIElement _lastFocusElement;
 
+        private double _lastLeftClickTime = 0;
         private bool _wasMouseLeftDown;
         private bool _wasMouseRightDown;
 
@@ -116,7 +118,13 @@ namespace UIEditor.UILib {
             if (_wasMouseLeftDown && Main.mouseLeftRelease) {
                 _lastLeftDownElement?.MouseUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 if (_wasMouseLeftDown && Main.mouseLeftRelease && hoverElement != null && _lastLeftDownElement == hoverElement) {
-                    hoverElement.MouseClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                    if (gameTime.TotalGameTime.TotalMilliseconds - _lastLeftClickTime > 200) {
+                        hoverElement.MouseClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                    } else {
+                        hoverElement.MouseDoubleClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                    }
+                    _lastLeftClickElement = hoverElement;
+                    _lastLeftClickTime = gameTime.TotalGameTime.TotalMilliseconds;
                 }
                 _lastLeftDownElement = null;
             }

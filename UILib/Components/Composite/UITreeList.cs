@@ -9,6 +9,7 @@ namespace UIEditor.UILib.Components.Composite {
     public class UITreeList : UIList {
         public float LayerPaddingLeft { get; set; }
         private List<UITreeNode> _roots;
+        private UIElement _selectedItem;
         public UITreeList() : base() {
             Name = "树状列表";
             LayerPaddingLeft = 20f;
@@ -16,7 +17,20 @@ namespace UIEditor.UILib.Components.Composite {
         }
         public override void AddElement(UIElement treeNode) {
             if (!(treeNode is UITreeNode)) throw new Exception("树状列表必须传入UITreeNode对象");
-            _roots.Add((UITreeNode)treeNode);
+            var root = (UITreeNode)treeNode;
+            _roots.Add(root);
+            _assignEvent(root);
+        }
+
+        private void _assignEvent(UITreeNode treenode) {
+            treenode.DisplayElement.OnMouseDown += DisplayElement_OnMouseDown;
+            foreach (var child in treenode.TreeNodes) {
+                _assignEvent(child);
+            }
+        }
+
+        private void DisplayElement_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
+            _selectedItem = sender;
         }
 
         public void ClearRoots() { _roots.Clear(); Clear(); }
@@ -30,6 +44,7 @@ namespace UIEditor.UILib.Components.Composite {
             _maxLeftPadding = Math.Max(_maxLeftPadding, leftPadding);
             node.DisplayElement.LeftOffset = leftPadding;
             node.DisplayElement.Position = new Vector2(0, _totHeight);
+            node.DisplayElement.Selected = (node.DisplayElement == _selectedItem);
             node.DisplayElement.Update(gameTime);
             _addElement(node.DisplayElement);
             _totHeight += node.DisplayElement.Height + ItemMargin;

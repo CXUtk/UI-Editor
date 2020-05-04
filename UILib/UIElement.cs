@@ -141,6 +141,7 @@ namespace UIEditor.UILib {
         public event MouseEvent OnMouseDown;
         public event MouseEvent OnMouseUp;
         public event MouseEvent OnClick;
+        public event MouseEvent OnDoubleClick;
         public event MouseEvent OnMouseRightDown;
         public event MouseEvent OnMouseRightUp;
         public event MouseEvent OnRightClick;
@@ -334,6 +335,12 @@ namespace UIEditor.UILib {
             if (!BlockPropagation)
                 Parent?.MouseClick(e);
         }
+        internal void MouseDoubleClick(UIMouseEvent e) {
+            //Main.NewText("点击");
+            OnDoubleClick?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.MouseDoubleClick(e);
+        }
         public virtual void MouseRightClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnRightClick?.Invoke(e, this);
@@ -347,15 +354,18 @@ namespace UIEditor.UILib {
                 Parent?.ScrollWheel(e);
         }
 
-        // 聚焦事件不会向后传播
         public virtual void FocusOn(UIActionEvent e) {
             IsFocused = true;
             OnFocused?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.FocusOn(e);
         }
 
         public virtual void UnFocus(UIActionEvent e) {
             IsFocused = false;
             OnUnFocused?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.UnFocus(e);
         }
 
 

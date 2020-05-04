@@ -32,8 +32,8 @@ namespace UIEditor.Editor.States {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
                 SizeFactor = new Vector2(1f, 1f),
-                Size = new Vector2(-1f, -1f),
-                Position = new Vector2(1f, 1f),
+                Size = new Vector2(-10f, -10f),
+                Position = new Vector2(5f, 5f),
             };
             var scrollBar1 = new UIScrollBarV() {
                 Name = "ScrollBar",
@@ -61,7 +61,6 @@ namespace UIEditor.Editor.States {
                 Position = new Vector2(10, 10),
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-20, -20),
-
             };
             for (int i = 1; i <= 100; i++) {
                 var toolButton = new UIButton() {
@@ -79,5 +78,27 @@ namespace UIEditor.Editor.States {
             _toolBarList.SetScrollBarV(scrollBar3);
             toolbar2.AddToPanel(_toolBarList);
         }
+        private UIElement _lastFocusElement;
+        private UITreeNode _copy(UIElement element) {
+            List<UITreeNode> children = new List<UITreeNode>();
+            UITreeNode node = new UITreeNode(element.Name, children);
+            foreach (var child in element.Children) {
+                children.Add(_copy(child));
+            }
+            return node;
+        }
+
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+            if (_lastFocusElement != UIEditor.Instance.UIStateMachine.LastRightClickElement) {
+                var e = UIEditor.Instance.UIStateMachine.LastRightClickElement;
+                _treeList.ClearRoots();
+                if (e != null) {
+                    _treeList.AddElement(_copy(e));
+                }
+            }
+            _lastFocusElement = UIEditor.Instance.UIStateMachine.LastRightClickElement;
+        }
+
     }
 }
