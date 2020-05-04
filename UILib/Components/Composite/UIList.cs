@@ -30,6 +30,7 @@ namespace UIEditor.UILib.Components.Composite {
         private int _listUpMost;
         private int _listBottomMost;
 
+        private const float INNER_PADDING = 5f;
 
         public UIList() : base() {
             Name = "列表";
@@ -57,6 +58,8 @@ namespace UIEditor.UILib.Components.Composite {
                 Children.Remove(_verticalScrollBar);
             }
             _verticalScrollBar = scrollBarV;
+            _verticalScrollBar.SizeFactor = new Vector2(0, 1f);
+            _verticalScrollBar.Size = new Vector2(10, -INNER_PADDING * 2);
             _verticalScrollBar.AnchorPoint = new Vector2(1, 0.5f);
             _verticalScrollBar.Pivot = new Vector2(1, 0.5f);
             _verticalScrollBar.Position = new Vector2(-5, 0);
@@ -70,6 +73,8 @@ namespace UIEditor.UILib.Components.Composite {
                 Children.Remove(_horizontalScrollBar);
             }
             _horizontalScrollBar = scrollBarH;
+            _horizontalScrollBar.SizeFactor = new Vector2(1f, 0f);
+            _horizontalScrollBar.Size = new Vector2(-INNER_PADDING * 2 - 10 * 2, 10);
             _horizontalScrollBar.AnchorPoint = new Vector2(0f, 1f);
             _horizontalScrollBar.Pivot = new Vector2(0f, 1f);
             _horizontalScrollBar.Position = new Vector2(0, -5);

@@ -21,7 +21,9 @@ namespace UIEditor.UILib {
 
     public enum SizeStyle {
         Block,
-        Inline
+        Inline,
+        AutoHeight,
+        AutoWidth,
     }
 
     public enum DrawStyle {

@@ -70,7 +70,7 @@ namespace UIEditor.UILib.Components.Advanced {
                 Pivot = new Vector2(0f, 0f),
                 AnchorPoint = new Vector2(0f, 0f),
                 SizeFactor = new Vector2(1f, 0f),
-                Size = new Vector2(0f, 32f),
+                Size = new Vector2(0f, 30f),
             };
             DisplayElement = display;
             TreeNodes = nodes;

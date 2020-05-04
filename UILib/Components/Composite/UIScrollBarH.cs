@@ -72,8 +72,6 @@ namespace UIEditor.UILib.Components {
         public UIScrollBarH() : base() {
             Name = "水平滚动条";
             BlockPropagation = true;
-            SizeFactor = new Vector2(1, 0);
-            Size = new Vector2(-PADDING * 2, 10);
             _currentValue = 0f;
             _isMouseOver = false;
             var tex = Main.magicPixel;

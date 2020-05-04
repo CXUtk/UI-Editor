@@ -70,12 +70,9 @@ namespace UIEditor.UILib.Components {
         private float _offsetY;
         private float _timer;
 
-        private const float PADDING = 5;
         public UIScrollBarV() : base() {
             Name = "垂直滚动条";
             BlockPropagation = true;
-            SizeFactor = new Vector2(0, 1);
-            Size = new Vector2(10, -PADDING * 2);
             _currentValue = 0;
             _isMouseOver = false;
             _outerBar = new UIBar() {
@@ -149,8 +146,6 @@ namespace UIEditor.UILib.Components {
                 if (float.IsNaN(r)) r = 0;
                 CurrentValue = r;
             }
-
-
             var pos = new Vector2(0, MathHelper.Lerp(topY, bottomY, CurrentValue));
             _innerBar.Position = pos;
         }

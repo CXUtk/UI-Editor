@@ -54,7 +54,6 @@ namespace UIEditor.UILib.Components {
         public UITextBox() : base() {
             Name = "文本框";
             Overflow = OverflowType.Hidden;
-            BlockPropagation = true;
             _text = string.Empty;
             _shouldBlink = false;
             PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default");
