@@ -315,7 +315,7 @@ namespace UIEditor.UILib {
         }
 
         public virtual void MouseUp(UIMouseEvent e) {
-            //Main.NewText("抬起");
+            // Main.NewText("抬起");
             _mouseDownedLeft = false;
             OnMouseUp?.Invoke(e, this);
             if (!BlockPropagation)
@@ -323,7 +323,7 @@ namespace UIEditor.UILib {
         }
 
         public virtual void MouseRightUp(UIMouseEvent e) {
-            //Main.NewText("右键按下");
+            // Main.NewText("右键抬起");
             OnMouseRightUp?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseRightUp(e);
@@ -402,7 +402,6 @@ namespace UIEditor.UILib {
             _selfHitbox = new QuadrilateralHitbox();
             Recalculate();
         }
-
 
         public void AppendChild(UIElement element) {
             element.SplitFromParent();
