@@ -316,7 +316,7 @@ namespace UIEditor.UILib {
         }
 
         public virtual void MouseUp(UIMouseEvent e) {
-            //Main.NewText("抬起");
+            // Main.NewText("抬起");
             _mouseDownedLeft = false;
             OnMouseUp?.Invoke(e, this);
             if (!BlockPropagation)
@@ -324,7 +324,7 @@ namespace UIEditor.UILib {
         }
 
         public virtual void MouseRightUp(UIMouseEvent e) {
-            //Main.NewText("右键按下");
+            // Main.NewText("右键抬起");
             OnMouseRightUp?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseRightUp(e);
@@ -402,12 +402,6 @@ namespace UIEditor.UILib {
             Tooltip = "";
             _selfHitbox = new QuadrilateralHitbox();
             Recalculate();
-            if (DEBUG_MODE)
-                OnRightClick += UIElement_OnRightClick;
-        }
-
-        private void UIElement_OnRightClick(UIMouseEvent e, UIElement sender) {
-            throw new NotImplementedException();
         }
 
         public void AppendChild(UIElement element) {

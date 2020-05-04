@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework;
 using UIEditor.UILib.Components;
 using UIEditor.UILib.Components.Composite;
 using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace UIEditor.UILib.Tests {
     public class TestState2 : UIState {
@@ -41,6 +43,12 @@ namespace UIEditor.UILib.Tests {
                 Tooltip = "Debug模式",
                 Name = "test checkbox",
                 Position = new Vector2(90, 90)
+            };
+            var slot = new UIItemSlot
+            {
+                Name = "test slot",
+                Position = new Vector2(90, 190),
+                ItemType = ModContent.ItemType<ItemForTest>()
             };
             checkbox.OnCheckedChange += Checkbox_OnCheckedChange;
             button.OnClick += (e, sender) => {
@@ -109,6 +117,7 @@ namespace UIEditor.UILib.Tests {
             box13.AppendChild(checkbox);
             //box13.AppendChild(button2);
             box13.AppendChild(menu);
+            box13.AppendChild(slot);
         }
 
         private void Checkbox_OnCheckedChange(Events.UICheckBoxEvent e, UIElement sender) {
