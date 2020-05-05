@@ -111,12 +111,14 @@ namespace UIEditor.UILib {
             if (!_wasMouseLeftDown && mouseLeftDown && hoverElement != null) {
                 hoverElement.MouseDown(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 hoverElement.FocusOn(new UIActionEvent(hoverElement, gameTime.TotalGameTime));
+                hoverElement.DragStart(new UIActionEvent(hoverElement, gameTime.TotalGameTime));
                 _lastLeftDownElement = hoverElement;
                 _lastFocusElement = hoverElement;
             }
 
             if (_wasMouseLeftDown && Main.mouseLeftRelease) {
                 _lastLeftDownElement?.MouseUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                _lastLeftDownElement?.DragEnd(new UIDragEndEvent(_lastLeftDownElement, hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 if (_wasMouseLeftDown && Main.mouseLeftRelease && hoverElement != null && _lastLeftDownElement == hoverElement) {
                     if (gameTime.TotalGameTime.TotalMilliseconds - _lastLeftClickTime > 200) {
                         hoverElement.MouseClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));

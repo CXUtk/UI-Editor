@@ -18,8 +18,6 @@ namespace UIEditor.UILib.Components.Composite {
 
         public UIWindow() : base() {
             Name = "窗口";
-            this.OnMouseDown += UIWindow_OnMouseDown;
-            this.OnMouseUp += UIWindow_OnMouseUp;
             BlockPropagation = true;
 
             _closeButton = new UIImageButton() {
@@ -40,13 +38,15 @@ namespace UIEditor.UILib.Components.Composite {
             OnClose?.Invoke(new UIActionEvent(this, e.TimeStamp), sender);
         }
 
-        private void UIWindow_OnMouseUp(UIMouseEvent e, UIElement sender) {
-            _isDragging = false;
+        public override void DragStart(UIActionEvent e) {
+            _isDragging = true;
+            _dragOffset = Main.MouseScreen - PostionScreen;
+            base.DragStart(e);
         }
 
-        private void UIWindow_OnMouseDown(UIMouseEvent e, UIElement sender) {
-            _isDragging = true;
-            _dragOffset = e.MouseScreen - PostionScreen;
+        public override void DragEnd(UIDragEndEvent e) {
+            _isDragging = false;
+            base.DragEnd(e);
         }
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);

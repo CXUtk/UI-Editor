@@ -18,7 +18,7 @@ namespace UIEditor.UILib {
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
         public delegate void DrawEvent(UIDrawEvent e, UIElement sender);
         public delegate void DragStartEvent(UIMouseEvent e, UIElement sender);
-        public delegate void DragEndEvent(UIMouseEvent e, UIElement sender);
+        public delegate void DragEndEvent(UIDragEndEvent e, UIElement sender);
 
         public static bool DEBUG_MODE = true;
 
@@ -151,7 +151,8 @@ namespace UIEditor.UILib {
         public event ActionEvent OnFocused;
         public event ActionEvent OnUnFocused;
         public event DrawEvent PostDrawSelf;
-
+        public event ActionEvent OnDragStart;
+        public event DragEndEvent OnDragEnd;
         #endregion
 
 
@@ -390,6 +391,16 @@ namespace UIEditor.UILib {
                 Parent?.UnFocus(e);
         }
 
+        public virtual void DragStart(UIActionEvent e) {
+            OnDragStart?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.DragStart(e);
+        }
+        public virtual void DragEnd(UIDragEndEvent e) {
+            OnDragEnd?.Invoke(e, this);
+            if (!BlockPropagation)
+                Parent?.DragEnd(e);
+        }
 
         public UIElement ElementAt(Vector2 pos) {
             UIElement target = null;
