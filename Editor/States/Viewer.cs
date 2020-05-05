@@ -39,8 +39,14 @@ namespace UIEditor.Editor.States {
             _viewerPanel.AppendChild(button);
         }
         public override void UpdateSelf(GameTime gameTime) {
+
+            if (IsMouseHover) {
+                Main.cursorOverride = 17;
+                Main.cursorColor = Color.White;
+            }
             base.UpdateSelf(gameTime);
             var a = _viewerPanel.NodePositionToScreenAR(_viewerPanel.ScreenPositionToNodeAR(Main.MouseScreen, Vector2.Zero));
         }
+
     }
 }

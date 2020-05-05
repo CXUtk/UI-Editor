@@ -8,6 +8,7 @@ using UIEditor.UILib;
 using UIEditor.UILib.Tests;
 using UIEditor.Editor.States;
 using UIEditor.UILib.Resources;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor {
     public class UIEditor : Mod {
@@ -33,7 +34,66 @@ namespace UIEditor {
             UIStateMachine.Add(new TestState2("tstate2"));
         }
 
+        public override void PostSetupContent() {
+            base.PostSetupContent();
+            Array.Resize(ref Main.cursorTextures, 25);
+            Main.cursorTextures[17] = GetTexture("Images/Cursors/CursorMove");
+            On.Terraria.Main.DrawInterface_36_Cursor += Main_DrawInterface_36_Cursor;
+        }
+
+        private void Main_DrawInterface_36_Cursor(On.Terraria.Main.orig_DrawInterface_36_Cursor orig) {
+            if (Main.cursorOverride != -1) {
+                Color color = new Color((int)(Main.cursorColor.R * 0.2f), (int)(Main.cursorColor.G * 0.2f),
+                    (int)(Main.cursorColor.B * 0.2f), (int)(Main.cursorColor.A * 0.5f));
+                Color white = Main.cursorColor;
+                bool flag = true;
+                bool flag2 = true;
+                float rotation = 0f;
+                Vector2 value = default(Vector2);
+                float num = 1f;
+                if (Main.cursorOverride == 2) {
+                    flag = false;
+                    white = Color.White;
+                    num = 0.7f;
+                    value = new Vector2(0.1f);
+                }
+                switch (Main.cursorOverride) {
+                    case 2:
+                        flag = false;
+                        white = Color.White;
+                        num = 0.7f;
+                        value = new Vector2(0.1f);
+                        break;
+                    case 3:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                        flag = false;
+                        white = Color.White;
+                        break;
+                    case 17:
+                        white = Color.White;
+                        value = new Vector2(0.5f, 0.5f);
+                        break;
+                }
+                if (flag) {
+                    Main.spriteBatch.Draw(Main.cursorTextures[Main.cursorOverride], new Vector2(Main.mouseX + 1, Main.mouseY + 1), null, color, rotation, value * Main.cursorTextures[Main.cursorOverride].Size(), Main.cursorScale * 1.1f * num, SpriteEffects.None, 0f);
+                }
+                if (flag2) {
+                    Main.spriteBatch.Draw(Main.cursorTextures[Main.cursorOverride], new Vector2(Main.mouseX, Main.mouseY), null, white, rotation, value * Main.cursorTextures[Main.cursorOverride].Size(), Main.cursorScale * num, SpriteEffects.None, 0f);
+                }
+            } else if (Main.SmartCursorEnabled) {
+                Main.DrawCursor(Main.DrawThickCursor(smart: true), smart: true);
+            } else {
+                Main.DrawCursor(Main.DrawThickCursor());
+            }
+        }
+
         public override void Unload() {
+            Array.Resize(ref Main.cursorTextures, 17);
+            On.Terraria.Main.DrawInterface_36_Cursor -= Main_DrawInterface_36_Cursor;
             Instance = null;
             UIStateMachine = null;
             SkinManager = null;
