@@ -33,9 +33,7 @@ namespace UIEditor.UILib.Components {
 
         public UICheckBox() {
             Name = "复选框";
-            BlockPropagation = true;
             Size = new Vector2(30, 30);
-
         }
 
 

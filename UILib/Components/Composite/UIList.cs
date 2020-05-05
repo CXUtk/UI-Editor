@@ -18,6 +18,7 @@ namespace UIEditor.UILib.Components.Composite {
             get { return _innerContainerPadding; }
             set { base.CheckRecalculate(_innerContainerPadding, value); _innerContainerPadding = value; }
         }
+        public UIElement SelectedElement { get { return _selectedItem; } }
         private float _itemMargin;
         private float _innerContainerPadding;
 
@@ -27,6 +28,7 @@ namespace UIEditor.UILib.Components.Composite {
         protected UIListViewPort _viewPort;
         protected float _totHeight;
         protected float _maxWidth;
+        protected UIElement _selectedItem;
         private int _listUpMost;
         private int _listBottomMost;
 

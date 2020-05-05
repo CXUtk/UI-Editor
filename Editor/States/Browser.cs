@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor.Editor.States {
     public class Browser : UIElement {
-
+        public UIElement SelectedElement { get { return _treeList.SelectedElement; } }
         private UIPanel _listPanel;
         private UITreeList _treeList;
         private UIList _toolBarList;

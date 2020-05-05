@@ -17,7 +17,7 @@ namespace UIEditor.UILib.Components.Advanced {
         private readonly UIElement _right;
 
         public UITableBar(UIElement left, UIElement right) : base() {
-            Division = 0.382f;
+            Division = 0.42f;
             _left = new UIElement() {
                 AnchorPoint = new Vector2(0, 0.5f),
                 Pivot = new Vector2(0, 0.5f),

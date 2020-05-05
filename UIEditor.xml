@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UIEditor</name>
+    </assembly>
+    <members>
+        <member name="T:UIEditor.Editor.Attributes.EditorPropertyIgnoreAttribute">
+            <summary>
+            被EditorPropertyIgnore指定的成员属性会在编辑器显示的属性界面中被忽略
+            </summary>
+        </member>
+        <member name="T:UIEditor.Editor.Attributes.EditorPropertyNoChildrenAttribute">
+            <summary>
+            如果某个UI类型具有此特性，则在层级浏览器中不会显示其子节点
+            </summary>
+        </member>
+        <member name="F:UIEditor.UIEditor.Instance">
+            <summary>
+            UI编辑器的单例实例指针
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIScrollBarH.EndSize">
+            <summary>
+            滚动条两端的贴图高度
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIScrollBarH.CurrentValue">
+            <summary>
+            当前滚动条运动到的位置的比例，这个值处于0和1之间
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIScrollBarV.EndSize">
+            <summary>
+            滚动条两端的贴图高度
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIScrollBarV.CurrentValue">
+            <summary>
+            当前滚动条运动到的位置的比例，这个值处于0和1之间
+            </summary>
+        </member>
+        <member name="T:UIEditor.UILib.Components.UIBar">
+            <summary>
+            一个简易的条状UI，由两端和中间组成
+            </summary>
+        </member>
+        <member name="T:UIEditor.UILib.Components.UILabel">
+            <summary>
+            自动适应大小的标签UI组件
+            只显示一行文本
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIProgressBar.FrameCornerSize">
+            <summary>
+            边框贴图四个角的大小，除去这四个角后的区域为填充区域
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIProgressBar.CurrentValue">
+            <summary>
+            当前进度条的进度值，是一个0-1之间的浮点数
+            </summary>
+        </member>
+        <member name="T:UIEditor.UILib.Components.UITextArea">
+            <summary>
+            支持多行输入的文本框
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UITextArea.LinePadding">
+            <summary>
+            行间距
+            </summary>
+        </member>
+        <member name="T:UIEditor.UILib.Components.UITextBox">
+            <summary>
+            单行输入的文本框
+            </summary>
+        </member>
+        <member name="T:UIEditor.UILib.OverflowType">
+            <summary>
+            决定该UI元素的部分处于父节点容器之外的行为
+            </summary>
+        </member>
+        <member name="F:UIEditor.UILib.OverflowType.Overflow">
+            <summary>
+            直接溢出
+            </summary>
+        </member>
+        <member name="F:UIEditor.UILib.OverflowType.Hidden">
+            <summary>
+            隐藏溢出部分
+            </summary>
+        </member>
+        <member name="T:UIEditor.UILib.Events.UIEvent">
+            <summary>
+            储存UI事件的信息
+            </summary>
+        </member>
+        <member name="T:UIEditor.UILib.Events.UIMouseEvent">
+            <summary>
+            储存鼠标事件
+            </summary>
+        </member>
+        <member name="M:UIEditor.UILib.Hitbox.QuadrilateralHitbox.#ctor">
+            <summary>
+            逆时针多边形顶点序列
+            </summary>
+            <param name="points"></param>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.IsActive">
+            <summary>
+            UI元素是否处于激活状态，如果不激活则不会显示也不会响应任何事件
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.IsVisible">
+            <summary>
+            UI元素是否能见，如果不能见就不绘制，但是会响应事件
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.Pivot">
+            <summary>
+            该UI节点的基准点位置，计算位置旋转等时会以此位置为原点，
+            X和Y的值一般为0到1的浮点数，代表节点的比例位置
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.AnchorPoint">
+            <summary>
+            UI元素的锚点，也就是其基准点相对于父节点的位置，
+            X和Y的值一般为0到1的浮点数，代表父节点的比例位置
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.Size">
+            <summary>
+            该UI元素的宽度，高度
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.SizeFactor">
+            <summary>
+            该UI元素相对于父节点的宽度，高度
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.Position">
+            <summary>
+            该UI元素与于自身锚点的相对位置
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.Rotation">
+            <summary>
+            UI元素绕基准点旋转的弧度，注意，如果设置了旋转，就不要设置溢出隐藏了
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.Scale">
+            <summary>
+            UI元素的放大倍率
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.Name">
+            <summary>
+            UI元素的名字
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.Overflow">
+            <summary>
+            UI元素的溢出行为
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.BlockPropagation">
+            <summary>
+            UI元素是否阻止事件向其父元素传播
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.NoEvent">
+            <summary>
+            这个UI元素是否会响应事件
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.Tooltip">
+            <summary>
+            鼠标移动上去时候显示的说明文字
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.IsMouseHover">
+            <summary>
+            如果鼠标位置在这个UI元素上面
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -22,9 +22,7 @@ namespace UIEditor.Editor.States {
         private UIElement _navigator;
         private Browser _hierbrowser;
         private Viewer _viewer;
-        private UIElement _propertyInspector;
-        private UITreeList _list;
-        private UIList _toolBarList;
+        private Inspecter _propertyInspector;
 
         private const float PADDING_BODY = 10f;
         public override void Initialize() {
@@ -70,10 +68,18 @@ namespace UIEditor.Editor.States {
             _body.AppendChild(_propertyInspector);
         }
 
+        private UIElement _lastFocusElement;
+
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             _viewer.Position = new Vector2(_hierbrowser.Width, 0);
             _propertyInspector.Position = new Vector2(_hierbrowser.Width, _viewer.Height);
+            var e = _hierbrowser.SelectedElement;
+            if (_lastFocusElement != e) {
+                if (e != null)
+                    _propertyInspector.Add(e);
+            }
+            _lastFocusElement = e;
         }
 
 
@@ -97,8 +103,12 @@ namespace UIEditor.Editor.States {
             this.IsActive = false;
         }
 
+
+
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
+
+
             //sb.End();
             //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
             //    DepthStencilState.None, RasterizerState.CullNone, null, Matrix.CreateScale(1) * Matrix.CreateRotationZ(0) * Matrix.CreateTranslation(new Vector3(10, 10, 0)) * Main.UIScaleMatrix);

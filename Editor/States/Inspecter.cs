@@ -37,23 +37,32 @@ namespace UIEditor.Editor.States {
                 AnchorPoint = new Vector2(1, 0.5f),
                 Pivot = new Vector2(1, 0.5f),
             };
-            Add();
             _inspectorList.SetScrollBarV(scrollBar1);
             _inspecterPanel.AppendChild(_inspectorList);
             AppendChild(_inspecterPanel);
         }
 
 
-        public void Add() {
+        private UIElement GetRightElement(Type type) {
+            if (type == typeof(bool)) {
+                return new UICheckBox() {
+                    AnchorPoint = new Vector2(0, 0.5f),
+                    Pivot = new Vector2(0, 0.5f),
+                };
+            }
+            return new UITextBox() {
+                AnchorPoint = new Vector2(0, 0),
+                Pivot = new Vector2(0, 0f),
+                SizeFactor = new Vector2(1, 1),
+            };
+        }
+
+        public void Add(UIElement element) {
             _inspectorList.Clear();
-            foreach (var info in typeof(UIElement).GetProperties()) {
+            foreach (var info in element.GetType().GetProperties()) {
                 if (info.IsDefined(typeof(Editor.Attributes.EditorPropertyIgnoreAttribute), true))
                     continue;
-                var right = new UITextBox() {
-                    AnchorPoint = new Vector2(0, 0),
-                    Pivot = new Vector2(0, 0f),
-                    SizeFactor = new Vector2(1, 1),
-                };
+                UIElement right = GetRightElement(info.PropertyType);
                 var left = new UILabel() {
                     Text = info.Name,
                     SizeFactor = new Vector2(1f, 0f),

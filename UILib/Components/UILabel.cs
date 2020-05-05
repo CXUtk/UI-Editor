@@ -15,6 +15,7 @@ namespace UIEditor.UILib.Components {
     public class UILabel : UIElement {
         public string Text { get; set; }
         public Color TextColor { get; set; }
+        public Color BackgroundColor { get; set; }
         public float TextScale { get; set; }
         public bool IsLargeText { get; set; }
         public SizeStyle SizeStyle { get; set; }
@@ -25,6 +26,7 @@ namespace UIEditor.UILib.Components {
             Text = "文字";
             TextScale = 1f;
             TextColor = Color.White;
+            BackgroundColor = Color.Transparent;
             IsLargeText = false;
             SizeStyle = SizeStyle.Inline;
         }
@@ -51,6 +53,7 @@ namespace UIEditor.UILib.Components {
 
         public override void DrawSelf(SpriteBatch sb) {
             var font = IsLargeText ? Main.fontDeathText : Main.fontMouseText;
+            sb.Draw(Main.magicPixel, new Rectangle(0, 0, Width, Height), BackgroundColor);
             if (IsLargeText)
                 Terraria.Utils.DrawBorderStringBig(sb, _displayString, Vector2.Zero, TextColor, TextScale);
             else

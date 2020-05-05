@@ -62,18 +62,12 @@ namespace UIEditor.UILib.Components.Composite {
             Vector2 lowerPos = new Vector2(0, _toolPanel.Height);
             if (_collapseOn) {
                 _openButton.Texture = CollapseButtonDownTexture;
-                if (_timer < 300) {
-                    _timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                } else {
-                    _timer = 300;
-                }
+                _timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_timer > 300) _timer = 300;
             } else {
                 _openButton.Texture = CollapseButtonUpTexture;
-                if (_timer > 0) {
-                    _timer -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                } else {
-                    _timer = 0;
-                }
+                _timer -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_timer < 0) _timer = 0;
             }
             Position = Vector2.Lerp(lowerPos, upperPos, _timer / 300.0f);
             _toolPanel.Position = new Vector2(0, _openButton.Height - 2);
