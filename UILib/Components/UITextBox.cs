@@ -68,7 +68,7 @@ namespace UIEditor.UILib.Components {
         }
 
         private void FindCarrot(UIMouseEvent e, UIElement sender) {
-            var localMousePos = _label.ScreenPositionToNode(e.MouseScreen);
+            var localMousePos = _label.ScreenPositionToNodeAR(e.MouseScreen, Vector2.Zero);
             int l = 0, r = Text.Length;
             int ans = r;
             while (l <= r) {

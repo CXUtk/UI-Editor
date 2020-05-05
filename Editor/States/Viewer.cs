@@ -18,7 +18,9 @@ namespace UIEditor.Editor.States {
         private UIPanel _viewerPanel;
 
         public Viewer() : base() {
+            BlockPropagation = true;
             _viewerPanel = new UIPanel() {
+                Overflow = OverflowType.Hidden,
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
                 Position = new Vector2(5, 5),
@@ -26,6 +28,19 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(-10, -10),
             };
             AppendChild(_viewerPanel);
+            _viewerPanel.OnClick += _viewerPanel_OnClick;
+        }
+
+        private void _viewerPanel_OnClick(UIMouseEvent e, UIElement sender) {
+            var button = new UIButton() {
+                Position = _viewerPanel.ScreenPositionToNodeAR(e.MouseScreen, Vector2.Zero),
+                Size = new Vector2(100, 50),
+            };
+            _viewerPanel.AppendChild(button);
+        }
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+            var a = _viewerPanel.NodePositionToScreenAR(_viewerPanel.ScreenPositionToNodeAR(Main.MouseScreen, Vector2.Zero));
         }
     }
 }

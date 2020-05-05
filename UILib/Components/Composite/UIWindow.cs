@@ -55,7 +55,7 @@ namespace UIEditor.UILib.Components.Composite {
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             if (_isDragging) {
-                Position = ScreenPositionToNode(Main.MouseScreen - _dragOffset);
+                Position = ScreenPositionToParentAR(Main.MouseScreen - _dragOffset);
             }
         }
     }

@@ -19,6 +19,9 @@ namespace UIEditor.UILib {
                 return new Color(0x3f, 0x41, 0x97);
             }
         }
+        public static void DrawAdvBox(SpriteBatch sp, Rectangle rect, Color c, Texture2D img, Vector2 cornerSize) {
+            DrawAdvBox(sp, rect.X, rect.Y, rect.Width, rect.Height, c, img, cornerSize);
+        }
         public static void DrawAdvBox(SpriteBatch sp, int x, int y, int w, int h, Color c, Texture2D img, Vector2 cornerSize) {
             Texture2D box = img;
             int width = (int)cornerSize.X;

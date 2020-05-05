@@ -141,7 +141,7 @@ namespace UIEditor.UILib.Components {
             // 锚点和基准点都在顶部
             int topY = 0, bottomY = _outerBar.Height - _innerBar.Height;
             if (_isMouseDown) {
-                var posLocal = _innerBar.ScreenPositionToNode(Main.MouseScreen + new Vector2(0, _offsetY));
+                var posLocal = _innerBar.ScreenPositionToParentAR(Main.MouseScreen + new Vector2(0, _offsetY));
                 float r = (posLocal.Y - topY) / (bottomY - topY);
                 if (float.IsNaN(r)) r = 0;
                 CurrentValue = r;

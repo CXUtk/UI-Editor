@@ -17,6 +17,8 @@ namespace UIEditor.UILib {
         public delegate void ScrollEvent(UIScrollWheelEvent e, UIElement sender);
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
         public delegate void DrawEvent(UIDrawEvent e, UIElement sender);
+        public delegate void DragStartEvent(UIMouseEvent e, UIElement sender);
+        public delegate void DragEndEvent(UIMouseEvent e, UIElement sender);
 
         public static bool DEBUG_MODE = true;
 
@@ -196,10 +198,30 @@ namespace UIEditor.UILib {
             }
         }
 
-        public Vector2 ScreenPositionToNode(Vector2 worldPos) {
-            return worldPos - (_baseTopLeftScreen - Position + PivotOffset);
+        /// <summary>
+        /// 把屏幕坐标转化为相对于这个UI元素的子节点的坐标，可以指定锚点
+        /// </summary>
+        /// <param name="worldPos"></param>
+        /// <param name="anchor"></param>
+        /// <returns></returns>
+        public Vector2 ScreenPositionToNodeAR(Vector2 worldPos, Vector2 anchor) {
+            return worldPos - (_baseTopLeftScreen + new Vector2(Width * anchor.X, Height * anchor.Y));
         }
 
+        /// <summary>
+        ///  把屏幕坐标转化为相对于这个UI元素的父节点的子节点坐标
+        /// </summary>
+        /// <param name="worldPos"></param>
+        /// <param name="anchor"></param>
+        /// <returns></returns>
+        public Vector2 ScreenPositionToParentAR(Vector2 worldPos) {
+            if (Parent != null) return Parent.ScreenPositionToNodeAR(worldPos, AnchorPoint);
+            return worldPos;
+        }
+
+        public Vector2 NodePositionToScreenAR(Vector2 nodePos) {
+            return PostionScreen + nodePos;
+        }
         //public Vector2 NodePositionToScreen(Vector2 worldPos) {
         //    return _baseTopLeftScreen - PivotOffset;
         //}
@@ -216,7 +238,7 @@ namespace UIEditor.UILib {
                 return _baseTopLeftScreen + PivotOffset;
             }
             set {
-                Position = ScreenPositionToNode(value);
+                Position = Parent.ScreenPositionToNodeAR(value, AnchorPoint);
             }
         }
 
@@ -335,7 +357,7 @@ namespace UIEditor.UILib {
             if (!BlockPropagation)
                 Parent?.MouseClick(e);
         }
-        internal void MouseDoubleClick(UIMouseEvent e) {
+        public virtual void MouseDoubleClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnDoubleClick?.Invoke(e, this);
             if (!BlockPropagation)
