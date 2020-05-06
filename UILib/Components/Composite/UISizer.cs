@@ -38,11 +38,13 @@ namespace UIEditor.UILib.Components.Composite {
             }
         };
 
+        private float[] _barDeltas;
         private UIDraggable[] _dragCorner;
         private UIDraggable[] _dragBar;
         private UIElement _targetElement;
         public UISizer() : base() {
             Pivot = new Vector2(0, 0);
+            _barDeltas = new float[4];
             _dragBar = new UIDraggable[4];
             _dragBar[0] = new UIBarDraggerH() {
                 SizeFactor = new Vector2(1, 0),
@@ -68,6 +70,44 @@ namespace UIEditor.UILib.Components.Composite {
                 Pivot = new Vector2(1f, 0.5f),
                 AnchorPoint = new Vector2(1f, 0.5f),
             };
+
+
+            _dragBar[0].OnUpdate += (e, sender) =>
+            {
+                if (((UIDraggable)sender).IsDragging)
+                {
+                    sender.Position = new Vector2(0, 0);
+                    this.Size -= new Vector2(0, Main.mouseY - Main.lastMouseY);
+                    this.Position += new Vector2(0, Main.mouseY - Main.lastMouseY);
+                }
+            };
+            _dragBar[1].OnUpdate += (e, sender) =>
+            {
+                if (((UIDraggable)sender).IsDragging)
+                {
+                    sender.Position = new Vector2(0, 0);
+                    this.Size += new Vector2(0, Main.mouseY - Main.lastMouseY);
+                }
+            };
+            _dragBar[2].OnUpdate += (e, sender) =>
+            {
+                if (((UIDraggable)sender).IsDragging)
+                {
+                    sender.Position = new Vector2(0, 0);
+                    this.Size -= new Vector2(Main.mouseX - Main.lastMouseX, 0);
+                    this.Position += new Vector2(Main.mouseX - Main.lastMouseX, 0);
+                }
+            };
+            _dragBar[3].OnUpdate += (e, sender) =>
+            {
+                if (((UIDraggable)sender).IsDragging)
+                {
+                    sender.Position = new Vector2(0, 0);
+                    this.Size += new Vector2(Main.mouseX - Main.lastMouseX, 0);
+                }
+            };
+
+
             for (int i = 0; i < 4; i++) AppendChild(_dragBar[i]);
             _dragCorner = new UIDraggable[4];
             for (int i = 0; i < 4; i++) {
@@ -79,19 +119,59 @@ namespace UIEditor.UILib.Components.Composite {
                 AppendChild(_dragCorner[i]);
             }
 
+            _dragCorner[0].OnUpdate += (e, sender) =>
+            {
+                if (((UIDraggable)sender).IsDragging)
+                {
+                    sender.Position = new Vector2(0, 0);
+                    this.Size -= Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
+                    this.Position += Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
+                }
+            };
+            _dragCorner[1].OnUpdate += (e, sender) =>
+            {
+                if (((UIDraggable)sender).IsDragging)
+                {
+                    sender.Position = new Vector2(0, 0);
+                    var mouseDelta = Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
+                    this.Size += new Vector2(mouseDelta.X, -mouseDelta.Y);
+                    this.Position += new Vector2(0, mouseDelta.Y);
+                }
+            };
+            _dragCorner[2].OnUpdate += (e, sender) =>
+            {
+                if (((UIDraggable)sender).IsDragging)
+                {
+                    sender.Position = new Vector2(0, 0);
+                    var mouseDelta = Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
+                    this.Size += new Vector2(-mouseDelta.X, mouseDelta.Y);
+                    this.Position += new Vector2(mouseDelta.X, 0);
+                }
+            };
+            _dragCorner[3].OnUpdate += (e, sender) =>
+            {
+                if (((UIDraggable)sender).IsDragging)
+                {
+                    sender.Position = new Vector2(0, 0);
+                    this.Size += Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
+                }
+            };
+
+
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
 
-            var pos = _dragCorner[0].InnerRectangleScreen.TopLeft();
-            var br = _dragCorner[3].InnerRectangleScreen.BottomRight();
-            Main.NewText(ScreenPositionToParentAR(pos));
-            Main.NewText(Position);
-            Position = ScreenPositionToParentAR(pos);
-            Size = new Vector2(br.X - pos.X, br.Y - pos.Y);
-            for (int i = 0; i < 4; i++) {
-                _dragCorner[i].Position = new Vector2(0, 0);
-            }
+            //var pos = _dragCorner[0].InnerRectangleScreen.TopLeft();
+            //var br = _dragCorner[3].InnerRectangleScreen.BottomRight();
+            //Main.NewText(ScreenPositionToParentAR(pos));
+            //Main.NewText(Position);
+            //Position = ScreenPositionToParentAR(pos);
+            //Size = new Vector2(br.X - pos.X, br.Y - pos.Y);
+            //for (int i = 0; i < 4; i++) {
+            //    _dragCorner[i].Position = new Vector2(0, 0);
+            //}
+            // Recalculate();
         }
         public override void UpdateChildren(GameTime gameTime) {
             base.UpdateChildren(gameTime);
