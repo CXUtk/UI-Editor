@@ -39,6 +39,7 @@ namespace UIEditor {
             Array.Resize(ref Main.cursorTextures, 25);
             Main.cursorTextures[17] = GetTexture("Images/Cursors/CursorMove");
             Main.cursorTextures[18] = GetTexture("Images/Cursors/CursorScale");
+            Main.cursorTextures[19] = GetTexture("Images/Cursors/CursorScaleH");
             On.Terraria.Main.DrawInterface_36_Cursor += Main_DrawInterface_36_Cursor;
         }
 
@@ -76,6 +77,7 @@ namespace UIEditor {
                         break;
                     case 17:
                     case 18:
+                    case 19:
                         white = Color.White;
                         value = new Vector2(0.5f, 0.5f);
                         break;

@@ -9,8 +9,10 @@ using UIEditor.UILib.Events;
 
 namespace UIEditor.UILib.Components {
     public class UIDraggable : UIElement {
-        public event ActionEvent OnUpdate;
+        public delegate void DraggingEvent(UIDraggingEvent e, UIElement sender);
+        public event DraggingEvent OnDragging;
         private Vector2 _dragOffset;
+        private Vector2 _dragStartPos;
         public bool IsDragging { get; private set; }
         public UIDraggable() : base() {
 
@@ -18,6 +20,7 @@ namespace UIEditor.UILib.Components {
         public override void DragStart(UIMouseEvent e) {
             IsDragging = true;
             _dragOffset = e.MouseScreen - PositionScreen;
+            _dragStartPos = Position;
             base.DragStart(e);
 
         }
@@ -26,14 +29,20 @@ namespace UIEditor.UILib.Components {
             base.DragEnd(e);
 
         }
+
+        public virtual void CursorChange() {
+            Main.cursorOverride = 17;
+            Main.cursorColor = Color.White;
+        }
         public override void UpdateSelf(GameTime gameTime) {
-            if (IsDragging)
+            if (IsDragging) {
                 Position = ScreenPositionToParentAR(Main.MouseScreen - _dragOffset);
-            if (IsMouseHover) {
-                Main.cursorOverride = 17;
-                Main.cursorColor = Color.White;
+                OnDragging?.Invoke(new UIDraggingEvent(this, Position - _dragStartPos, gameTime.TotalGameTime), this);
             }
-            OnUpdate?.Invoke(new UIActionEvent(this, gameTime.TotalGameTime), this);
+            if (IsMouseHover || IsDragging) {
+                CursorChange();
+            }
+
             base.UpdateSelf(gameTime);
         }
     }

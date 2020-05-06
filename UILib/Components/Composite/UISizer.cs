@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Terraria;
 
 namespace UIEditor.UILib.Components.Composite {
-    public class UISizer : UIElement {
+    public class UISizer : UIDraggable {
         private class UICornerDragger : UIDraggable {
             public UICornerDragger() : base() {
 
@@ -23,6 +23,10 @@ namespace UIEditor.UILib.Components.Composite {
             public UIBarDraggerH() : base() {
 
             }
+            public override void CursorChange() {
+                Main.cursorOverride = 18;
+                Main.cursorColor = Color.White;
+            }
             public override void DrawSelf(SpriteBatch sb) {
                 sb.Draw(Main.magicPixel, new Rectangle(0, Height / 2 - 1, Width, 1), Color.White);
                 base.DrawSelf(sb);
@@ -32,19 +36,27 @@ namespace UIEditor.UILib.Components.Composite {
             public UIBarDraggerV() : base() {
 
             }
+            public override void CursorChange() {
+                base.CursorChange();
+                Main.cursorOverride = 19;
+                Main.cursorColor = Color.White;
+            }
             public override void DrawSelf(SpriteBatch sb) {
                 sb.Draw(Main.magicPixel, new Rectangle(Width / 2 - 1, 0, 1, Height), Color.White);
                 base.DrawSelf(sb);
             }
         };
 
-        private float[] _barDeltas;
         private UIDraggable[] _dragCorner;
         private UIDraggable[] _dragBar;
         private UIElement _targetElement;
+        private Vector2 _lastBottomRight;
+        private Vector2 _lastPos;
+        private Vector2 _lastSize;
+
+
         public UISizer() : base() {
             Pivot = new Vector2(0, 0);
-            _barDeltas = new float[4];
             _dragBar = new UIDraggable[4];
             _dragBar[0] = new UIBarDraggerH() {
                 SizeFactor = new Vector2(1, 0),
@@ -72,38 +84,34 @@ namespace UIEditor.UILib.Components.Composite {
             };
 
 
-            _dragBar[0].OnUpdate += (e, sender) =>
-            {
-                if (((UIDraggable)sender).IsDragging)
-                {
+            _dragBar[0].OnDragging += (e, sender) => {
+                if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
-                    this.Size -= new Vector2(0, Main.mouseY - Main.lastMouseY);
-                    this.Position += new Vector2(0, Main.mouseY - Main.lastMouseY);
+                    this.Size = _lastSize - new Vector2(0, e.Moved.Y);
+                    this.Position = _lastPos + new Vector2(0, e.Moved.Y);
+                    _check();
                 }
             };
-            _dragBar[1].OnUpdate += (e, sender) =>
-            {
-                if (((UIDraggable)sender).IsDragging)
-                {
+            _dragBar[1].OnDragging += (e, sender) => {
+                if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
-                    this.Size += new Vector2(0, Main.mouseY - Main.lastMouseY);
+                    this.Size = _lastSize + new Vector2(0, e.Moved.Y);
+                    _check();
                 }
             };
-            _dragBar[2].OnUpdate += (e, sender) =>
-            {
-                if (((UIDraggable)sender).IsDragging)
-                {
+            _dragBar[2].OnDragging += (e, sender) => {
+                if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
-                    this.Size -= new Vector2(Main.mouseX - Main.lastMouseX, 0);
-                    this.Position += new Vector2(Main.mouseX - Main.lastMouseX, 0);
+                    this.Size = _lastSize - new Vector2(e.Moved.X, 0);
+                    this.Position = _lastPos + new Vector2(e.Moved.X, 0);
+                    _check();
                 }
             };
-            _dragBar[3].OnUpdate += (e, sender) =>
-            {
-                if (((UIDraggable)sender).IsDragging)
-                {
+            _dragBar[3].OnDragging += (e, sender) => {
+                if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
-                    this.Size += new Vector2(Main.mouseX - Main.lastMouseX, 0);
+                    this.Size = _lastSize + new Vector2(e.Moved.X, 0);
+                    _check();
                 }
             };
 
@@ -111,49 +119,45 @@ namespace UIEditor.UILib.Components.Composite {
             for (int i = 0; i < 4; i++) AppendChild(_dragBar[i]);
             _dragCorner = new UIDraggable[4];
             for (int i = 0; i < 4; i++) {
+                _dragBar[i].BlockPropagation = true;
                 _dragCorner[i] = new UICornerDragger() {
                     Size = new Vector2(12, 12),
                     AnchorPoint = new Vector2(i & 1, (i >> 1) & 1),
-                    Pivot = new Vector2(i & 1, (i >> 1) & 1)
+                    Pivot = new Vector2(i & 1, (i >> 1) & 1),
+                    BlockPropagation = false,
                 };
                 AppendChild(_dragCorner[i]);
             }
 
-            _dragCorner[0].OnUpdate += (e, sender) =>
-            {
-                if (((UIDraggable)sender).IsDragging)
-                {
+            _dragCorner[0].OnDragging += (e, sender) => {
+                if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
-                    this.Size -= Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
-                    this.Position += Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
+                    this.Size = _lastSize - e.Moved;
+                    this.Position = _lastPos + e.Moved;
+                    _check();
                 }
             };
-            _dragCorner[1].OnUpdate += (e, sender) =>
-            {
-                if (((UIDraggable)sender).IsDragging)
-                {
+            _dragCorner[1].OnDragging += (e, sender) => {
+                if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
-                    var mouseDelta = Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
-                    this.Size += new Vector2(mouseDelta.X, -mouseDelta.Y);
-                    this.Position += new Vector2(0, mouseDelta.Y);
+                    this.Size = _lastSize + e.Moved * new Vector2(1, -1);
+                    this.Position = _lastPos + new Vector2(0, e.Moved.Y);
+                    _check();
                 }
             };
-            _dragCorner[2].OnUpdate += (e, sender) =>
-            {
-                if (((UIDraggable)sender).IsDragging)
-                {
+            _dragCorner[2].OnDragging += (e, sender) => {
+                if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
-                    var mouseDelta = Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
-                    this.Size += new Vector2(-mouseDelta.X, mouseDelta.Y);
-                    this.Position += new Vector2(mouseDelta.X, 0);
+                    this.Size = _lastSize + e.Moved * new Vector2(-1, 1);
+                    this.Position = _lastPos + new Vector2(e.Moved.X, 0);
+                    _check();
                 }
             };
-            _dragCorner[3].OnUpdate += (e, sender) =>
-            {
-                if (((UIDraggable)sender).IsDragging)
-                {
+            _dragCorner[3].OnDragging += (e, sender) => {
+                if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
-                    this.Size += Main.MouseScreen - new Vector2(Main.lastMouseX, Main.lastMouseY);
+                    this.Size = _lastSize + e.Moved;
+                    _check();
                 }
             };
 
@@ -161,28 +165,17 @@ namespace UIEditor.UILib.Components.Composite {
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-
-            //var pos = _dragCorner[0].InnerRectangleScreen.TopLeft();
-            //var br = _dragCorner[3].InnerRectangleScreen.BottomRight();
-            //Main.NewText(ScreenPositionToParentAR(pos));
-            //Main.NewText(Position);
-            //Position = ScreenPositionToParentAR(pos);
-            //Size = new Vector2(br.X - pos.X, br.Y - pos.Y);
-            //for (int i = 0; i < 4; i++) {
-            //    _dragCorner[i].Position = new Vector2(0, 0);
-            //}
-            // Recalculate();
+            _lastSize = Size;
+            _lastPos = Position;
+            _lastBottomRight = Position + new Vector2(Width, Height);
         }
-        public override void UpdateChildren(GameTime gameTime) {
-            base.UpdateChildren(gameTime);
+        private void _check() {
+            if (Size.X < 24) Size = new Vector2(24, Size.Y);
+            if (Size.Y < 24) Size = new Vector2(Size.X, 24);
+            if (Position.X >= _lastBottomRight.X - 24) Position = new Vector2(_lastBottomRight.X - 24, Position.Y);
+            if (Position.Y >= _lastBottomRight.Y - 24) Position = new Vector2(Position.X, _lastBottomRight.Y - 24);
 
         }
-        public override void DrawSelf(SpriteBatch sb) {
-            base.DrawSelf(sb);
-
-
-        }
-
         public void AttachTo(UIElement element) {
             _targetElement = element;
             Size = new Vector2(_targetElement.Width + 12, _targetElement.Height + 12);
