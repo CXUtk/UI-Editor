@@ -16,11 +16,11 @@ using Microsoft.Xna.Framework.Graphics;
 namespace UIEditor.Editor.States {
     public class Viewer : UIElement {
         private UIPanel _viewerPanel;
+        private Canvas _canvas;
 
         public Viewer() : base() {
             BlockPropagation = true;
             _viewerPanel = new UIPanel() {
-                Overflow = OverflowType.Hidden,
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
                 Position = new Vector2(5, 5),
@@ -28,24 +28,29 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(-10, -10),
             };
             AppendChild(_viewerPanel);
-            _viewerPanel.OnClick += _viewerPanel_OnClick;
+            _canvas = new Canvas() {
+                Name = "画布",
+                Overflow = OverflowType.Hidden,
+                Pivot = new Vector2(0, 0),
+                AnchorPoint = new Vector2(0, 0),
+                Position = new Vector2(2, 2),
+                SizeFactor = new Vector2(1, 1),
+                Size = new Vector2(-4, -4),
+            };
+            _viewerPanel.AppendChild(_canvas);
+            var test = new UISizer() {
+                Size = new Vector2(50, 50),
+                Pivot = new Vector2(0, 0),
+                Position = new Vector2(100, 100),
+            };
+            _canvas.AppendChild(test);
         }
 
-        private void _viewerPanel_OnClick(UIMouseEvent e, UIElement sender) {
-            var button = new UIButton() {
-                Position = _viewerPanel.ScreenPositionToNodeAR(e.MouseScreen, Vector2.Zero),
-                Size = new Vector2(100, 50),
-            };
-            _viewerPanel.AppendChild(button);
-        }
         public override void UpdateSelf(GameTime gameTime) {
 
-            if (IsMouseHover) {
-                Main.cursorOverride = 17;
-                Main.cursorColor = Color.White;
-            }
+
             base.UpdateSelf(gameTime);
-            var a = _viewerPanel.NodePositionToScreenAR(_viewerPanel.ScreenPositionToNodeAR(Main.MouseScreen, Vector2.Zero));
+            //var a = _canvas.NodePositionToScreenAR(_canvas.ScreenPositionToNodeAR(Main.MouseScreen, Vector2.Zero));
         }
 
     }

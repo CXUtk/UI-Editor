@@ -38,9 +38,9 @@ namespace UIEditor.UILib.Components.Composite {
             OnClose?.Invoke(new UIActionEvent(this, e.TimeStamp), sender);
         }
 
-        public override void DragStart(UIActionEvent e) {
+        public override void DragStart(UIMouseEvent e) {
             _isDragging = true;
-            _dragOffset = Main.MouseScreen - PostionScreen;
+            _dragOffset = e.MouseScreen - PositionScreen;
             base.DragStart(e);
         }
 

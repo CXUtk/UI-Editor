@@ -89,7 +89,7 @@ namespace UIEditor.UILib.Components {
 
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            var topLeft = PostionScreen - new Vector2(Width, Height) * Pivot;
+            var topLeft = PositionScreen - new Vector2(Width, Height) * Pivot;
             sb.Draw(slotBack, Pivot * new Vector2(Width, Height), null, Color.White, 0, Pivot * slotBack.Size(),
                      new Vector2(1, 1), SpriteEffects.None, 0f);
             if (0 < ItemType && ItemType < ItemLoader.ItemCount) {

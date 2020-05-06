@@ -111,7 +111,7 @@ namespace UIEditor.UILib {
             if (!_wasMouseLeftDown && mouseLeftDown && hoverElement != null) {
                 hoverElement.MouseDown(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 hoverElement.FocusOn(new UIActionEvent(hoverElement, gameTime.TotalGameTime));
-                hoverElement.DragStart(new UIActionEvent(hoverElement, gameTime.TotalGameTime));
+                hoverElement.DragStart(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 _lastLeftDownElement = hoverElement;
                 _lastFocusElement = hoverElement;
             }

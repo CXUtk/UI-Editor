@@ -109,7 +109,7 @@ namespace UIEditor.UILib.Components {
 
         private void _innerBar_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
             _isMouseDown = true;
-            _offsetX = _innerBar.PostionScreen.X - e.MouseScreen.X;
+            _offsetX = _innerBar.PositionScreen.X - e.MouseScreen.X;
         }
 
         private void _innerBar_OnMouseOut(Events.UIMouseEvent e, UIElement sender) {

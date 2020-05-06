@@ -151,7 +151,7 @@ namespace UIEditor.UILib {
         public event ActionEvent OnFocused;
         public event ActionEvent OnUnFocused;
         public event DrawEvent PostDrawSelf;
-        public event ActionEvent OnDragStart;
+        public event MouseEvent OnDragStart;
         public event DragEndEvent OnDragEnd;
         #endregion
 
@@ -187,11 +187,7 @@ namespace UIEditor.UILib {
         /// <summary>
         /// 如果鼠标位置在这个UI元素上面
         /// </summary>
-        public bool IsMouseHover {
-            get {
-                return _selfHitbox.Contains(Main.MouseScreen);
-            }
-        }
+        public bool IsMouseHover { get; private set; }
 
         private Vector2 PivotOffset {
             get {
@@ -219,9 +215,13 @@ namespace UIEditor.UILib {
             if (Parent != null) return Parent.ScreenPositionToNodeAR(worldPos, AnchorPoint);
             return worldPos;
         }
+        public Vector2 ScreenPositionToParent(Vector2 worldPos) {
+            if (Parent != null) return Parent.ScreenPositionToNodeAR(worldPos, new Vector2(0, 0));
+            return worldPos;
+        }
 
         public Vector2 NodePositionToScreenAR(Vector2 nodePos) {
-            return PostionScreen + nodePos;
+            return PositionScreen + nodePos;
         }
         //public Vector2 NodePositionToScreen(Vector2 worldPos) {
         //    return _baseTopLeftScreen - PivotOffset;
@@ -234,7 +234,7 @@ namespace UIEditor.UILib {
             }
         }
 
-        public Vector2 PostionScreen {
+        public Vector2 PositionScreen {
             get {
                 return _baseTopLeftScreen + PivotOffset;
             }
@@ -243,17 +243,9 @@ namespace UIEditor.UILib {
             }
         }
 
-        protected bool MouseDownedLeft {
-            get {
-                return _mouseDownedLeft;
-            }
-        }
+        protected bool MouseDownedLeft { get; private set; }
 
-        protected int MouseDownTimeLeft {
-            get {
-                return _mouseDownTimeLeft;
-            }
-        }
+        protected int MouseDownTimeLeft { get; private set; }
         #endregion
 
 
@@ -302,15 +294,13 @@ namespace UIEditor.UILib {
         private readonly QuadrilateralHitbox _selfHitbox;
         private Matrix _selfTransform;
         private Rectangle _parentRect;
-        private int _mouseDownTimeLeft;
-        private bool _mouseDownedLeft;
-
         private readonly RasterizerState _selfRasterizerState;
 
 
 
         public virtual void MouseEnter(UIMouseEvent e) {
             // Main.NewText("进入");
+            IsMouseHover = true;
             OnMouseEnter?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseEnter(e);
@@ -318,6 +308,7 @@ namespace UIEditor.UILib {
 
         public virtual void MouseOut(UIMouseEvent e) {
             //Main.NewText("离开");
+            IsMouseHover = false;
             OnMouseOut?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseOut(e);
@@ -325,7 +316,7 @@ namespace UIEditor.UILib {
 
         public virtual void MouseDown(UIMouseEvent e) {
             //Main.NewText("按下");
-            _mouseDownedLeft = true;
+            MouseDownedLeft = true;
             OnMouseDown?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseDown(e);
@@ -340,7 +331,7 @@ namespace UIEditor.UILib {
 
         public virtual void MouseUp(UIMouseEvent e) {
             // Main.NewText("抬起");
-            _mouseDownedLeft = false;
+            MouseDownedLeft = false;
             OnMouseUp?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.MouseUp(e);
@@ -391,7 +382,7 @@ namespace UIEditor.UILib {
                 Parent?.UnFocus(e);
         }
 
-        public virtual void DragStart(UIActionEvent e) {
+        public virtual void DragStart(UIMouseEvent e) {
             OnDragStart?.Invoke(e, this);
             if (!BlockPropagation)
                 Parent?.DragStart(e);
@@ -527,10 +518,10 @@ namespace UIEditor.UILib {
         }
 
         public virtual void UpdateSelf(GameTime gameTime) {
-            if (_mouseDownedLeft) {
-                _mouseDownTimeLeft++;
+            if (MouseDownedLeft) {
+                MouseDownTimeLeft++;
             } else {
-                _mouseDownTimeLeft = 0;
+                MouseDownTimeLeft = 0;
             }
         }
         public virtual void UpdateChildren(GameTime gameTime) {

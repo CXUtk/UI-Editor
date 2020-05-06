@@ -39,15 +39,15 @@ namespace UIEditor.UILib.Components {
         }
 
         private void UpdateItemsPosition() {
-            var start = PostionScreen - Pivot * new Vector2(Width, Height);
+            var start = PositionScreen - Pivot * new Vector2(Width, Height);
             foreach (var item in items) {
-                item.PostionScreen = start;
+                item.PositionScreen = start;
                 if (item.ShouldExpand) {
                     item.UpdateSubItemsPosition(0);
                 }
                 start.X += item.Width;
             }
-            Size = start - PostionScreen + Pivot * new Vector2(Width, Height);
+            Size = start - PositionScreen + Pivot * new Vector2(Width, Height);
             Size = new Vector2(Size.X, 20);
         }
     }
