@@ -96,7 +96,6 @@ namespace UIEditor.Editor.States {
                 Text = $"指针",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
-                IsPreview = true,
             };
             pointer.OnClick += Pointer_OnClick;
             _toolBarList.AddElement(pointer);
@@ -104,15 +103,56 @@ namespace UIEditor.Editor.States {
                 Text = $"按钮",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
-                IsPreview = true,
             };
             button.OnClick += Button_OnClick;
-            _toolBarList.AddElement(button);
+            var label = new UIButton() {
+                Text = $"标签文本",
+                SizeFactor = new Vector2(1, 0),
+                Size = new Vector2(0, 30),
+            };
+            label.OnClick += Label_OnClick;
+            _toolBarList.AddElement(label);
+            var textBox = new UIButton() {
+                Text = $"文本框",
+                SizeFactor = new Vector2(1, 0),
+                Size = new Vector2(0, 30),
+            };
+            textBox.OnClick += TextBox_OnClick;
+            _toolBarList.AddElement(textBox);
+            var progressBar = new UIButton() {
+                Text = $"进度条",
+                SizeFactor = new Vector2(1, 0),
+                Size = new Vector2(0, 30),
+            };
+            progressBar.OnClick += ProgressBar_OnClick;
+            _toolBarList.AddElement(progressBar);
+        }
+
+        private void ProgressBar_OnClick(UIMouseEvent e, UIElement sender) {
+            _editor.SetPlaceMode(new UIProgressBar() {
+                Size = new Vector2(60, 20),
+                IsPreview = true,
+            });
+        }
+
+        private void TextBox_OnClick(UIMouseEvent e, UIElement sender) {
+            _editor.SetPlaceMode(new UITextBox() {
+                Size = new Vector2(50, 30),
+                IsPreview = true,
+            });
+        }
+
+        private void Label_OnClick(UIMouseEvent e, UIElement sender) {
+            _editor.SetPlaceMode(new UILabel() {
+                Size = new Vector2(50, 30),
+                IsPreview = true,
+            });
         }
 
         private void Button_OnClick(UIMouseEvent e, UIElement sender) {
             _editor.SetPlaceMode(new UIButton() {
-                Size = new Vector2(50, 50),
+                Size = new Vector2(100, 50),
+                IsPreview = true,
             });
         }
 
