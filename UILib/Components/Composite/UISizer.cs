@@ -174,7 +174,6 @@ namespace UIEditor.UILib.Components.Composite {
                 _targetElement.Size = Size;
                 _targetElement.RecalculateSelf();
                 _targetElement.TopLeft = _targetElement.ScreenPositionToParentAR(ParentNodePositionToScreenAR(Position));
-
             }
         }
         private void _check() {

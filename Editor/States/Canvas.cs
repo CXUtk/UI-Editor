@@ -11,21 +11,32 @@ using UIEditor.UILib.Components.Composite;
 
 namespace UIEditor.Editor.States {
     public class Canvas : UIElement {
-        public Canvas() : base() {
-            var button = new UIButton() {
-                AnchorPoint = new Vector2(0.5f, 0.5f),
-                Pivot = new Vector2(0.5f, 0.5f),
-                Size = new Vector2(50, 50),
-            };
-            var test = new UISizer() {
-                Size = new Vector2(50, 50),
-                Pivot = new Vector2(0, 0),
-                Position = new Vector2(100, 100),
-            };
-            AppendChild(button);
-            AppendChild(test);
+        public UIElement Root { get; }
+        private UISizer _sizer;
+        private EditorState _editor;
 
-            test.AttachTo(button);
+        public Canvas(EditorState editor) : base() {
+            _editor = editor;
+            _sizer = new UISizer() {
+                IsActive = false,
+            };
+            Root = new UIElement() {
+                SizeFactor = new Vector2(1f, 1f),
+                Pivot = new Vector2(0, 0),
+            };
+            AppendChild(Root);
+            Root.AppendChild(new UIButton() {
+                AnchorPoint = new Vector2(0.5f, 0.5f),
+                Size = new Vector2(50, 50),
+            });
+            AppendChild(_sizer);
+        }
+
+        public void PlaceElement(Vector2 pos, UIElement element) {
+            Root.AppendChild(element);
+            element.RecalculateSelf();
+            element.Position = element.ScreenPositionToParentAR(pos);
+            _editor.Browser.AddNode(element);
         }
     }
 }

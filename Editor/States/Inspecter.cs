@@ -17,7 +17,9 @@ namespace UIEditor.Editor.States {
     public class Inspecter : UIElement {
         private UIPanel _inspecterPanel;
         private UIList _inspectorList;
-        public Inspecter() : base() {
+        private EditorState _editor;
+        public Inspecter(EditorState editor) : base() {
+            _editor = editor;
             _inspecterPanel = new UIPanel() {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
@@ -60,7 +62,7 @@ namespace UIEditor.Editor.States {
         public void Add(UIElement element) {
             _inspectorList.Clear();
             foreach (var info in element.GetType().GetProperties()) {
-                if (info.IsDefined(typeof(Editor.Attributes.EditorPropertyIgnoreAttribute), true))
+                if (info.IsDefined(typeof(Attributes.EditorPropertyIgnoreAttribute), true))
                     continue;
                 UIElement right = GetRightElement(info.PropertyType);
                 var left = new UILabel() {
@@ -72,15 +74,6 @@ namespace UIEditor.Editor.States {
                     Pivot = new Vector2(0, 0.5f),
                     Position = new Vector2(5, 0),
                 };
-                //var text = new UILabel() {
-                //    Text = info.Name,
-                //    Size = new Vector2(0, 30),
-                //    SizeFactor = new Vector2(1, 0),
-                //    SizeStyle = SizeStyle.Block,
-                //    AnchorPoint = new Vector2(0, 0.5f),
-                //    Pivot = new Vector2(0, 0.5f),
-                //    Position = new Vector2(5, 0),
-                //};
                 var item = new UITableBar(left, right) {
                     SizeFactor = new Vector2(1, 0),
                     Size = new Vector2(0, 30),

@@ -83,6 +83,11 @@ namespace UIEditor.UILib.Components.Advanced {
             TreeNodes = nodes;
             //AppendChild(display);
         }
+        public UITreeNode(UITreeNodeDisplay nodeDisplay, IList<UITreeNode> nodes) : base() {
+            Pivot = new Vector2(0, 0);
+            DisplayElement = nodeDisplay;
+            TreeNodes = nodes;
+        }
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);

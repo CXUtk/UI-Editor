@@ -15,10 +15,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor.Editor.States {
     public class Viewer : UIElement {
+        public Canvas Canvas { get; }
         private UIPanel _viewerPanel;
-        private Canvas _canvas;
+        private EditorState _editor;
 
-        public Viewer() : base() {
+        public Viewer(EditorState editor) : base() {
+            _editor = editor;
             BlockPropagation = true;
             _viewerPanel = new UIPanel() {
                 Pivot = new Vector2(0, 0),
@@ -28,7 +30,7 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(-10, -10),
             };
             AppendChild(_viewerPanel);
-            _canvas = new Canvas() {
+            Canvas = new Canvas(editor) {
                 Name = "画布",
                 Overflow = OverflowType.Hidden,
                 Pivot = new Vector2(0, 0),
@@ -37,12 +39,15 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-4, -4),
             };
-            _viewerPanel.AppendChild(_canvas);
+            _viewerPanel.AppendChild(Canvas);
+            Canvas = Canvas;
         }
-
+        public override void MouseDown(UIMouseEvent e) {
+            base.MouseDown(e);
+            if (_editor.PlaceElement != null)
+                Canvas.PlaceElement(e.MouseScreen, _editor.PlaceElement);
+        }
         public override void UpdateSelf(GameTime gameTime) {
-
-
             base.UpdateSelf(gameTime);
             //var a = _canvas.NodePositionToScreenAR(_canvas.ScreenPositionToNodeAR(Main.MouseScreen, Vector2.Zero));
         }

@@ -37,6 +37,7 @@ namespace UIEditor.UILib.Components.Composite {
 
         private void _addElement(UIElement element) {
             base.AddElement(element);
+            ShouldRecalculate = true;
         }
 
         private float _maxLeftPadding;

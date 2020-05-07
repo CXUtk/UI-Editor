@@ -12,18 +12,19 @@ using UIEditor.UILib.Components.Advanced;
 using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
+using UIEditor.Editor.Components;
 
 namespace UIEditor.Editor.States {
     public class EditorState : UIState {
         public EditorState(string name) : base(name) { }
 
+        public Viewer Viewer { get; private set; }
+        public Browser Browser { get; private set; }
+        public Inspecter Inspecter { get; private set; }
+
         private UIWindow _window;
         private UIElement _body;
         private UIElement _navigator;
-        private Browser _hierbrowser;
-        private Viewer _viewer;
-        private Inspecter _propertyInspector;
-
         private const float PADDING_BODY = 10f;
         public override void Initialize() {
             base.Initialize();
@@ -41,20 +42,20 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-PADDING_BODY * 2, -32 - PADDING_BODY),
             };
-            _hierbrowser = new Browser() {
+            Browser = new Browser(this) {
                 Name = "Browser",
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
                 SizeFactor = new Vector2(0.382f, 1f),
                 Overflow = OverflowType.Hidden,
             };
-            _viewer = new Viewer() {
+            Viewer = new Viewer(this) {
                 Name = "Viewer",
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
                 SizeFactor = new Vector2(0.618f, 0.7f),
             };
-            _propertyInspector = new Inspecter() {
+            Inspecter = new Inspecter(this) {
                 Name = "Inspector",
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
@@ -63,41 +64,47 @@ namespace UIEditor.Editor.States {
             _window.OnClose += Box1_OnClose;
             AppendChild(_window);
             _window.AppendChild(_body);
-            _body.AppendChild(_hierbrowser);
-            _body.AppendChild(_viewer);
-            _body.AppendChild(_propertyInspector);
+            _body.AppendChild(Browser);
+            _body.AppendChild(Viewer);
+            _body.AppendChild(Inspecter);
+
+            Browser.Refresh();
         }
 
         private UIElement _lastFocusElement;
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-            _viewer.Position = new Vector2(_hierbrowser.Width, 0);
-            _propertyInspector.Position = new Vector2(_hierbrowser.Width, _viewer.Height);
-            var e = _hierbrowser.SelectedElement;
+            Viewer.Position = new Vector2(Browser.Width, 0);
+            Inspecter.Position = new Vector2(Browser.Width, Viewer.Height);
+            var e = (BrowserTreeNode)Browser.SelectedElement;
             if (_lastFocusElement != e) {
                 if (e != null)
-                    _propertyInspector.Add(e);
+                    Inspecter.Add(e.BindingElement);
             }
             _lastFocusElement = e;
         }
 
-
-
-        int tot = 0;
-        UITreeNode _build(UITreeNode node, int level) {
-            tot++;
-            List<UITreeNode> nodes = new List<UITreeNode>();
-            if (node == null)
-                node = new UITreeNode(tot.ToString(), nodes);
-            if (level == 6) return node;
-            for (int i = 0; i < 2; i++) {
-                UITreeNode child = null;
-                child = _build(child, level + 1);
-                nodes.Add(child);
-            }
-            return node;
+        internal UIElement PlaceElement { get; private set; }
+        public void SetPlaceMode(UIElement element) {
+            PlaceElement = element;
         }
+
+
+        //int tot = 0;
+        //UITreeNode _build(UITreeNode node, int level) {
+        //    tot++;
+        //    List<UITreeNode> nodes = new List<UITreeNode>();
+        //    if (node == null)
+        //        node = new UITreeNode(tot.ToString(), nodes);
+        //    if (level == 6) return node;
+        //    for (int i = 0; i < 2; i++) {
+        //        UITreeNode child = null;
+        //        child = _build(child, level + 1);
+        //        nodes.Add(child);
+        //    }
+        //    return node;
+        //}
 
         private void Box1_OnClose(UIActionEvent e, UIElement sender) {
             this.IsActive = false;
