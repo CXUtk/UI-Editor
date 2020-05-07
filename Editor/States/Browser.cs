@@ -58,6 +58,7 @@ namespace UIEditor.Editor.States {
             _listPanel.AppendChild(_treeList);
             _treeList.SetScrollBarV(scrollBar1);
             _treeList.SetScrollBarH(scrollBar2);
+            _treeList.OnSelect += _treeList_OnSelect;
 
             _toolBarList = new UIList() {
                 Pivot = new Vector2(0, 0),
@@ -76,6 +77,13 @@ namespace UIEditor.Editor.States {
             toolbar2.AddToPanel(_toolBarList);
 
         }
+
+        private void _treeList_OnSelect(UIActionEvent e, UIElement sender) {
+            var list = (UITreeList)sender;
+            var target = (BrowserTreeNode)list.SelectedElement;
+            _editor.Viewer.Canvas.PlaceSizer(target.BindingElement);
+        }
+
         private UITreeNode _copy(UIElement element) {
             List<UITreeNode> children = new List<UITreeNode>();
             UITreeNode node = new UITreeNode(new BrowserTreeNode(element.Name, element) {
@@ -168,7 +176,10 @@ namespace UIEditor.Editor.States {
             var e = _editor.Viewer.Canvas.Root;
             _treeList.ClearRoots();
             if (e != null) {
-                _treeList.AddElement(_copy(e));
+                foreach (var child in e.Children) {
+                    _treeList.AddElement(_copy(child));
+                }
+
             }
         }
 

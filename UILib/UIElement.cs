@@ -423,7 +423,7 @@ namespace UIEditor.UILib {
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
-        public UIElement ElementAt(Vector2 pos) {
+        public virtual UIElement ElementAt(Vector2 pos) {
             // 如果处于预览模式，且不显示子节点，那么就直接选中这个节点
             if (IsPreview && this.GetType().IsDefined(typeof(EditorPropertyNoChildrenAttribute), true))
                 if (_selfHitbox.Contains(pos)) return this;

@@ -47,6 +47,7 @@ namespace UIEditor.UILib.Components.Composite {
             }
         };
 
+
         private UIDraggable[] _dragCorner;
         private UIDraggable[] _dragBar;
         private UIElement _targetElement;
@@ -186,6 +187,13 @@ namespace UIEditor.UILib.Components.Composite {
         }
         public void AttachTo(UIElement element) {
             _targetElement = element;
+            Position = ScreenPositionToParentAR(element.InnerRectangleScreen.TopLeft());
+            Size = new Vector2(element.Width, element.Height);
+        }
+
+
+        public void UnAttach() {
+            _targetElement = null;
         }
     }
 }

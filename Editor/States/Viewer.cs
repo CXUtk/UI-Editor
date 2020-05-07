@@ -48,8 +48,29 @@ namespace UIEditor.Editor.States {
             if (_editor.PlaceElement != null)
                 Canvas.PlaceElement(e.MouseScreen, _editor.PlaceElement);
         }
+
+        private bool IsSizer(UIElement element) {
+            if (element == null) return false;
+            if (Parent == null) return false;
+            if (element.GetType() == typeof(UISizer)) return true;
+            return IsSizer(element.Parent);
+        }
+        private bool _wasDown;
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
+            if (IsFocused && _wasDown && Main.mouseLeftRelease) {
+                var target = Canvas.ElementAt(Main.MouseScreen);
+                Main.NewText((target == null) ? "null" : target.ToString());
+                if (!IsSizer(target)) {
+                    if (target == Canvas.Root) {
+                        Canvas.PlaceSizer(null);
+                    } else {
+
+                        Canvas.PlaceSizer(target);
+                    }
+                }
+            }
+            _wasDown = Main.mouseLeft;
             //var a = _canvas.NodePositionToScreenAR(_canvas.ScreenPositionToNodeAR(Main.MouseScreen, Vector2.Zero));
         }
 

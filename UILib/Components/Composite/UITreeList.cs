@@ -7,6 +7,7 @@ using UIEditor.UILib.Components.Advanced;
 
 namespace UIEditor.UILib.Components.Composite {
     public class UITreeList : UIList {
+        public event ActionEvent OnSelect;
         public float LayerPaddingLeft { get; set; }
         private List<UITreeNode> _roots;
 
@@ -31,6 +32,7 @@ namespace UIEditor.UILib.Components.Composite {
 
         private void DisplayElement_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
             _selectedItem = sender;
+            OnSelect?.Invoke(new Events.UIActionEvent(this, Main._drawInterfaceGameTime.TotalGameTime), this);
         }
 
         public void ClearRoots() { _roots.Clear(); Clear(); }
