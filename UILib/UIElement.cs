@@ -223,6 +223,9 @@ namespace UIEditor.UILib {
         public Vector2 NodePositionToScreenAR(Vector2 nodePos) {
             return PositionScreen + nodePos;
         }
+        public Vector2 ParentNodePositionToScreenAR(Vector2 nodePos) {
+            return _parentRect.TopLeft() + new Vector2(Width * AnchorPoint.X, Height * AnchorPoint.Y) + nodePos;
+        }
         //public Vector2 NodePositionToScreen(Vector2 worldPos) {
         //    return _baseTopLeftScreen - PivotOffset;
         //}
@@ -239,7 +242,16 @@ namespace UIEditor.UILib {
                 return _baseTopLeftScreen + PivotOffset;
             }
             set {
-                Position = Parent.ScreenPositionToNodeAR(value, AnchorPoint);
+                Position = ScreenPositionToParentAR(value);
+            }
+        }
+
+        public Vector2 TopLeft {
+            get {
+                return Position - PivotOffset;
+            }
+            set {
+                Position = value + PivotOffset;
             }
         }
 

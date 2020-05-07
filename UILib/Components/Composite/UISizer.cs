@@ -56,6 +56,7 @@ namespace UIEditor.UILib.Components.Composite {
 
 
         public UISizer() : base() {
+            _targetElement = null;
             Pivot = new Vector2(0, 0);
             _dragBar = new UIDraggable[4];
             _dragBar[0] = new UIBarDraggerH() {
@@ -111,6 +112,7 @@ namespace UIEditor.UILib.Components.Composite {
                 if (((UIDraggable)sender).IsDragging) {
                     sender.Position = new Vector2(0, 0);
                     this.Size = _lastSize + new Vector2(e.Moved.X, 0);
+
                     _check();
                 }
             };
@@ -124,7 +126,7 @@ namespace UIEditor.UILib.Components.Composite {
                     Size = new Vector2(12, 12),
                     AnchorPoint = new Vector2(i & 1, (i >> 1) & 1),
                     Pivot = new Vector2(i & 1, (i >> 1) & 1),
-                    BlockPropagation = false,
+                    BlockPropagation = true,
                 };
                 AppendChild(_dragCorner[i]);
             }
@@ -168,6 +170,12 @@ namespace UIEditor.UILib.Components.Composite {
             _lastSize = Size;
             _lastPos = Position;
             _lastBottomRight = Position + new Vector2(Width, Height);
+            if (_targetElement != null) {
+                _targetElement.Size = Size;
+                _targetElement.RecalculateSelf();
+                _targetElement.TopLeft = _targetElement.ScreenPositionToParentAR(ParentNodePositionToScreenAR(Position));
+
+            }
         }
         private void _check() {
             if (Size.X < 24) Size = new Vector2(24, Size.Y);
@@ -175,12 +183,10 @@ namespace UIEditor.UILib.Components.Composite {
             if (Position.X >= _lastBottomRight.X - 24) Position = new Vector2(_lastBottomRight.X - 24, Position.Y);
             if (Position.Y >= _lastBottomRight.Y - 24) Position = new Vector2(Position.X, _lastBottomRight.Y - 24);
 
+
         }
         public void AttachTo(UIElement element) {
             _targetElement = element;
-            Size = new Vector2(_targetElement.Width + 12, _targetElement.Height + 12);
-            Pivot = new Vector2(0, 0);
-            Position = ScreenPositionToParentAR(_targetElement.InnerRectangleScreen.TopLeft());
         }
     }
 }

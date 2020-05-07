@@ -38,12 +38,6 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(-4, -4),
             };
             _viewerPanel.AppendChild(_canvas);
-            var test = new UISizer() {
-                Size = new Vector2(50, 50),
-                Pivot = new Vector2(0, 0),
-                Position = new Vector2(100, 100),
-            };
-            _canvas.AppendChild(test);
         }
 
         public override void UpdateSelf(GameTime gameTime) {
