@@ -29,7 +29,7 @@ namespace UIEditor.UILib.Components {
         }
 
         public UIItemSlot() {
-            BlockPropagation = true;
+            PropagationRule = Enums.PropagationFlags.FocusEvents | Enums.PropagationFlags.ScrollWheel;
             Size = new Microsoft.Xna.Framework.Vector2(slotBack.Width, slotBack.Height);
 
             OnClick += UIItemSlot_OnClick;

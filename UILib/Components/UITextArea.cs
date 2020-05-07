@@ -80,7 +80,7 @@ namespace UIEditor.UILib.Components {
         public event TextChangeEvent OnTextChange;
 
         public UITextArea() {
-            BlockPropagation = true;
+            PropagationRule = Enums.PropagationFlags.FocusEvents | Enums.PropagationFlags.ScrollWheel;
             TextColor = Color.White;
             TextScale = 1;
             _text = string.Empty;

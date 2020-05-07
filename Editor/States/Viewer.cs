@@ -12,6 +12,7 @@ using UIEditor.UILib.Components.Advanced;
 using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
+using UIEditor.UILib.Enums;
 
 namespace UIEditor.Editor.States {
     public class Viewer : UIElement {
@@ -21,7 +22,7 @@ namespace UIEditor.Editor.States {
 
         public Viewer(EditorState editor) : base() {
             _editor = editor;
-            BlockPropagation = true;
+            PropagationRule = PropagationFlags.FocusEvents;
             _viewerPanel = new UIPanel() {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
@@ -42,8 +43,8 @@ namespace UIEditor.Editor.States {
             _viewerPanel.AppendChild(Canvas);
             Canvas = Canvas;
         }
-        public override void MouseDown(UIMouseEvent e) {
-            base.MouseDown(e);
+        public override void MouseLeftDown(UIMouseEvent e) {
+            base.MouseLeftDown(e);
             if (_editor.PlaceElement != null)
                 Canvas.PlaceElement(e.MouseScreen, _editor.PlaceElement);
         }

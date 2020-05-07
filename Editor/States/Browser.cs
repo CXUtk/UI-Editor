@@ -50,7 +50,7 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(1f, 1f),
                 AnchorPoint = new Vector2(0f, 0.5f),
                 Pivot = new Vector2(0f, 0.5f),
-                BlockPropagation = true,
+                PropagationRule = UILib.Enums.PropagationFlags.BLOCK_ALL,
                 ButtonTooltip = "工具栏",
             };
             AppendChild(_listPanel);
@@ -96,6 +96,7 @@ namespace UIEditor.Editor.States {
                 Text = $"指针",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
+                IsPreview = true,
             };
             pointer.OnClick += Pointer_OnClick;
             _toolBarList.AddElement(pointer);
@@ -103,6 +104,7 @@ namespace UIEditor.Editor.States {
                 Text = $"按钮",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
+                IsPreview = true,
             };
             button.OnClick += Button_OnClick;
             _toolBarList.AddElement(button);

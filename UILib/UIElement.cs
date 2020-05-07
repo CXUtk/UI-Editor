@@ -10,9 +10,10 @@ using UIEditor.UILib.Hitbox;
 using Terraria;
 using Newtonsoft.Json;
 using UIEditor.Editor.Attributes;
+using UIEditor.UILib.Enums;
 
 namespace UIEditor.UILib {
-    public class UIElement {
+    public class UIElement : ICloneable {
         public delegate void MouseEvent(UIMouseEvent e, UIElement sender);
         public delegate void ScrollEvent(UIScrollWheelEvent e, UIElement sender);
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
@@ -103,7 +104,7 @@ namespace UIEditor.UILib {
         /// <summary>
         /// UI元素是否阻止事件向其父元素传播
         /// </summary>
-        public bool BlockPropagation { get; set; }
+        public PropagationFlags PropagationRule { get; set; }
 
         /// <summary>
         /// 这个UI元素是否会响应事件
@@ -116,13 +117,23 @@ namespace UIEditor.UILib {
         /// </summary>
         public string Tooltip { get; set; }
 
+        /// <summary>
+        /// 标记该节点或容器是否处于用户焦点
+        /// </summary>
         [EditorPropertyIgnore]
         public bool IsFocused { get; set; }
 
+        /// <summary>
+        /// 标记该节点以及其子节点是否应该重新计算位置
+        /// </summary>
         [EditorPropertyIgnore]
         public bool ShouldRecalculate { get; set; }
 
-
+        /// <summary>
+        /// 标记该节点是否处于Preview模式，如果处于这个模式就会在Viewer特殊处理
+        /// </summary>
+        [EditorPropertyIgnore]
+        internal bool IsPreview { get; set; }
 
         //public int MarginLeft { get; set; }
         //public int MarginRight { get; set; }
@@ -309,12 +320,12 @@ namespace UIEditor.UILib {
         private readonly RasterizerState _selfRasterizerState;
 
 
-
+        #region 事件
         public virtual void MouseEnter(UIMouseEvent e) {
             // Main.NewText("进入");
             IsMouseHover = true;
             OnMouseEnter?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseEnter))
                 Parent?.MouseEnter(e);
         }
 
@@ -322,90 +333,101 @@ namespace UIEditor.UILib {
             //Main.NewText("离开");
             IsMouseHover = false;
             OnMouseOut?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseOut))
                 Parent?.MouseOut(e);
         }
 
-        public virtual void MouseDown(UIMouseEvent e) {
+        public virtual void MouseLeftDown(UIMouseEvent e) {
             //Main.NewText("按下");
             MouseDownedLeft = true;
             OnMouseDown?.Invoke(e, this);
-            if (!BlockPropagation)
-                Parent?.MouseDown(e);
+            if (PropagationRule.HasFlag(PropagationFlags.MouseLeftDown))
+                Parent?.MouseLeftDown(e);
         }
 
         public virtual void MouseRightDown(UIMouseEvent e) {
             //Main.NewText("右键按下");
             OnMouseRightDown?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseRightDown))
                 Parent?.MouseRightDown(e);
         }
 
-        public virtual void MouseUp(UIMouseEvent e) {
+        public virtual void MouseLeftUp(UIMouseEvent e) {
             // Main.NewText("抬起");
             MouseDownedLeft = false;
             OnMouseUp?.Invoke(e, this);
-            if (!BlockPropagation)
-                Parent?.MouseUp(e);
+            if (PropagationRule.HasFlag(PropagationFlags.MouseLeftUp))
+                Parent?.MouseLeftUp(e);
         }
 
         public virtual void MouseRightUp(UIMouseEvent e) {
             // Main.NewText("右键抬起");
             OnMouseRightUp?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseRightUp))
                 Parent?.MouseRightUp(e);
         }
-        public virtual void MouseClick(UIMouseEvent e) {
+        public virtual void MouseLeftClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnClick?.Invoke(e, this);
-            if (!BlockPropagation)
-                Parent?.MouseClick(e);
+            if (PropagationRule.HasFlag(PropagationFlags.MouseLeftClick))
+                Parent?.MouseLeftClick(e);
         }
         public virtual void MouseDoubleClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnDoubleClick?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseLeftDouble))
                 Parent?.MouseDoubleClick(e);
         }
         public virtual void MouseRightClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnRightClick?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseRightClick))
                 Parent?.MouseRightClick(e);
         }
 
         public virtual void ScrollWheel(UIScrollWheelEvent e) {
             OnScrollWheel?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.ScrollWheel))
                 Parent?.ScrollWheel(e);
         }
 
         public virtual void FocusOn(UIActionEvent e) {
             IsFocused = true;
             OnFocused?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.FocusOn))
                 Parent?.FocusOn(e);
         }
 
         public virtual void UnFocus(UIActionEvent e) {
             IsFocused = false;
             OnUnFocused?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.UnFocus))
                 Parent?.UnFocus(e);
         }
 
         public virtual void DragStart(UIMouseEvent e) {
             OnDragStart?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.DragStart))
                 Parent?.DragStart(e);
         }
         public virtual void DragEnd(UIDragEndEvent e) {
             OnDragEnd?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.DragEnd))
                 Parent?.DragEnd(e);
         }
 
+        #endregion
+
+        /// <summary>
+        /// 获取在屏幕坐标为pos的地点的最上层响应事件的UI元件
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public UIElement ElementAt(Vector2 pos) {
+            // 如果处于预览模式，且不显示子节点，那么就直接选中这个节点
+            if (IsPreview && this.GetType().IsDefined(typeof(EditorPropertyNoChildrenAttribute), true))
+                if (_selfHitbox.Contains(pos)) return this;
+
             UIElement target = null;
             int sz = Children.Count;
             for (int i = sz - 1; i >= 0; i--) {
@@ -440,6 +462,7 @@ namespace UIEditor.UILib {
             IsVisible = true;
             Rotation = 0;
             NoEvent = false;
+            PropagationRule = PropagationFlags.PASS_ALL;
             _selfRasterizerState = new RasterizerState() {
                 CullMode = CullMode.None,
                 ScissorTestEnable = true,
@@ -549,6 +572,21 @@ namespace UIEditor.UILib {
 
         public override string ToString() {
             return $"Type: {GetType().Name}, Name: {Name}";
+        }
+        public virtual object Clone() {
+            var obj = (UIElement)Activator.CreateInstance(GetType());
+            obj.Position = this.Position;
+            obj.Pivot = this.Pivot;
+            obj.AnchorPoint = this.AnchorPoint;
+            obj.Size = this.Size;
+            obj.SizeFactor = this.SizeFactor;
+            obj.Name = this.Name;
+            obj.Rotation = this.Rotation;
+            obj.Scale = this.Scale;
+            obj.IsActive = this.IsActive;
+            obj.IsVisible = this.IsVisible;
+            obj.IsPreview = this.IsPreview;
+            return obj;
         }
     }
 }

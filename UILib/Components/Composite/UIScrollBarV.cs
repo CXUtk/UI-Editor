@@ -72,7 +72,7 @@ namespace UIEditor.UILib.Components {
 
         public UIScrollBarV() : base() {
             Name = "垂直滚动条";
-            BlockPropagation = true;
+            PropagationRule = Enums.PropagationFlags.FocusEvents;
             _currentValue = 0;
             _isMouseOver = false;
             _outerBar = new UIBar() {

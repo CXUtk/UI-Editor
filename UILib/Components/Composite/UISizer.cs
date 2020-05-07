@@ -121,12 +121,12 @@ namespace UIEditor.UILib.Components.Composite {
             for (int i = 0; i < 4; i++) AppendChild(_dragBar[i]);
             _dragCorner = new UIDraggable[4];
             for (int i = 0; i < 4; i++) {
-                _dragBar[i].BlockPropagation = true;
+                _dragBar[i].PropagationRule = Enums.PropagationFlags.FocusEvents;
                 _dragCorner[i] = new UICornerDragger() {
                     Size = new Vector2(12, 12),
                     AnchorPoint = new Vector2(i & 1, (i >> 1) & 1),
                     Pivot = new Vector2(i & 1, (i >> 1) & 1),
-                    BlockPropagation = true,
+                    PropagationRule = Enums.PropagationFlags.FocusEvents,
                 };
                 AppendChild(_dragCorner[i]);
             }

@@ -71,7 +71,7 @@ namespace UIEditor.UILib.Components {
         private const float PADDING = 5;
         public UIScrollBarH() : base() {
             Name = "水平滚动条";
-            BlockPropagation = true;
+            PropagationRule = Enums.PropagationFlags.FocusEvents;
             _currentValue = 0f;
             _isMouseOver = false;
             var tex = Main.magicPixel;

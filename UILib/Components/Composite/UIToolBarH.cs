@@ -43,7 +43,7 @@ namespace UIEditor.UILib.Components.Composite {
                 Pivot = new Vector2(0.5f, 0f),
                 PanelTexture = UIEditor.Instance.SkinManager.GetTexture("ToolBar_Default"),
                 CornerSize = new Vector2(6f, 6f),
-                BlockPropagation = true,
+                PropagationRule = Enums.PropagationFlags.FocusEvents,
             };
 
             AppendChild(_toolPanel);

@@ -32,7 +32,8 @@ namespace UIEditor.Editor.States {
             AppendChild(_sizer);
         }
 
-        public void PlaceElement(Vector2 pos, UIElement element) {
+        public void PlaceElement(Vector2 pos, UIElement prefab) {
+            var element = (UIElement)prefab.Clone();
             Root.AppendChild(element);
             element.RecalculateSelf();
             element.Position = element.ScreenPositionToParentAR(pos);

@@ -37,9 +37,9 @@ namespace UIEditor.UILib.Components {
         }
 
 
-        public override void MouseClick(UIMouseEvent e) {
+        public override void MouseLeftClick(UIMouseEvent e) {
             Checked ^= true;
-            base.MouseClick(e);
+            base.MouseLeftClick(e);
         }
 
         public void CheckedChange(UICheckBoxEvent e) {

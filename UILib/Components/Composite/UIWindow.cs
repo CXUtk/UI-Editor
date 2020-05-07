@@ -18,7 +18,7 @@ namespace UIEditor.UILib.Components.Composite {
 
         public UIWindow() : base() {
             Name = "窗口";
-            BlockPropagation = true;
+            PropagationRule = Enums.PropagationFlags.FocusEvents;
 
             _closeButton = new UIImageButton() {
                 Pivot = new Vector2(1, 0),
@@ -28,7 +28,7 @@ namespace UIEditor.UILib.Components.Composite {
                 DefaultColor = Color.White * 0.8f,
                 WhiteTexture = UIEditor.Instance.SkinManager.GetTexture("CloseButton_Change"),
                 Scale = new Vector2(0.9f, 0.9f),
-                BlockPropagation = true,
+                PropagationRule = Enums.PropagationFlags.BLOCK_ALL,
             };
             _closeButton.OnClick += _closeButton_OnClick;
             AppendChild(_closeButton);

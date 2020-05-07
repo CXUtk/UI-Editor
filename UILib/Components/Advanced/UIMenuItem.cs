@@ -49,7 +49,7 @@ namespace UIEditor.UILib.Components {
             AnchorPoint = Vector2.Zero;
             label.Text = string.Empty;
             AppendChild(label);
-            BlockPropagation = true;
+            PropagationRule = Enums.PropagationFlags.FocusEvents;
             Size = new Vector2(19, 22);
             items = new List<UIMenuItem>();
             ItemsWidth = 20;

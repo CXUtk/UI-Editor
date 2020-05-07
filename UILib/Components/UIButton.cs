@@ -26,7 +26,6 @@ namespace UIEditor.UILib.Components {
             _label.AnchorPoint = new Vector2(0.5f, 0.5f);
             _label.IsLargeText = this.IsLargeText;
             _label.TextColor = this.TextDefaultColor;
-            _label.BlockPropagation = false;
             _label.NoEvent = true;
         }
         public UIButton() : base() {
