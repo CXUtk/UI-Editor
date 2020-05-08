@@ -50,17 +50,25 @@ namespace UIEditor.Editor.States {
             Add(((BrowserTreeNode)e.Target).BindingElement);
         }
 
-        private UIElement GetRightElement(Type type) {
+        private UIElement GetRightElement(Type type, object value) {
             if (type == typeof(bool)) {
                 return new UICheckBox() {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
+                    Checked = (bool)value,
+                };
+            } else if (type == typeof(float) || type == typeof(int)) {
+                return new UILabel() {
+                    AnchorPoint = new Vector2(0, 0.5f),
+                    Pivot = new Vector2(0, 0.5f),
+                    Text = value.ToString(),
                 };
             }
             return new UITextBox() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0f),
                 SizeFactor = new Vector2(1, 1),
+                Text = value == null ? "null" : value.ToString(),
             };
         }
 
@@ -69,7 +77,7 @@ namespace UIEditor.Editor.States {
             foreach (var info in element.GetType().GetProperties()) {
                 if (info.IsDefined(typeof(Attributes.EditorPropertyIgnoreAttribute), true))
                     continue;
-                UIElement right = GetRightElement(info.PropertyType);
+                UIElement right = GetRightElement(info.PropertyType, info.GetValue(element));
                 var left = new UILabel() {
                     Text = info.Name,
                     SizeFactor = new Vector2(1f, 0f),
