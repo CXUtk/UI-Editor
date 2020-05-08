@@ -13,6 +13,7 @@ using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.Editor.Components;
+using System.Linq;
 
 namespace UIEditor.Editor.States {
     public class Browser : UIElement {
@@ -23,6 +24,7 @@ namespace UIEditor.Editor.States {
         private EditorState _editor;
         public Browser(EditorState editor) : base() {
             _editor = editor;
+            _editor.OnSelectionChange += _editor_OnSelectionChange;
             _listPanel = new UIPanel() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
@@ -76,6 +78,10 @@ namespace UIEditor.Editor.States {
             _toolBarList.SetScrollBarV(scrollBar3);
             toolbar2.AddToPanel(_toolBarList);
 
+        }
+
+        private void _editor_OnSelectionChange(UIActionEvent e, UIElement sender) {
+            _treeList.SelectedElement = e.Target;
         }
 
         private void _treeList_OnSelect(UIActionEvent e, UIElement sender) {
@@ -186,6 +192,12 @@ namespace UIEditor.Editor.States {
                 }
 
             }
+        }
+        public UIElement FindTreeElement(UIElement element) {
+            return _treeList.Elements.FirstOrDefault((e) => {
+                var a = ((BrowserTreeNode)e);
+                return a.BindingElement == element;
+            });
         }
 
     }

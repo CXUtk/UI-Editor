@@ -12,6 +12,7 @@ using UIEditor.UILib.Components.Advanced;
 using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
+using UIEditor.Editor.Components;
 
 namespace UIEditor.Editor.States {
     public class Inspecter : UIElement {
@@ -20,6 +21,7 @@ namespace UIEditor.Editor.States {
         private EditorState _editor;
         public Inspecter(EditorState editor) : base() {
             _editor = editor;
+            _editor.OnSelectionChange += _editor_OnSelectionChange;
             _inspecterPanel = new UIPanel() {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
@@ -44,6 +46,9 @@ namespace UIEditor.Editor.States {
             AppendChild(_inspecterPanel);
         }
 
+        private void _editor_OnSelectionChange(UIActionEvent e, UIElement sender) {
+            Add(((BrowserTreeNode)e.Target).BindingElement);
+        }
 
         private UIElement GetRightElement(Type type) {
             if (type == typeof(bool)) {

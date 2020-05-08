@@ -20,13 +20,13 @@ namespace UIEditor.UILib.Components.Composite {
         }
 
         private void Element_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
-            _selectedItem = sender;
+            SelectedElement = sender;
             OnSelect?.Invoke(new Events.UIActionEvent(this, Main._drawInterfaceGameTime.TotalGameTime), this);
         }
         public override void UpdateElementPos(GameTime gameTime) {
             base.UpdateElementPos(gameTime);
             foreach (var element in _elements) {
-                element.IsSelected = (_selectedItem == element);
+                element.IsSelected = (SelectedElement == element);
             }
         }
     }

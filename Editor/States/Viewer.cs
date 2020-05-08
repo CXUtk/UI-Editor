@@ -60,12 +60,11 @@ namespace UIEditor.Editor.States {
             base.UpdateSelf(gameTime);
             if (IsFocused && _wasDown && Main.mouseLeftRelease) {
                 var target = Canvas.ElementAt(Main.MouseScreen);
-                Main.NewText((target == null) ? "null" : target.ToString());
                 if (!IsSizer(target)) {
                     if (target == Canvas.Root) {
                         Canvas.PlaceSizer(null);
                     } else {
-
+                        _editor.NotifySelectionChange(_editor.Browser.FindTreeElement(target), gameTime);
                         Canvas.PlaceSizer(target);
                     }
                 }

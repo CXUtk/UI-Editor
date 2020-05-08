@@ -16,6 +16,7 @@ using UIEditor.Editor.Components;
 
 namespace UIEditor.Editor.States {
     public class EditorState : UIState {
+        internal event ActionEvent OnSelectionChange;
         public EditorState(string name) : base(name) { }
 
         public Viewer Viewer { get; private set; }
@@ -79,12 +80,14 @@ namespace UIEditor.Editor.States {
             Inspecter.Position = new Vector2(Browser.Width, Viewer.Height);
             var e = (BrowserTreeNode)Browser.SelectedElement;
             if (_lastFocusElement != e) {
-                if (e != null)
-                    Inspecter.Add(e.BindingElement);
+                OnSelectionChange.Invoke(new UIActionEvent(e, gameTime.TotalGameTime), this);
             }
             _lastFocusElement = e;
         }
 
+        public void NotifySelectionChange(UIElement element, GameTime gameTime) {
+            OnSelectionChange.Invoke(new UIActionEvent(element, gameTime.TotalGameTime), this);
+        }
         internal UIElement PlaceElement { get; private set; }
         public void SetPlaceMode(UIElement element) {
             PlaceElement = element;

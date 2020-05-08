@@ -31,7 +31,7 @@ namespace UIEditor.UILib.Components.Composite {
         }
 
         private void DisplayElement_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
-            _selectedItem = sender;
+            SelectedElement = sender;
             OnSelect?.Invoke(new Events.UIActionEvent(this, Main._drawInterfaceGameTime.TotalGameTime), this);
         }
 
@@ -47,7 +47,7 @@ namespace UIEditor.UILib.Components.Composite {
             _maxLeftPadding = Math.Max(_maxLeftPadding, leftPadding);
             node.DisplayElement.LeftOffset = leftPadding;
             node.DisplayElement.Position = new Vector2(0, _totHeight);
-            node.DisplayElement.IsSelected = (node.DisplayElement == _selectedItem);
+            node.DisplayElement.IsSelected = (node.DisplayElement == SelectedElement);
             node.DisplayElement.Update(gameTime);
             _addElement(node.DisplayElement);
             _totHeight += node.DisplayElement.Height + ItemMargin;

@@ -14,6 +14,11 @@
             如果某个UI类型具有此特性，则在层级浏览器中不会显示其子节点
             </summary>
         </member>
+        <member name="T:UIEditor.Editor.Attributes.EditorPropertyReadOnlyAttribute">
+            <summary>
+            如果某个UI类型具有此特性，则在层级浏览器中不会显示其子节点
+            </summary>
+        </member>
         <member name="F:UIEditor.UIEditor.Instance">
             <summary>
             UI编辑器的单例实例指针
@@ -90,6 +95,16 @@
             隐藏溢出部分
             </summary>
         </member>
+        <member name="T:UIEditor.UILib.Events.UIDragEndEvent">
+            <summary>
+            储存鼠标事件
+            </summary>
+        </member>
+        <member name="T:UIEditor.UILib.Events.UIDraggingEvent">
+            <summary>
+            储存鼠标事件
+            </summary>
+        </member>
         <member name="T:UIEditor.UILib.Events.UIEvent">
             <summary>
             储存UI事件的信息
@@ -163,7 +178,7 @@
             UI元素的溢出行为
             </summary>
         </member>
-        <member name="P:UIEditor.UILib.UIElement.BlockPropagation">
+        <member name="P:UIEditor.UILib.UIElement.PropagationRule">
             <summary>
             UI元素是否阻止事件向其父元素传播
             </summary>
@@ -178,10 +193,53 @@
             鼠标移动上去时候显示的说明文字
             </summary>
         </member>
+        <member name="P:UIEditor.UILib.UIElement.IsFocused">
+            <summary>
+            标记该节点或容器是否处于用户焦点
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.ShouldRecalculate">
+            <summary>
+            标记该节点以及其子节点是否应该重新计算位置
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.IsPreview">
+            <summary>
+            标记该节点是否处于Preview模式，如果处于这个模式就会在Viewer特殊处理
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.IsSelected">
+            <summary>
+            标记该元素是否被某些容器选中
+            </summary>
+        </member>
         <member name="P:UIEditor.UILib.UIElement.IsMouseHover">
             <summary>
             如果鼠标位置在这个UI元素上面
             </summary>
+        </member>
+        <member name="M:UIEditor.UILib.UIElement.ScreenPositionToNodeAR(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            把屏幕坐标转化为相对于这个UI元素的子节点的坐标，可以指定锚点
+            </summary>
+            <param name="worldPos"></param>
+            <param name="anchor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UIEditor.UILib.UIElement.ScreenPositionToParentAR(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+             把屏幕坐标转化为相对于这个UI元素的父节点的子节点坐标
+            </summary>
+            <param name="worldPos"></param>
+            <param name="anchor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UIEditor.UILib.UIElement.ElementAt(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            获取在屏幕坐标为pos的地点的最上层响应事件的UI元件
+            </summary>
+            <param name="pos"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>
