@@ -73,7 +73,6 @@ namespace UIEditor.UILib.Components.Composite {
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-
         }
     }
 }
