@@ -60,7 +60,7 @@ namespace UIEditor.Editor.States {
             _treeList.SetScrollBarH(scrollBar2);
             _treeList.OnSelect += _treeList_OnSelect;
 
-            _toolBarList = new UIList() {
+            _toolBarList = new UISelectableList() {
                 Pivot = new Vector2(0, 0),
                 Position = new Vector2(10, 10),
                 SizeFactor = new Vector2(1, 1),
@@ -100,37 +100,42 @@ namespace UIEditor.Editor.States {
 
 
         private void SetupButtons() {
-            var pointer = new UIButton() {
+            var pointer = new ToolBarButton() {
                 Text = $"指针",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("NoTexture"),
             };
             pointer.OnClick += Pointer_OnClick;
             _toolBarList.AddElement(pointer);
-            var button = new UIButton() {
+            var button = new ToolBarButton() {
                 Text = $"按钮",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("Icon_Button"),
             };
             button.OnClick += Button_OnClick;
-            var label = new UIButton() {
+            var label = new ToolBarButton() {
                 Text = $"标签文本",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("Icon_Label"),
             };
             label.OnClick += Label_OnClick;
             _toolBarList.AddElement(label);
-            var textBox = new UIButton() {
+            var textBox = new ToolBarButton() {
                 Text = $"文本框",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("Icon_Textbox"),
             };
             textBox.OnClick += TextBox_OnClick;
             _toolBarList.AddElement(textBox);
-            var progressBar = new UIButton() {
+            var progressBar = new ToolBarButton() {
                 Text = $"进度条",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("Icon_ProgressBar"),
             };
             progressBar.OnClick += ProgressBar_OnClick;
             _toolBarList.AddElement(progressBar);

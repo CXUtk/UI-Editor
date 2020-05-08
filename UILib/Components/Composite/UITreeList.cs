@@ -47,7 +47,7 @@ namespace UIEditor.UILib.Components.Composite {
             _maxLeftPadding = Math.Max(_maxLeftPadding, leftPadding);
             node.DisplayElement.LeftOffset = leftPadding;
             node.DisplayElement.Position = new Vector2(0, _totHeight);
-            node.DisplayElement.Selected = (node.DisplayElement == _selectedItem);
+            node.DisplayElement.IsSelected = (node.DisplayElement == _selectedItem);
             node.DisplayElement.Update(gameTime);
             _addElement(node.DisplayElement);
             _totHeight += node.DisplayElement.Height + ItemMargin;

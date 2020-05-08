@@ -172,9 +172,9 @@ namespace UIEditor.UILib.Components.Composite {
             _lastPos = Position;
             _lastBottomRight = Position + new Vector2(Width, Height);
             if (_targetElement != null) {
-                _targetElement.Size = Size;
+                _targetElement.Size = Size - new Vector2(12, 12);
                 _targetElement.RecalculateSelf();
-                _targetElement.TopLeft = _targetElement.ScreenPositionToParentAR(ParentNodePositionToScreenAR(Position));
+                _targetElement.TopLeft = _targetElement.ScreenPositionToParentAR(ParentNodePositionToScreenAR(Position)) + new Vector2(6, 6);
             }
         }
         private void _check() {
@@ -187,8 +187,8 @@ namespace UIEditor.UILib.Components.Composite {
         }
         public void AttachTo(UIElement element) {
             _targetElement = element;
-            Position = ScreenPositionToParentAR(element.InnerRectangleScreen.TopLeft());
-            Size = new Vector2(element.Width, element.Height);
+            Position = ScreenPositionToParentAR(element.InnerRectangleScreen.TopLeft()) - new Vector2(6, 6);
+            Size = new Vector2(element.Width + 12f, element.Height + 12f);
         }
 
 

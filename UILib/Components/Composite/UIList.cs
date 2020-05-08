@@ -177,6 +177,7 @@ namespace UIEditor.UILib.Components.Composite {
         }
         public void Clear() {
             _elements.Clear();
+            _selectedItem = null;
         }
 
 

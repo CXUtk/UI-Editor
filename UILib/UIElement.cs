@@ -135,6 +135,12 @@ namespace UIEditor.UILib {
         [EditorPropertyIgnore]
         internal bool IsPreview { get; set; }
 
+        /// <summary>
+        /// 标记该元素是否被某些容器选中
+        /// </summary>
+        [EditorPropertyIgnore]
+        internal bool IsSelected { get; set; }
+
         //public int MarginLeft { get; set; }
         //public int MarginRight { get; set; }
         //public int MarginTop { get; set; }

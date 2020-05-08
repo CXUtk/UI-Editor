@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Terraria;
 using UIEditor.Editor.Attributes;
 using UIEditor.UILib;
+using UIEditor.UILib.Events;
 using UIEditor.UILib.Components;
 using UIEditor.UILib.Components.Composite;
 
@@ -33,7 +34,27 @@ namespace UIEditor.Editor.States {
             });
             AppendChild(_sizer);
         }
+        private bool _isRightDragging;
+        private Vector2 _startPos;
+        private Vector2 _startMousePos;
+        public override void MouseRightDown(UIMouseEvent e) {
+            base.MouseRightDown(e);
+            _isRightDragging = true;
+            _startPos = Position;
+            _startMousePos = e.MouseScreen;
+        }
+        public override void MouseRightUp(UIMouseEvent e) {
+            base.MouseRightUp(e);
+            _isRightDragging = false;
+        }
 
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+            if (_isRightDragging) {
+                Vector2 offset = Main.MouseScreen - _startMousePos;
+                Position = _startPos + offset;
+            }
+        }
         //public UIElement GrabElement(Vector2 pos) {
         //    UIElement target = null;
         //    int sz = Children.Count;
