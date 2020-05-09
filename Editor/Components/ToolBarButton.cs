@@ -27,7 +27,6 @@ namespace UIEditor.Editor.Components {
                 AnchorPoint = new Vector2(0, 0.5f),
                 NoEvent = true,
             };
-            Text = "文字";
             AppendChild(_image);
             AppendChild(_label);
         }

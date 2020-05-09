@@ -50,26 +50,37 @@ namespace UIEditor.Editor.States {
             Add(((BrowserTreeNode)e.Target).BindingElement);
         }
 
-        private UIElement GetRightElement(Type type, object value) {
-            if (type == typeof(bool)) {
-                return new UICheckBox() {
+        private UIElement GetRightElement(PropertyInfo info, UIElement element) {
+            object value = info.GetValue(element);
+            if (info.PropertyType == typeof(bool)) {
+                var check = new UICheckBox() {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
                     Checked = (bool)value,
                 };
-            } else if (type == typeof(float) || type == typeof(int)) {
-                return new UILabel() {
+                check.OnCheckedChange += (e, s) => {
+                    info.SetValue(element, e.Value);
+                };
+                return check;
+            } else if (info.PropertyType == typeof(string)) {
+                var changer = new UITextBox() {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
+                    SizeFactor = new Vector2(1, 1),
                     Text = value.ToString(),
                 };
+                changer.OnTextChange += (e, s) => {
+                    info.SetValue(element, e.NewString);
+                };
+                return changer;
             }
-            return new UITextBox() {
+            var text = new UILabel() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0f),
                 SizeFactor = new Vector2(1, 1),
-                Text = value == null ? "null" : value.ToString(),
+                Text = (value == null) ? "null" : value.ToString(),
             };
+            return text;
         }
 
         public void Add(UIElement element) {
@@ -77,7 +88,7 @@ namespace UIEditor.Editor.States {
             foreach (var info in element.GetType().GetProperties()) {
                 if (info.IsDefined(typeof(Attributes.EditorPropertyIgnoreAttribute), true))
                     continue;
-                UIElement right = GetRightElement(info.PropertyType, info.GetValue(element));
+                UIElement right = GetRightElement(info, element);
                 var left = new UILabel() {
                     Text = info.Name,
                     SizeFactor = new Vector2(1f, 0f),
