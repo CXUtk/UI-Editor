@@ -47,7 +47,8 @@ namespace UIEditor.Editor.States {
         }
 
         private void _editor_OnSelectionChange(UIActionEvent e, UIElement sender) {
-            Add(((BrowserTreeNode)e.Target).BindingElement);
+            if (e.Target != null)
+                Add(((BrowserTreeNode)e.Target).BindingElement);
         }
 
         private UIElement GetRightElement(PropertyInfo info, UIElement element) {
