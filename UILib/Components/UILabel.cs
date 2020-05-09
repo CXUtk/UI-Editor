@@ -46,9 +46,9 @@ namespace UIEditor.UILib.Components {
             }
         }
         public override void UpdateSelf(GameTime gameTime) {
-            CalculateSize();
-            Recalculate();
             base.UpdateSelf(gameTime);
+            CalculateSize();
+            RecalculateSelf();
         }
 
         public override void DrawSelf(SpriteBatch sb) {

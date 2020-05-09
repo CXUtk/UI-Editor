@@ -109,9 +109,8 @@ namespace UIEditor.UILib.Components {
                 _label.Text = Text.Insert(_carrot, _shouldBlink ? "|" : " ");
                 _label.CalculateSize();
             } else {
-                if (_label.Text.Length != Text.Length) {
-                    _label.Text = Text;
-                }
+                _label.Text = Text;
+
             }
         }
 
