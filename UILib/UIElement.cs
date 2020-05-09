@@ -141,6 +141,12 @@ namespace UIEditor.UILib {
         [EditorPropertyIgnore]
         internal bool IsSelected { get; set; }
 
+        /// <summary>
+        /// 如果需要使用着色器，会更改这个元素的绘制模式，会严重影响性能
+        /// </summary>
+        [EditorPropertyIgnore]
+        public bool UseShader { get; set; }
+
         //public int MarginLeft { get; set; }
         //public int MarginRight { get; set; }
         //public int MarginTop { get; set; }
@@ -174,28 +180,33 @@ namespace UIEditor.UILib {
 
 
         #region 派生属性
+        [EditorPropertyIgnore]
         public Rectangle OuterRectangleScreen {
             get {
                 return _selfHitbox.GetOuterRectangle();
             }
         }
+        [EditorPropertyIgnore]
         public Rectangle BaseRectangleScreen {
             get {
                 return new Rectangle((int)(_baseTopLeftScreen.X), (int)(_baseTopLeftScreen.Y), Width, Height);
             }
         }
+        [EditorPropertyReadOnly]
         public Rectangle InnerRectangleScreen {
             get {
                 return new Rectangle((int)(_baseTopLeftScreen.X), (int)(_baseTopLeftScreen.Y), Width, Height);
             }
         }
 
-
+        [EditorPropertyReadOnly]
         public int Width {
             get {
                 return (int)(SizeFactor.X * _parentRect.Width + Size.X);
             }
         }
+
+        [EditorPropertyReadOnly]
         public int Height {
             get {
                 return (int)(SizeFactor.Y * _parentRect.Height + Size.Y);
@@ -204,7 +215,9 @@ namespace UIEditor.UILib {
         /// <summary>
         /// 如果鼠标位置在这个UI元素上面
         /// </summary>
+        [EditorPropertyIgnore]
         public bool IsMouseHover { get; private set; }
+
 
         private Vector2 PivotOffset {
             get {
@@ -262,6 +275,7 @@ namespace UIEditor.UILib {
                 Position = ScreenPositionToParentAR(value);
             }
         }
+
 
         public Vector2 TopLeft {
             get {
@@ -474,6 +488,7 @@ namespace UIEditor.UILib {
                 ScissorTestEnable = true,
             };
             Tooltip = "";
+            UseShader = false;
             _selfHitbox = new QuadrilateralHitbox();
             Recalculate();
         }
@@ -523,11 +538,22 @@ namespace UIEditor.UILib {
             var defaultstate = sb.GraphicsDevice.RasterizerState;
             if (IsVisible) {
                 sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                    DepthStencilState.None, defaultstate, null, _selfTransform);
+                if (UseShader) {
+                    sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                } else {
+                    sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                }
                 DrawSelf(sb);
+                if (UseShader) {
+                    sb.End();
+                    sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                }
                 PostDrawSelf?.Invoke(new UIDrawEvent(this, Main._drawInterfaceGameTime.TotalGameTime, sb), this);
             }
+
             if (Overflow == OverflowType.Hidden) {
                 sb.End();
                 sb.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRectangle, GetClippingRectangle(sb));

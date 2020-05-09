@@ -9,6 +9,7 @@ using UIEditor.UILib.Components.Composite;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using UIEditor.Editor.Components;
 
 namespace UIEditor.UILib.Tests {
     public class TestState2 : UIState {
@@ -44,12 +45,16 @@ namespace UIEditor.UILib.Tests {
                 Name = "test checkbox",
                 Position = new Vector2(90, 90)
             };
-            var slot = new UIItemSlot
-            {
+            var slot = new UIItemSlot {
                 Name = "test slot",
                 Position = new Vector2(90, 190),
                 ItemType = ModContent.ItemType<ItemForTest>()
             };
+            var colorwheel = new UIColorWheel() {
+                Position = new Vector2(200, 200),
+                Size = new Vector2(128, 128),
+            };
+
             checkbox.OnCheckedChange += Checkbox_OnCheckedChange;
             button.OnClick += (e, sender) => {
                 switch (textbox.TextAlign) {
@@ -118,6 +123,7 @@ namespace UIEditor.UILib.Tests {
             //box13.AppendChild(button2);
             box13.AppendChild(menu);
             box13.AppendChild(slot);
+            box13.AppendChild(colorwheel);
         }
 
         private void Checkbox_OnCheckedChange(Events.UICheckBoxEvent e, UIElement sender) {

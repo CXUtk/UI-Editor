@@ -46,9 +46,21 @@ namespace UIEditor.Editor.States {
             AppendChild(_inspecterPanel);
         }
 
+        private UIElement _currentFocus;
+
         private void _editor_OnSelectionChange(UIActionEvent e, UIElement sender) {
-            if (e.Target != null)
+            if (e.Target != null) {
                 Add(((BrowserTreeNode)e.Target).BindingElement);
+                _currentFocus = ((BrowserTreeNode)e.Target).BindingElement;
+            } else {
+                _currentFocus = null;
+            }
+        }
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+            if (_currentFocus != null && _currentFocus.ShouldRecalculate) {
+                Add(_currentFocus);
+            }
         }
 
         private UIElement GetRightElement(PropertyInfo info, UIElement element) {
@@ -74,6 +86,15 @@ namespace UIEditor.Editor.States {
                     info.SetValue(element, e.NewString);
                 };
                 return changer;
+            } else if (info.PropertyType == typeof(Color)) {
+
+                var color = new UIColorIdentifier() {
+                    AnchorPoint = new Vector2(0, 0.5f),
+                    Pivot = new Vector2(0, 0.5f),
+                    SizeFactor = new Vector2(1, 1),
+                    Color = (Color)value,
+                };
+                return color;
             }
             var text = new UILabel() {
                 AnchorPoint = new Vector2(0, 0),
@@ -83,7 +104,9 @@ namespace UIEditor.Editor.States {
             };
             return text;
         }
+        public void UpdateProperties() {
 
+        }
         public void Add(UIElement element) {
             _inspectorList.Clear();
             foreach (var info in element.GetType().GetProperties()) {
@@ -92,9 +115,8 @@ namespace UIEditor.Editor.States {
                 UIElement right = GetRightElement(info, element);
                 var left = new UILabel() {
                     Text = info.Name,
-                    SizeFactor = new Vector2(1f, 0f),
                     Size = new Vector2(-10, 20),
-                    SizeStyle = SizeStyle.Block,
+                    SizeStyle = SizeStyle.Inline,
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
                     Position = new Vector2(5, 0),

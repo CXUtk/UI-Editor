@@ -27,7 +27,7 @@ namespace UIEditor.Editor.States {
                 Pivot = new Vector2(0.5f, 1f),
             };
             AppendChild(_toolBar);
-            ZIndex = 1f;
+            ZIndex = 0.1f;
 
             var button = new UIImageButton() {
                 Texture = UIEditor.Instance.SkinManager.GetTexture("EditorIcon"),

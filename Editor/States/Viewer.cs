@@ -58,10 +58,11 @@ namespace UIEditor.Editor.States {
         private bool _wasDown;
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-            if (IsFocused && _wasDown && Main.mouseLeftRelease) {
+            if (Main.hasFocus && IsFocused && _wasDown && Main.mouseLeftRelease) {
                 var target = Canvas.ElementAt(Main.MouseScreen);
                 if (!IsSizer(target)) {
                     if (target == Canvas.Root) {
+                        _editor.NotifySelectionChange(null, gameTime);
                         Canvas.PlaceSizer(null);
                     } else {
                         _editor.NotifySelectionChange(_editor.Browser.FindTreeElement(target), gameTime);

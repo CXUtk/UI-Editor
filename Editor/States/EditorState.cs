@@ -86,6 +86,7 @@ namespace UIEditor.Editor.States {
         }
 
         public void NotifySelectionChange(UIElement element, GameTime gameTime) {
+            _lastFocusElement = element;
             OnSelectionChange.Invoke(new UIActionEvent(element, gameTime.TotalGameTime), this);
         }
         internal UIElement PlaceElement { get; private set; }
