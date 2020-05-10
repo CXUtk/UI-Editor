@@ -20,6 +20,7 @@ namespace UIEditor.UILib {
         public delegate void DrawEvent(UIDrawEvent e, UIElement sender);
         public delegate void DragStartEvent(UIMouseEvent e, UIElement sender);
         public delegate void DragEndEvent(UIDragEndEvent e, UIElement sender);
+        public delegate void ValueChangeEvent<T>(UIValueChangeEvent<T> e, UIElement sender);
 
         public static bool DEBUG_MODE = true;
 

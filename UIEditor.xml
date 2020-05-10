@@ -213,6 +213,11 @@
             标记该元素是否被某些容器选中
             </summary>
         </member>
+        <member name="P:UIEditor.UILib.UIElement.UseShader">
+            <summary>
+            如果需要使用着色器，会更改这个元素的绘制模式，会严重影响性能
+            </summary>
+        </member>
         <member name="P:UIEditor.UILib.UIElement.IsMouseHover">
             <summary>
             如果鼠标位置在这个UI元素上面

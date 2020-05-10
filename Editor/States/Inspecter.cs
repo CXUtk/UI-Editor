@@ -87,7 +87,6 @@ namespace UIEditor.Editor.States {
                 };
                 return changer;
             } else if (info.PropertyType == typeof(Color)) {
-
                 var color = new UIColorIdentifier() {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
@@ -95,6 +94,16 @@ namespace UIEditor.Editor.States {
                     Color = (Color)value,
                 };
                 return color;
+            } else if (info.PropertyType == typeof(Vector2)) {
+                var vector2 = new UIVector2((Vector2)value) {
+                    AnchorPoint = new Vector2(0, 0.5f),
+                    Pivot = new Vector2(0, 0.5f),
+                    SizeFactor = new Vector2(1, 1),
+                };
+                vector2.OnValueChanged += (e, s) => {
+                    info.SetValue(element, new Vector2(vector2.X, vector2.Y));
+                };
+                return vector2;
             }
             var text = new UILabel() {
                 AnchorPoint = new Vector2(0, 0),
@@ -104,6 +113,8 @@ namespace UIEditor.Editor.States {
             };
             return text;
         }
+
+
         public void UpdateProperties() {
 
         }

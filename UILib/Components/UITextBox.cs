@@ -21,7 +21,7 @@ namespace UIEditor.UILib.Components {
     /// </summary>
     public class UITextBox : UIPanel {
         private readonly UILabel _label;
-        private string _text;
+        protected string _text;
         private int _carrot;
         private float _timer;
         private bool _shouldBlink;
@@ -61,6 +61,7 @@ namespace UIEditor.UILib.Components {
                 AnchorPoint = new Vector2(0, 0.5f),
                 Pivot = new Vector2(0, 0.5f),
                 NoEvent = true,
+                Position = new Vector2(5f, 0f),
             };
             _offsetL = _offsetR = 0;
             OnClick += FindCarrot;
@@ -128,15 +129,14 @@ namespace UIEditor.UILib.Components {
                     _offsetL = carrotpos - 5f * TextScale;
                     _offsetR = _offsetL + Width;
                 }
-                _label.Position = new Vector2(Math.Min(0, Width - _offsetR), 0);
+                _label.Position = new Vector2(Math.Min(5, Width - _offsetR), 0);
                 _label.Recalculate();
                 DrawIME();
             }
             base.DrawSelf(sb);
         }
 
-        public void TextChange(UITextChangeEvent e) {
-
+        public virtual void TextChange(UITextChangeEvent e) {
             OnTextChange?.Invoke(e, this);
         }
         private bool KeyDown(Keys key) {

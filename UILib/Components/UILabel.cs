@@ -42,7 +42,7 @@ namespace UIEditor.UILib.Components {
                 Size = MeasureSize(Text);
             else {
                 _displayString = StringProcess.GetClampStringWithEllipses(font, _displayString, TextScale, Width);
-                Size = new Vector2(Size.X, MeasureSize(Text).Y);
+                Size = new Vector2(Size.X, MeasureSize(_displayString).Y);
             }
         }
         public override void UpdateSelf(GameTime gameTime) {
