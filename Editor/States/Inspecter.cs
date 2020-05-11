@@ -155,7 +155,17 @@ namespace UIEditor.Editor.States {
             _editor.OnSelectionChange += _editor_OnSelectionChange;
             _editor.OnSizerAttached += _editor_OnSelectionChange;
             _editor.OnSizerChanged += _editor_OnSizerChanged;
+            //_editor.OnPropertyChanged += _editor_OnPropertyChanged;
         }
+
+        //private void _editor_OnPropertyChanged(UIActionEvent e, UIElement sender) {
+        //    foreach (var child in _inspectorList.Elements) {
+        //        UITableBar uibar = (UITableBar)child;
+        //        if (uibar.Right is IUIUpdateable) {
+        //            (uibar.Right as IUIUpdateable).UpdateValue();
+        //        }
+        //    }
+        //}
 
         private void _editor_OnSizerChanged(UIActionEvent e, UIElement sender) {
             foreach (var child in _inspectorList.Elements) {

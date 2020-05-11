@@ -16,7 +16,8 @@ namespace UIEditor.UILib.Components {
         public string Text { get; set; }
         public Color TextColor { get; set; }
         public Color BackgroundColor { get; set; }
-        public float TextScale { get; set; }
+        public float TextScale { get { return _textScale; } set { CheckRecalculate(_textScale, value); _textScale = value; } }
+        private float _textScale;
         public bool IsLargeText { get; set; }
         public SizeStyle SizeStyle { get; set; }
 
@@ -55,9 +56,9 @@ namespace UIEditor.UILib.Components {
             var font = IsLargeText ? Main.fontDeathText : Main.fontMouseText;
             sb.Draw(Main.magicPixel, new Rectangle(0, 0, Width, Height), BackgroundColor);
             if (IsLargeText)
-                Terraria.Utils.DrawBorderStringBig(sb, _displayString, Vector2.Zero, TextColor, TextScale);
+                Utils.DrawBorderStringBig(sb, _displayString, Vector2.Zero, TextColor, TextScale);
             else
-                Terraria.Utils.DrawBorderString(sb, _displayString, Vector2.Zero, TextColor, TextScale);
+                Utils.DrawBorderString(sb, _displayString, Vector2.Zero, TextColor, TextScale);
             base.DrawSelf(sb);
         }
     }
