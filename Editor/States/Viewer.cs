@@ -23,7 +23,8 @@ namespace UIEditor.Editor.States {
 
         public Viewer(EditorState editor) : base() {
             _editor = editor;
-            PropagationRule = PropagationFlags.FocusEvents;
+            PropagationRule = PropagationFlags.FocusEvents | PropagationFlags.ScrollWheel;
+
             _viewerPanel = new UIPanel() {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
@@ -32,16 +33,22 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(-10, -10),
             };
             AppendChild(_viewerPanel);
-            Canvas = new Canvas(editor) {
-                Name = "画布",
-                Overflow = OverflowType.Hidden,
+            var middle = new ViewerMiddle() {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
                 Position = new Vector2(2, 2),
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-4, -4),
+                Overflow = OverflowType.Hidden,
             };
-            _viewerPanel.AppendChild(Canvas);
+            Canvas = new Canvas(editor) {
+                Name = "画布",
+                Pivot = new Vector2(0.5f, 0.5f),
+                AnchorPoint = new Vector2(0.5f, 0.5f),
+                Size = new Vector2(1920, 1080),
+            };
+            _viewerPanel.AppendChild(middle);
+            middle.AppendChild(Canvas);
         }
         public override void MouseLeftDown(UIMouseEvent e) {
             base.MouseLeftDown(e);

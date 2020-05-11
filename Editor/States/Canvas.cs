@@ -41,6 +41,16 @@ namespace UIEditor.Editor.States {
             _editor.NotifySizerChanged(Sizer);
         }
 
+        private float _scale = 0f;
+        public override void ScrollWheel(UIScrollWheelEvent e) {
+            base.ScrollWheel(e);
+            Main.NewText(e.ScrollValue);
+            _scale += e.ScrollValue / 120f * 0.1f;
+            _scale = MathHelper.Clamp(_scale, -1f, 1f);
+            float s = (float)Math.Exp(_scale);
+            Scale = new Vector2(s, s);
+        }
+
         private bool _isRightDragging;
         private Vector2 _startPos;
         private Vector2 _startMousePos;
@@ -68,7 +78,7 @@ namespace UIEditor.Editor.States {
         public void PlaceElement(Vector2 pos, UIElement prefab) {
             var element = (UIElement)prefab.Clone();
             Root.AppendChild(element);
-            element.RecalculateSelf();
+            element.Recalculate();
             element.Position = element.ScreenPositionToParentAR(pos);
             _editor.NotifyPlaceElement(element);
         }

@@ -122,13 +122,13 @@ namespace UIEditor.UILib.Components.Composite {
             for (int i = 0; i < 4; i++) AppendChild(_dragBar[i]);
             _dragCorner = new UIDraggable[4];
             for (int i = 0; i < 4; i++) {
-                _dragBar[i].PropagationRule = Enums.PropagationFlags.FocusEvents;
+                _dragBar[i].PropagationRule = Enums.PropagationFlags.FocusEvents | Enums.PropagationFlags.ScrollWheel;
                 _dragBar[i].OnDragging += UISizer_OnDragging1;
                 _dragCorner[i] = new UICornerDragger() {
                     Size = new Vector2(12, 12),
                     AnchorPoint = new Vector2(i & 1, (i >> 1) & 1),
                     Pivot = new Vector2(i & 1, (i >> 1) & 1),
-                    PropagationRule = Enums.PropagationFlags.FocusEvents,
+                    PropagationRule = Enums.PropagationFlags.FocusEvents | Enums.PropagationFlags.ScrollWheel,
                 };
                 _dragCorner[i].OnDragging += UISizer_OnDragging1;
                 AppendChild(_dragCorner[i]);
@@ -190,10 +190,11 @@ namespace UIEditor.UILib.Components.Composite {
 
         }
         public void AttachTo(UIElement element) {
-            element.RecalculateSelf();
+            element.Recalculate();
             TargetElement = element;
             Position = ScreenPositionToParentAR(element.InnerRectangleScreen.TopLeft()) - new Vector2(6, 6);
             Size = new Vector2(element.Width + 12f, element.Height + 12f);
+            Recalculate();
         }
 
 

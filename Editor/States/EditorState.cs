@@ -21,8 +21,7 @@ namespace UIEditor.Editor.States {
         internal event ActionEvent OnSizerChanged;
         internal event ActionEvent OnPropertyChanged;
         internal event ActionEvent OnPlaceElement;
-
-
+        internal event ActionEvent OnViewerMove;
 
         public EditorState(string name) : base(name) { }
 
@@ -113,6 +112,11 @@ namespace UIEditor.Editor.States {
 
         public void NotifyPlaceElement(UIElement element) {
             OnPlaceElement?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+
+        public void NotifyMoveViewer(UIElement element) {
+            OnViewerMove?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
         }
 
         public void NotifySizerChanged(UIElement element) {
