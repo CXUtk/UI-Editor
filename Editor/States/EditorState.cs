@@ -123,6 +123,11 @@ namespace UIEditor.Editor.States {
             OnSizerChanged?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
         }
 
+        public void NotifyCanvasScaleChanged(UIElement element) {
+            OnSizerChanged?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+
 
         internal UIElement PlaceElement { get; private set; }
 

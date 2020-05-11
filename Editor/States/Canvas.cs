@@ -15,15 +15,10 @@ using UIEditor.UILib.Components.Composite;
 namespace UIEditor.Editor.States {
     public class Canvas : UIElement {
         public UIElement Root { get; }
-        public UISizer Sizer { get; }
-        private EditorState _editor;
-
+        public EditorState Editor { get; }
         public Canvas(EditorState editor) : base() {
-            _editor = editor;
-            Sizer = new UISizer() {
-                IsActive = false,
-            };
-            Sizer.OnSizerChanged += _sizer_OnSizerChanged;
+            Editor = editor;
+
             Root = new UIElement() {
                 SizeFactor = new Vector2(1f, 1f),
                 Pivot = new Vector2(0, 0),
@@ -34,17 +29,13 @@ namespace UIEditor.Editor.States {
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 Size = new Vector2(50, 50),
             });
-            AppendChild(Sizer);
+
         }
 
-        private void _sizer_OnSizerChanged(UIActionEvent e, UIElement sender) {
-            _editor.NotifySizerChanged(Sizer);
-        }
 
         private float _scale = 0f;
         public override void ScrollWheel(UIScrollWheelEvent e) {
             base.ScrollWheel(e);
-            Main.NewText(e.ScrollValue);
             _scale += e.ScrollValue / 120f * 0.1f;
             _scale = MathHelper.Clamp(_scale, -1f, 1f);
             float s = (float)Math.Exp(_scale);
@@ -69,28 +60,22 @@ namespace UIEditor.Editor.States {
             base.UpdateSelf(gameTime);
             if (_isRightDragging) {
                 Vector2 offset = Main.MouseScreen - _startMousePos;
-                Position = _startPos + offset;
+                Vector2 pos = _startPos + offset;
+                var tmp = pos - PivotOffset;
+                tmp.X = MathHelper.Clamp(tmp.X, -Width + Parent.Width / 2, -Parent.Width / 2);
+                tmp.Y = MathHelper.Clamp(tmp.Y, -Height + Parent.Height / 2, -Parent.Height / 2);
+                Main.NewText(tmp);
+                Position = tmp + PivotOffset;
             }
-            if (Sizer.TargetElement != null && Sizer.TargetElement.ShouldRecalculate) {
-                Sizer.AttachTo(Sizer.TargetElement);
-            }
+
         }
         public void PlaceElement(Vector2 pos, UIElement prefab) {
             var element = (UIElement)prefab.Clone();
             Root.AppendChild(element);
             element.Recalculate();
             element.Position = element.ScreenPositionToParentAR(pos);
-            _editor.NotifyPlaceElement(element);
+            Editor.NotifyPlaceElement(element);
         }
 
-        public void PlaceSizer(UIElement element) {
-            if (element == null) {
-                Sizer.UnAttach();
-                Sizer.IsActive = false;
-                return;
-            }
-            Sizer.IsActive = true;
-            Sizer.AttachTo(element);
-        }
     }
 }

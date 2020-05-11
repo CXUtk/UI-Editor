@@ -120,9 +120,8 @@ namespace UIEditor.Editor.States {
                 return textF;
             }
             var text = new UILabel() {
-                AnchorPoint = new Vector2(0, 0),
-                Pivot = new Vector2(0, 0f),
-                SizeFactor = new Vector2(1, 1),
+                AnchorPoint = new Vector2(0, 0.5f),
+                Pivot = new Vector2(0, 0.5f),
                 Text = (value == null) ? "null" : value.ToString(),
             };
             return text;

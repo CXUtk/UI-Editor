@@ -18,6 +18,7 @@ using UIEditor.Editor.Components;
 namespace UIEditor.Editor.States {
     public class Viewer : UIEditorPart {
         public Canvas Canvas { get; }
+        private ViewerMiddle Middle { get; }
         private UIPanel _viewerPanel;
         private EditorState _editor;
 
@@ -33,7 +34,13 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(-10, -10),
             };
             AppendChild(_viewerPanel);
-            var middle = new ViewerMiddle() {
+            Canvas = new Canvas(editor) {
+                Name = "画布",
+                Pivot = new Vector2(0.5f, 0.5f),
+                AnchorPoint = new Vector2(0.5f, 0.5f),
+                Size = new Vector2(1920, 1080),
+            };
+            Middle = new ViewerMiddle(Canvas) {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
                 Position = new Vector2(2, 2),
@@ -41,14 +48,7 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(-4, -4),
                 Overflow = OverflowType.Hidden,
             };
-            Canvas = new Canvas(editor) {
-                Name = "画布",
-                Pivot = new Vector2(0.5f, 0.5f),
-                AnchorPoint = new Vector2(0.5f, 0.5f),
-                Size = new Vector2(1920, 1080),
-            };
-            _viewerPanel.AppendChild(middle);
-            middle.AppendChild(Canvas);
+            _viewerPanel.AppendChild(Middle);
         }
         public override void MouseLeftDown(UIMouseEvent e) {
             base.MouseLeftDown(e);
@@ -70,10 +70,10 @@ namespace UIEditor.Editor.States {
                 if (!IsSizer(target)) {
                     if (target == Canvas.Root) {
                         _editor.NotifySizerAttached(null);
-                        Canvas.PlaceSizer(null);
+                        Middle.PlaceSizer(null);
                     } else {
                         _editor.NotifySizerAttached(target);
-                        Canvas.PlaceSizer(target);
+                        Middle.PlaceSizer(target);
                     }
                 }
             }
@@ -87,11 +87,11 @@ namespace UIEditor.Editor.States {
         }
 
         private void _editor_OnPropertyChanged(UIActionEvent e, UIElement sender) {
-            Canvas.PlaceSizer(Canvas.Sizer.TargetElement);
+            Middle.PlaceSizer(Middle.Sizer.TargetElement);
         }
 
         private void _editor_OnSelectionChange(UIActionEvent e, UIElement sender) {
-            Canvas.PlaceSizer(e.Target);
+            Middle.PlaceSizer(e.Target);
         }
     }
 }

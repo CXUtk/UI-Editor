@@ -220,7 +220,7 @@ namespace UIEditor.UILib {
         public bool IsMouseHover { get; private set; }
 
 
-        private Vector2 PivotOffset {
+        public Vector2 PivotOffset {
             get {
                 return new Vector2(Width * Pivot.X, Height * Pivot.Y);
             }
