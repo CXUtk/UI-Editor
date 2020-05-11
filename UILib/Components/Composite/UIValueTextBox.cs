@@ -10,40 +10,39 @@ using UIEditor.UILib.Events;
 namespace UIEditor.UILib.Components.Composite {
     public class UIValueTextBox<T> : UITextBox where T : IFormattable, IConvertible {
         public event ValueChangeEvent<T> OnValueChanged;
-        private T _value;
-        public T Value {
-            get {
-                return _value;
-            }
-            set {
-                T prev = _value;
-                _value = value;
-                if (!_value.Equals(prev)) {
-                    OnValueChanged?.Invoke(new UIValueChangeEvent<T>(this, Main._drawInterfaceGameTime.TotalGameTime, _value), this);
-                    Text = _value.ToString();
-                }
 
-            }
-        }
+        private T _value;
+        public T Value { get { return _value; } set { _value = value; } }
         public UIValueTextBox(T value) {
             Text = value.ToString();
-            _value = value;
+            Value = value;
         }
 
         private void tryParse(string obj) {
-            T pre = _value;
+            T pre = Value;
             try {
                 Value = (T)Convert.ChangeType(obj, typeof(T));
+                if (!Value.Equals(pre)) {
+                    OnValueChanged?.Invoke(new UIValueChangeEvent<T>(this, Main._drawInterfaceGameTime.TotalGameTime, Value), this);
+                    _text = Value.ToString();
+                }
             } catch (FormatException ex) {
                 // Ignore
-                ex.ToString();
-                _value = pre;
+                Value = pre;
             }
+        }
+        public override void UnFocus(UIActionEvent e) {
+            base.UnFocus(e);
+            _text = Value.ToString();
         }
 
         public override void TextChange(UITextChangeEvent e) {
             tryParse(e.NewString);
             base.TextChange(e);
+        }
+
+        public void Apply() {
+            _text = Value.ToString();
         }
 
     }

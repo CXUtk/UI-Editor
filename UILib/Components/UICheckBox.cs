@@ -7,25 +7,23 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
+using UIEditor.UILib.Components.Interface;
 using UIEditor.UILib.Events;
 
 
 namespace UIEditor.UILib.Components {
-    public class UICheckBox : UIElement {
+    public class UICheckBox : UIElement, IUIValue<bool> {
 
         private bool _checked;
 
         public delegate void CheckedChangeHandler(UICheckBoxEvent e, UIElement sender);
 
-        public bool Checked {
+        public bool Value {
             get {
                 return _checked;
             }
             set {
-                if (_checked == value)
-                    return;
                 _checked = value;
-                CheckedChange(new UICheckBoxEvent(this, Main._drawInterfaceGameTime.TotalGameTime, _checked));
             }
         }
 
@@ -38,7 +36,8 @@ namespace UIEditor.UILib.Components {
 
 
         public override void MouseLeftClick(UIMouseEvent e) {
-            Checked ^= true;
+            Value ^= true;
+            CheckedChange(new UICheckBoxEvent(this, Main._drawInterfaceGameTime.TotalGameTime, Value));
             base.MouseLeftClick(e);
         }
 
@@ -48,13 +47,17 @@ namespace UIEditor.UILib.Components {
 
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            var texture = UIEditor.Instance.SkinManager.GetTexture(Checked ? "CheckBox_Checked" : "CheckBox_Default");
+            var texture = UIEditor.Instance.SkinManager.GetTexture(Value ? "CheckBox_Checked" : "CheckBox_Default");
             sb.Draw(texture, Pivot * new Vector2(Width, Height), null, Color.White, 0, Pivot * texture.Size(),
                     new Vector2(1, 1), SpriteEffects.None, 0f);
             if (IsMouseHover) {
                 sb.Draw(UIEditor.Instance.SkinManager.GetTexture("CheckBox_White"), Vector2.Zero, null, Color.White, 0, Vector2.Zero,
                     new Vector2(1, 1), SpriteEffects.None, 0f);
             }
+        }
+
+        public void Refresh() {
+            throw new NotImplementedException();
         }
     }
 }

@@ -6,9 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using UIEditor.UILib.Components.Interface;
 
 namespace UIEditor.UILib.Components {
-    public class UIProgressBar : UIElement {
+    public class UIProgressBar : UIElement, IUIValue<float> {
 
         public Texture2D FrameTexture { get; set; }
         /// <summary>
@@ -20,7 +21,7 @@ namespace UIEditor.UILib.Components {
         /// <summary>
         /// 当前进度条的进度值，是一个0-1之间的浮点数
         /// </summary>
-        public float CurrentValue {
+        public float Value {
             get { return _value; }
             set { _value = MathHelper.Clamp(value, 0, 1); }
         }
@@ -32,7 +33,7 @@ namespace UIEditor.UILib.Components {
             FrameCornerSize = new Vector2(8f, 8f);
             BackgroundColor = new Color(90, 90, 112);
             FillColor = Color.White;
-            CurrentValue = 0.5f;
+            Value = 0.5f;
         }
 
         public override void DrawSelf(SpriteBatch sb) {
@@ -41,10 +42,14 @@ namespace UIEditor.UILib.Components {
             Drawing.DrawAdvBox(sb, 0, 0, Width, Height, Color.White, FrameTexture, FrameCornerSize);
             sb.Draw(Main.magicPixel, new Rectangle((int)(FrameCornerSize.X), (int)(FrameCornerSize.Y),
                 (int)width, (int)(Height - FrameCornerSize.Y * 2)), BackgroundColor);
-            width *= CurrentValue;
+            width *= Value;
             sb.Draw(Main.magicPixel, new Rectangle((int)(FrameCornerSize.X), (int)(FrameCornerSize.Y),
                 (int)width, (int)(Height - FrameCornerSize.Y * 2)), FillColor);
 
+        }
+
+        public void Refresh() {
+            throw new NotImplementedException();
         }
     }
 }

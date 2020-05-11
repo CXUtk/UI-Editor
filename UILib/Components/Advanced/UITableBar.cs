@@ -13,11 +13,16 @@ namespace UIEditor.UILib.Components.Advanced {
     public class UITableBar : UIElement {
         public float Division { get; set; }
 
-        private readonly UIElement _left;
-        private readonly UIElement _right;
+        public UIElement Left { get; }
+        public UIElement Right { get; }
+
+        private UIElement _left;
+        private UIElement _right;
 
         public UITableBar(UIElement left, UIElement right) : base() {
             Division = 0.42f;
+            Left = left;
+            Right = right;
             _left = new UIElement() {
                 AnchorPoint = new Vector2(0, 0.5f),
                 Pivot = new Vector2(0, 0.5f),
@@ -30,8 +35,8 @@ namespace UIEditor.UILib.Components.Advanced {
             };
             AppendChild(_left);
             AppendChild(_right);
-            _left.AppendChild(left);
-            _right.AppendChild(right);
+            _left.AppendChild(Left);
+            _right.AppendChild(Right);
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);

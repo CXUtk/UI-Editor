@@ -13,9 +13,10 @@ using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.UILib.Enums;
+using UIEditor.Editor.Components;
 
 namespace UIEditor.Editor.States {
-    public class Viewer : UIElement {
+    public class Viewer : UIEditorPart {
         public Canvas Canvas { get; }
         private UIPanel _viewerPanel;
         private EditorState _editor;
@@ -41,7 +42,6 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(-4, -4),
             };
             _viewerPanel.AppendChild(Canvas);
-            Canvas = Canvas;
         }
         public override void MouseLeftDown(UIMouseEvent e) {
             base.MouseLeftDown(e);
@@ -62,10 +62,10 @@ namespace UIEditor.Editor.States {
                 var target = Canvas.ElementAt(Main.MouseScreen);
                 if (!IsSizer(target)) {
                     if (target == Canvas.Root) {
-                        _editor.NotifySelectionChange(null, gameTime);
+                        _editor.NotifySizerAttached(null);
                         Canvas.PlaceSizer(null);
                     } else {
-                        _editor.NotifySelectionChange(_editor.Browser.FindTreeElement(target), gameTime);
+                        _editor.NotifySizerAttached(target);
                         Canvas.PlaceSizer(target);
                     }
                 }
@@ -74,5 +74,17 @@ namespace UIEditor.Editor.States {
             //var a = _canvas.NodePositionToScreenAR(_canvas.ScreenPositionToNodeAR(Main.MouseScreen, Vector2.Zero));
         }
 
+        public override void Initialize() {
+            _editor.OnSelectionChange += _editor_OnSelectionChange;
+            _editor.OnPropertyChanged += _editor_OnPropertyChanged;
+        }
+
+        private void _editor_OnPropertyChanged(UIActionEvent e, UIElement sender) {
+            Canvas.PlaceSizer(Canvas.Sizer.TargetElement);
+        }
+
+        private void _editor_OnSelectionChange(UIActionEvent e, UIElement sender) {
+            Canvas.PlaceSizer(e.Target);
+        }
     }
 }

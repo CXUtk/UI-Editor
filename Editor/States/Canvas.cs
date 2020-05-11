@@ -15,25 +15,32 @@ using UIEditor.UILib.Components.Composite;
 namespace UIEditor.Editor.States {
     public class Canvas : UIElement {
         public UIElement Root { get; }
-        private UISizer _sizer;
+        public UISizer Sizer { get; }
         private EditorState _editor;
 
         public Canvas(EditorState editor) : base() {
             _editor = editor;
-            _sizer = new UISizer() {
+            Sizer = new UISizer() {
                 IsActive = false,
             };
+            Sizer.OnSizerChanged += _sizer_OnSizerChanged;
             Root = new UIElement() {
                 SizeFactor = new Vector2(1f, 1f),
                 Pivot = new Vector2(0, 0),
             };
             AppendChild(Root);
             Root.AppendChild(new UIButton() {
+                Name = "测试按钮",
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 Size = new Vector2(50, 50),
             });
-            AppendChild(_sizer);
+            AppendChild(Sizer);
         }
+
+        private void _sizer_OnSizerChanged(UIActionEvent e, UIElement sender) {
+            _editor.NotifySizerChanged(Sizer);
+        }
+
         private bool _isRightDragging;
         private Vector2 _startPos;
         private Vector2 _startMousePos;
@@ -54,38 +61,26 @@ namespace UIEditor.Editor.States {
                 Vector2 offset = Main.MouseScreen - _startMousePos;
                 Position = _startPos + offset;
             }
+            if (Sizer.TargetElement != null && Sizer.TargetElement.ShouldRecalculate) {
+                Sizer.AttachTo(Sizer.TargetElement);
+            }
         }
-        //public UIElement GrabElement(Vector2 pos) {
-        //    UIElement target = null;
-        //    int sz = Children.Count;
-        //    for (int i = sz - 1; i >= 0; i--) {
-        //        var child = Children[i];
-        //        if (child.IsActive && child.GetType() != typeof(UISizer) && child.ScreenHitBox.Contains(pos)) {
-        //            var tmp = child.ElementAt(pos);
-        //            if (tmp != null) {
-        //                target = tmp;
-        //                break;
-        //            }
-        //        }
-        //    }
-        //    return target;
-        //}
         public void PlaceElement(Vector2 pos, UIElement prefab) {
             var element = (UIElement)prefab.Clone();
             Root.AppendChild(element);
             element.RecalculateSelf();
             element.Position = element.ScreenPositionToParentAR(pos);
-            _editor.Browser.AddNode(element);
+            _editor.NotifyPlaceElement(element);
         }
 
         public void PlaceSizer(UIElement element) {
             if (element == null) {
-                _sizer.UnAttach();
-                _sizer.IsActive = false;
+                Sizer.UnAttach();
+                Sizer.IsActive = false;
                 return;
             }
-            _sizer.IsActive = true;
-            _sizer.AttachTo(element);
+            Sizer.IsActive = true;
+            Sizer.AttachTo(element);
         }
     }
 }

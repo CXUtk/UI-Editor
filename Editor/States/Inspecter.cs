@@ -13,15 +13,16 @@ using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.Editor.Components;
+using UIEditor.UILib.Components.Interface;
 
 namespace UIEditor.Editor.States {
-    public class Inspecter : UIElement {
+    public class Inspecter : UIEditorPart {
         private UIPanel _inspecterPanel;
         private UIList _inspectorList;
         private EditorState _editor;
         public Inspecter(EditorState editor) : base() {
             _editor = editor;
-            _editor.OnSelectionChange += _editor_OnSelectionChange;
+
             _inspecterPanel = new UIPanel() {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
@@ -50,17 +51,16 @@ namespace UIEditor.Editor.States {
 
         private void _editor_OnSelectionChange(UIActionEvent e, UIElement sender) {
             if (e.Target != null) {
-                Add(((BrowserTreeNode)e.Target).BindingElement);
-                _currentFocus = ((BrowserTreeNode)e.Target).BindingElement;
+                if (e.Target != _currentFocus)
+                    Add(e.Target);
+                _currentFocus = e.Target;
             } else {
                 _currentFocus = null;
+                _inspectorList.Clear();
             }
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-            if (_currentFocus != null && _currentFocus.ShouldRecalculate) {
-                Add(_currentFocus);
-            }
         }
 
         private UIElement GetRightElement(PropertyInfo info, UIElement element) {
@@ -69,10 +69,11 @@ namespace UIEditor.Editor.States {
                 var check = new UICheckBox() {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
-                    Checked = (bool)value,
+                    Value = (bool)value,
                 };
                 check.OnCheckedChange += (e, s) => {
                     info.SetValue(element, e.Value);
+                    _editor.NotifyElementPropertyChange(this);
                 };
                 return check;
             } else if (info.PropertyType == typeof(string)) {
@@ -84,6 +85,7 @@ namespace UIEditor.Editor.States {
                 };
                 changer.OnTextChange += (e, s) => {
                     info.SetValue(element, e.NewString);
+                    _editor.NotifyElementPropertyChange(this);
                 };
                 return changer;
             } else if (info.PropertyType == typeof(Color)) {
@@ -95,15 +97,27 @@ namespace UIEditor.Editor.States {
                 };
                 return color;
             } else if (info.PropertyType == typeof(Vector2)) {
-                var vector2 = new UIVector2((Vector2)value) {
+                var vector2 = new UIVector2(element, info) {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
                     SizeFactor = new Vector2(1, 1),
                 };
                 vector2.OnValueChanged += (e, s) => {
-                    info.SetValue(element, new Vector2(vector2.X, vector2.Y));
+                    info.SetValue(element, vector2.Value);
+                    _editor.NotifyElementPropertyChange(this);
                 };
                 return vector2;
+            } else if (info.PropertyType == typeof(float)) {
+                var textF = new UIValueTextBoxEx<float>(element, info) {
+                    AnchorPoint = new Vector2(0, 0.5f),
+                    Pivot = new Vector2(0, 0.5f),
+                    SizeFactor = new Vector2(1, 1),
+                };
+                textF.OnValueChanged += (e, s) => {
+                    info.SetValue(element, textF.Value);
+                    _editor.NotifyElementPropertyChange(this);
+                };
+                return textF;
             }
             var text = new UILabel() {
                 AnchorPoint = new Vector2(0, 0),
@@ -115,9 +129,6 @@ namespace UIEditor.Editor.States {
         }
 
 
-        public void UpdateProperties() {
-
-        }
         public void Add(UIElement element) {
             _inspectorList.Clear();
             foreach (var info in element.GetType().GetProperties()) {
@@ -137,9 +148,22 @@ namespace UIEditor.Editor.States {
                     Size = new Vector2(0, 30),
                 };
                 _inspectorList.AddElement(item);
-
             }
+        }
 
+        public override void Initialize() {
+            _editor.OnSelectionChange += _editor_OnSelectionChange;
+            _editor.OnSizerAttached += _editor_OnSelectionChange;
+            _editor.OnSizerChanged += _editor_OnSizerChanged;
+        }
+
+        private void _editor_OnSizerChanged(UIActionEvent e, UIElement sender) {
+            foreach (var child in _inspectorList.Elements) {
+                UITableBar uibar = (UITableBar)child;
+                if (uibar.Right is IUIUpdateable) {
+                    (uibar.Right as IUIUpdateable).UpdateValue();
+                }
+            }
         }
     }
 

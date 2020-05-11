@@ -46,19 +46,19 @@ namespace UIEditor.UILib.Components.Composite {
                 base.DrawSelf(sb);
             }
         };
-
-
+        public event ActionEvent OnSizerChanged;
+        public UIElement TargetElement { get; private set; }
         private UIDraggable[] _dragCorner;
         private UIDraggable[] _dragBar;
-        private UIElement _targetElement;
         private Vector2 _lastBottomRight;
         private Vector2 _lastPos;
         private Vector2 _lastSize;
 
 
         public UISizer() : base() {
-            _targetElement = null;
+            TargetElement = null;
             Pivot = new Vector2(0, 0);
+            OnDragging += UISizer_OnDragging1;
             _dragBar = new UIDraggable[4];
             _dragBar[0] = new UIBarDraggerH() {
                 SizeFactor = new Vector2(1, 0),
@@ -123,12 +123,14 @@ namespace UIEditor.UILib.Components.Composite {
             _dragCorner = new UIDraggable[4];
             for (int i = 0; i < 4; i++) {
                 _dragBar[i].PropagationRule = Enums.PropagationFlags.FocusEvents;
+                _dragBar[i].OnDragging += UISizer_OnDragging1;
                 _dragCorner[i] = new UICornerDragger() {
                     Size = new Vector2(12, 12),
                     AnchorPoint = new Vector2(i & 1, (i >> 1) & 1),
                     Pivot = new Vector2(i & 1, (i >> 1) & 1),
                     PropagationRule = Enums.PropagationFlags.FocusEvents,
                 };
+                _dragCorner[i].OnDragging += UISizer_OnDragging1;
                 AppendChild(_dragCorner[i]);
             }
 
@@ -163,18 +165,21 @@ namespace UIEditor.UILib.Components.Composite {
                     _check();
                 }
             };
-
-
         }
+        private void UISizer_OnDragging1(Events.UIDraggingEvent e, UIElement sender) {
+            OnSizerChanged?.Invoke(new Events.UIActionEvent(this, e.TimeStamp), this);
+        }
+
+
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             _lastSize = Size;
             _lastPos = Position;
             _lastBottomRight = Position + new Vector2(Width, Height);
-            if (_targetElement != null) {
-                _targetElement.Size = Size - new Vector2(12, 12);
-                _targetElement.RecalculateSelf();
-                _targetElement.TopLeft = _targetElement.ScreenPositionToParentAR(ParentNodePositionToScreenAR(Position)) + new Vector2(6, 6);
+            if (TargetElement != null) {
+                TargetElement.Size = Size - new Vector2(12, 12);
+                TargetElement.RecalculateSelf();
+                TargetElement.TopLeft = TargetElement.ScreenPositionToParentAR(ParentNodePositionToScreenAR(Position)) + new Vector2(6, 6);
             }
         }
         private void _check() {
@@ -183,17 +188,16 @@ namespace UIEditor.UILib.Components.Composite {
             if (Position.X >= _lastBottomRight.X - 24) Position = new Vector2(_lastBottomRight.X - 24, Position.Y);
             if (Position.Y >= _lastBottomRight.Y - 24) Position = new Vector2(Position.X, _lastBottomRight.Y - 24);
 
-
         }
         public void AttachTo(UIElement element) {
-            _targetElement = element;
+            TargetElement = element;
             Position = ScreenPositionToParentAR(element.InnerRectangleScreen.TopLeft()) - new Vector2(6, 6);
             Size = new Vector2(element.Width + 12f, element.Height + 12f);
         }
 
 
         public void UnAttach() {
-            _targetElement = null;
+            TargetElement = null;
         }
     }
 }

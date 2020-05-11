@@ -14,9 +14,13 @@ using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.Editor.Components;
 using System.Linq;
+using UIEditor.UILib.Enums;
 
 namespace UIEditor.Editor.States {
-    public class Browser : UIElement {
+    public class Browser : UIEditorPart {
+
+        public event ActionEvent OnSelectionChange;
+
         public UIElement SelectedElement { get { return _treeList.SelectedElement; } }
         private UIPanel _listPanel;
         private UITreeList _treeList;
@@ -24,7 +28,7 @@ namespace UIEditor.Editor.States {
         private EditorState _editor;
         public Browser(EditorState editor) : base() {
             _editor = editor;
-            _editor.OnSelectionChange += _editor_OnSelectionChange;
+            PropagationRule = PropagationFlags.FocusEvents;
             _listPanel = new UIPanel() {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
@@ -77,17 +81,12 @@ namespace UIEditor.Editor.States {
             };
             _toolBarList.SetScrollBarV(scrollBar3);
             toolbar2.AddToPanel(_toolBarList);
-
-        }
-
-        private void _editor_OnSelectionChange(UIActionEvent e, UIElement sender) {
-            _treeList.SelectedElement = e.Target;
         }
 
         private void _treeList_OnSelect(UIActionEvent e, UIElement sender) {
             var list = (UITreeList)sender;
             var target = (BrowserTreeNode)list.SelectedElement;
-            _editor.Viewer.Canvas.PlaceSizer(target.BindingElement);
+            OnSelectionChange?.Invoke(new UIActionEvent(target.BindingElement, e.TimeStamp), this);
         }
 
         private UITreeNode _copy(UIElement element) {
@@ -190,7 +189,6 @@ namespace UIEditor.Editor.States {
                 foreach (var child in e.Children) {
                     _treeList.AddElement(_copy(child));
                 }
-
             }
         }
         public UIElement FindTreeElement(UIElement element) {
@@ -200,5 +198,18 @@ namespace UIEditor.Editor.States {
             });
         }
 
+        public override void Initialize() {
+            Refresh();
+            _editor.OnPlaceElement += _editor_OnPlaceElement;
+            _editor.OnSizerAttached += _editor_OnSizerChanged;
+        }
+
+        private void _editor_OnSizerChanged(UIActionEvent e, UIElement sender) {
+            _treeList.SelectedElement = FindTreeElement(e.Target);
+        }
+
+        private void _editor_OnPlaceElement(UIActionEvent e, UIElement sender) {
+            AddNode(e.Target);
+        }
     }
 }
