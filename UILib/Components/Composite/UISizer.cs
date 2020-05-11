@@ -167,6 +167,11 @@ namespace UIEditor.UILib.Components.Composite {
             };
         }
         private void UISizer_OnDragging1(Events.UIDraggingEvent e, UIElement sender) {
+            if (TargetElement != null) {
+                TargetElement.Size = Size - new Vector2(12, 12);
+                TargetElement.RecalculateSelf();
+                TargetElement.TopLeft = TargetElement.ScreenPositionToParentAR(ParentNodePositionToScreenAR(Position)) + new Vector2(6, 6);
+            }
             OnSizerChanged?.Invoke(new Events.UIActionEvent(this, e.TimeStamp), this);
         }
 
@@ -176,11 +181,6 @@ namespace UIEditor.UILib.Components.Composite {
             _lastSize = Size;
             _lastPos = Position;
             _lastBottomRight = Position + new Vector2(Width, Height);
-            if (TargetElement != null) {
-                TargetElement.Size = Size - new Vector2(12, 12);
-                TargetElement.RecalculateSelf();
-                TargetElement.TopLeft = TargetElement.ScreenPositionToParentAR(ParentNodePositionToScreenAR(Position)) + new Vector2(6, 6);
-            }
         }
         private void _check() {
             if (Size.X < 24) Size = new Vector2(24, Size.Y);
@@ -190,6 +190,7 @@ namespace UIEditor.UILib.Components.Composite {
 
         }
         public void AttachTo(UIElement element) {
+            element.RecalculateSelf();
             TargetElement = element;
             Position = ScreenPositionToParentAR(element.InnerRectangleScreen.TopLeft()) - new Vector2(6, 6);
             Size = new Vector2(element.Width + 12f, element.Height + 12f);
