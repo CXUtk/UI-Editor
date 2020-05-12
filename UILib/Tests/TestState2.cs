@@ -124,6 +124,13 @@ namespace UIEditor.UILib.Tests {
             box13.AppendChild(menu);
             box13.AppendChild(slot);
             box13.AppendChild(colorwheel);
+            UIValueSlider slider = new UIValueSlider() {
+                Position = new Vector2(400, 300),
+                Size = new Vector2(230, 30),
+                Min = 0,
+                Max = 255,
+            };
+            box13.AppendChild(slider);
         }
 
         private void Checkbox_OnCheckedChange(Events.UICheckBoxEvent e, UIElement sender) {

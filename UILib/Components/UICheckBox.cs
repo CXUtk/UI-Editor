@@ -13,19 +13,9 @@ using UIEditor.UILib.Events;
 
 namespace UIEditor.UILib.Components {
     public class UICheckBox : UIElement, IUIValue<bool> {
-
-        private bool _checked;
-
         public delegate void CheckedChangeHandler(UICheckBoxEvent e, UIElement sender);
 
-        public bool Value {
-            get {
-                return _checked;
-            }
-            set {
-                _checked = value;
-            }
-        }
+        public bool Value { get; set; }
 
         public event CheckedChangeHandler OnCheckedChange;
 
@@ -54,10 +44,6 @@ namespace UIEditor.UILib.Components {
                 sb.Draw(UIEditor.Instance.SkinManager.GetTexture("CheckBox_White"), Vector2.Zero, null, Color.White, 0, Vector2.Zero,
                     new Vector2(1, 1), SpriteEffects.None, 0f);
             }
-        }
-
-        public void Refresh() {
-            throw new NotImplementedException();
         }
     }
 }

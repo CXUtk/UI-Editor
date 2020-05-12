@@ -19,7 +19,7 @@ namespace UIEditor.UILib.Components {
 
         private readonly UILabel _label;
         private bool _isMouseOver;
-        private int _timer;
+        private double _timer;
 
         private void SyncToLabel() {
             _label.Text = this.Text;
@@ -57,11 +57,14 @@ namespace UIEditor.UILib.Components {
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             SyncToLabel();
-            if (_isMouseOver && _timer < 15)
-                _timer++;
-            else if (!_isMouseOver && _timer > 0)
-                _timer--;
-            float factor = _timer / 15f;
+            if (_isMouseOver) {
+                _timer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_timer > 150) _timer = 150;
+            } else {
+                _timer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_timer < 0) _timer = 0;
+            }
+            float factor = (float)_timer / 150f;
             this.Color = Color.Lerp(PanelDefaultColor, PanelMouseOverColor, factor);
             //this.Scale = new Vector2(1 + _timer / 100f, 1 + _timer / 100f);
             this._label.TextColor = Color.Lerp(TextDefaultColor, TextMouseOverColor, factor);

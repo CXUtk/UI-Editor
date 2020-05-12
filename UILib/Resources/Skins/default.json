@@ -2,6 +2,7 @@
     "textures": {
         "Box_Default": "Images/UI/Box",
         "Box2_Default": "Images/Box2",
+        "BoxTR_Default": "Images/Box",
         "BoxFrame_Default": "Images/UI/BoxFrame",
         "Button_Default": "Images/UI/Box",
         "Panel_Default": "Images/UI/Box",
