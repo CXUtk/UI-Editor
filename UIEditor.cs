@@ -9,6 +9,7 @@ using UIEditor.UILib.Tests;
 using UIEditor.Editor.States;
 using UIEditor.UILib.Resources;
 using Microsoft.Xna.Framework.Graphics;
+using UIEditor.Editor.States.Attached;
 
 namespace UIEditor {
     public class UIEditor : Mod {
@@ -32,6 +33,7 @@ namespace UIEditor {
             UIStateMachine.Add(new EditorState("Editor"));
             UIStateMachine.Add(new BottomToolBarState("ToolbarBottom"));
             UIStateMachine.Add(new TestState2("tstate2"));
+            UIStateMachine.Add(new ColorChooser("Color"));
         }
 
         public override void PostSetupContent() {
