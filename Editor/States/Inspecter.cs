@@ -89,14 +89,14 @@ namespace UIEditor.Editor.States {
                 };
                 return changer;
             } else if (info.PropertyType == typeof(Color)) {
-                var color = new UIColorIdentifier() {
+                var color = new UIColorIdentifier(info, element) {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
                     SizeFactor = new Vector2(1, 1),
                     Color = (Color)value,
                 };
                 color.OnClick += (e, s) => {
-                    _editor.OpenColorChooser((Color)value, info, element);
+                    _editor.OpenColorChooser(info, element, color);
                 };
                 return color;
             } else if (info.PropertyType == typeof(Vector2)) {

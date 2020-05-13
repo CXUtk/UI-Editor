@@ -14,6 +14,7 @@ using Terraria.ModLoader;
 using Terraria;
 using UIEditor.Editor.Components;
 using System.Reflection;
+using UIEditor.UILib.Components.Interface;
 
 namespace UIEditor.Editor.States.Attached {
     public class ColorChooser : UIState {
@@ -59,6 +60,7 @@ namespace UIEditor.Editor.States.Attached {
 
         public PropertyInfo Info { get; set; }
         public UIElement Target { get; set; }
+        internal IUIUpdateable Inspecter { get; set; }
 
         public ColorChooser(string name) : base(name) {
             IsActive = false;
@@ -67,6 +69,7 @@ namespace UIEditor.Editor.States.Attached {
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 CloseButtonOffset = new Vector2(0, 0),
             };
+            _window.OnClose += _window_OnClose;
             ZIndex = 0.15f;
 
             // 下半部分
@@ -202,6 +205,8 @@ namespace UIEditor.Editor.States.Attached {
                 SizeFactor = new Vector2(1f, 0.5f),
                 AnchorPoint = new Vector2(0.5f, 0f),
                 Pivot = new Vector2(0.5f, 0f),
+                Position = new Vector2(0, 30),
+                Size = new Vector2(0, -30f),
             };
             var colorViewContainer = new UIElement() {
                 Pivot = new Vector2(0, 0),
@@ -212,16 +217,31 @@ namespace UIEditor.Editor.States.Attached {
             _window.AppendChild(colorView);
             colorView.AppendChild(colorViewContainer);
 
+
             _colorBar = new UIColorBar() {
                 Pivot = new Vector2(1f, 1f),
                 AnchorPoint = new Vector2(1f, 1f),
                 SizeFactor = new Vector2(0f, 1f),
-                Size = new Vector2(25f, -35f),
+                Size = new Vector2(25f, -5f),
                 Position = new Vector2(-10, 0),
             };
             colorViewContainer.AppendChild(_colorBar);
 
+            _R.OnValueChanged += _R_OnValueChanged;
+            _G.OnValueChanged += _R_OnValueChanged;
+            _B.OnValueChanged += _R_OnValueChanged;
+            _A.OnValueChanged += _R_OnValueChanged;
+
         }
+
+        private void _window_OnClose(UILib.Events.UIActionEvent e, UIElement sender) {
+            this.IsActive = false;
+        }
+
+        private void _R_OnValueChanged(UILib.Events.UIActionEvent e, UIElement sender) {
+            Inspecter?.UpdateValue();
+        }
+
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             _hex.Text = "#" + SelectedColor.Hex4();

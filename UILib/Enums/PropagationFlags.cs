@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace UIEditor.UILib.Enums {
     [Flags]
-    public enum PropagationFlags : int {
+    public enum PropagationFlags : uint {
         MouseLeftEvents = MouseLeftDown | MouseLeftClick | MouseLeftUp | MouseLeftDouble,
         FocusEvents = FocusOn | UnFocus,
         MouseMoveEvents = MouseEnter | MouseOut,
         MouseRightEvents = MouseRightDown | MouseRightDown | MouseRightClick,
         BLOCK_ALL = 0,
-        PASS_ALL = -1,
+        PASS_ALL = 0xffffffff,
         MouseLeftDown = 0x1,
         MouseLeftUp = 0x2,
         MouseLeftClick = 0x4,
