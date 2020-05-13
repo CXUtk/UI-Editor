@@ -13,6 +13,7 @@ namespace UIEditor.UILib.Components.Composite {
         private readonly UIImageButton _closeButton;
         private bool _isDragging;
         private Vector2 _dragOffset;
+        public Vector2 CloseButtonOffset { get { return _closeButton.Position; } set { _closeButton.Position = value; } }
 
         public event ActionEvent OnClose;
 
@@ -23,13 +24,13 @@ namespace UIEditor.UILib.Components.Composite {
             _closeButton = new UIImageButton() {
                 Pivot = new Vector2(1, 0),
                 AnchorPoint = new Vector2(1, 0),
-                Position = new Vector2(-10, 5),
                 Texture = UIEditor.Instance.SkinManager.GetTexture("CloseButton"),
                 DefaultColor = Color.White * 0.8f,
                 WhiteTexture = UIEditor.Instance.SkinManager.GetTexture("CloseButton_Change"),
                 Scale = new Vector2(0.9f, 0.9f),
                 PropagationRule = Enums.PropagationFlags.BLOCK_ALL,
             };
+            CloseButtonOffset = new Vector2(-10, 5);
             _closeButton.OnClick += _closeButton_OnClick;
             AppendChild(_closeButton);
         }

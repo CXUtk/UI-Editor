@@ -11,9 +11,9 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace UIEditor.Editor.Components {
-    public class UIColorWheel : UIElement {
+    public class UIColorBar : UIElement {
         private Effect _shader;
-        public UIColorWheel() : base() {
+        public UIColorBar() : base() {
             UseShader = true;
             _shader = UIEditor.Instance.GetEffect("Effects/ColorWheel");
         }

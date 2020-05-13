@@ -21,4 +21,7 @@
     <None Remove="packages\**" />
     <None Remove="UITest\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
 </Project>

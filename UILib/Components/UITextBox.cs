@@ -21,7 +21,7 @@ namespace UIEditor.UILib.Components {
     /// </summary>
     public class UITextBox : UIPanel {
         private readonly UILabel _label;
-        protected string _text;
+        protected string _text = "";
         private int _carrot;
         private float _timer;
         private bool _shouldBlink;
@@ -32,7 +32,8 @@ namespace UIEditor.UILib.Components {
             }
             set {
                 if (_text != value) {
-                    var e = new UITextChangeEvent(_text, value, this, Main._drawInterfaceGameTime.TotalGameTime);
+
+                    var e = new UITextChangeEvent(_text, value, this, new TimeSpan());
                     TextChange(e);
                     if (!e.Cancel) {
                         _text = e.NewString;
@@ -54,7 +55,7 @@ namespace UIEditor.UILib.Components {
         public UITextBox() : base() {
             Name = "文本框";
             Overflow = OverflowType.Hidden;
-            _text = string.Empty;
+            _text = "";
             _shouldBlink = false;
             PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default");
             _label = new UILabel() {

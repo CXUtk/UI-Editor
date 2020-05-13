@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Terraria;
 using UIEditor.UILib.Events;
 
@@ -13,7 +14,7 @@ namespace UIEditor.UILib.Components.Composite {
 
         private T _value;
         public T Value { get { return _value; } set { _value = value; } }
-        public UIValueTextBox(T value) {
+        public UIValueTextBox(T value) : base() {
             Text = value.ToString();
             Value = value;
         }

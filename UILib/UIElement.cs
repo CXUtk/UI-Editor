@@ -534,6 +534,11 @@ namespace UIEditor.UILib {
                 }
             }
         }
+        public void SpriteBatchBegin(SpriteBatch sb, BlendState blendState) {
+            sb.Begin(SpriteSortMode.Deferred, blendState, SamplerState.AnisotropicClamp,
+                       DepthStencilState.None, sb.GraphicsDevice.RasterizerState, null, _selfTransform);
+        }
+
         public virtual void Draw(SpriteBatch sb) {
             Rectangle scissorRectangle = sb.GraphicsDevice.ScissorRectangle;
             var defaultstate = sb.GraphicsDevice.RasterizerState;

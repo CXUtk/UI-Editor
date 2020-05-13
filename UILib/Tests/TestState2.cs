@@ -50,7 +50,7 @@ namespace UIEditor.UILib.Tests {
                 Position = new Vector2(90, 190),
                 ItemType = ModContent.ItemType<ItemForTest>()
             };
-            var colorwheel = new UIColorWheel() {
+            var colorwheel = new UIColorBar() {
                 Position = new Vector2(200, 200),
                 Size = new Vector2(128, 128),
             };
@@ -123,14 +123,14 @@ namespace UIEditor.UILib.Tests {
             //box13.AppendChild(button2);
             box13.AppendChild(menu);
             box13.AppendChild(slot);
-            box13.AppendChild(colorwheel);
-            UIValueSlider slider = new UIValueSlider() {
-                Position = new Vector2(400, 300),
-                Size = new Vector2(230, 30),
-                Min = 0,
-                Max = 255,
-            };
-            box13.AppendChild(slider);
+            //box13.AppendChild(colorwheel);
+            //UIValueSlider slider = new UIValueSlider() {
+            //    Position = new Vector2(400, 300),
+            //    Size = new Vector2(230, 30),
+            //    Min = 0,
+            //    Max = 255,
+            //};
+            //box13.AppendChild(slider);
         }
 
         private void Checkbox_OnCheckedChange(Events.UICheckBoxEvent e, UIElement sender) {

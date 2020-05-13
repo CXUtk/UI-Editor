@@ -13,8 +13,9 @@ using UIEditor.UILib.Components.Interface;
 using UIEditor.UILib.Components.Composite;
 
 namespace UIEditor.UILib.Components {
-    public class UIValueSlider : UIElement, IUIValue<float> {
+    public class UIValueSlider : UIElement, IUIValue<int> {
         public Color SliderColor { get { return _slider._innerLine.Color; } set { _slider._innerLine.Color = value; } }
+        public event ActionEvent OnValueChanged;
         private class UIInnerSlider : UIElement {
             private bool _isMouseDown;
             private float _offsetX;
@@ -81,7 +82,7 @@ namespace UIEditor.UILib.Components {
         /// <summary>
         /// 当前滚动条运动到的位置的比例，这个值处于Min和Max之间
         /// </summary>
-        public float Value { get { return _slider._currentValue * (Max - Min) + Min; } set { _slider._currentValue = MathHelper.Clamp((value - Min) / (float)(Max - Min), 0, 1); _slider.UpdateValue(); } }
+        public int Value { get { return (int)(_slider._currentValue * (Max - Min) + Min); } set { _slider._currentValue = MathHelper.Clamp((value - Min) / (float)(Max - Min), 0, 1); _slider.UpdateValue(); } }
         public int Min { get; set; }
         public int Max { get; set; }
         private UIInnerSlider _slider;
@@ -98,7 +99,7 @@ namespace UIEditor.UILib.Components {
                 AnchorPoint = new Vector2(0, 0),
                 SizeFactor = new Vector2(0.7f, 1f),
             };
-            _display = new UIValueTextBox<int>(Min) {
+            _display = new UIValueTextBox<int>(0) {
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0),
                 SizeFactor = new Vector2(0.3f, 1f),
@@ -116,12 +117,14 @@ namespace UIEditor.UILib.Components {
             Value = e.Value;
             _display.Value = (int)Value;
             _display.Apply();
+            OnValueChanged?.Invoke(new UIActionEvent(e.Target, e.TimeStamp), this);
         }
 
         private void _slider_OnValueChanged(Events.UIActionEvent e, UIElement sender) {
             _display.Value = (int)Value;
             _display.Apply();
             _display.Recalculate();
+            OnValueChanged?.Invoke(e, this);
         }
 
         public override void UpdateSelf(GameTime gameTime) {
