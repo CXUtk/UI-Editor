@@ -13,6 +13,7 @@ using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.Editor.Components;
+using UIEditor.Editor.States.Attached;
 
 namespace UIEditor.Editor.States {
     public class EditorState : UIState {
@@ -97,6 +98,10 @@ namespace UIEditor.Editor.States {
                 OnSelectionChange.Invoke(new UIActionEvent(e, gameTime.TotalGameTime), this);
                 _lastFocusElement = e;
             }
+            var chooser = (ColorChooser)UIStateMachine.GetState("ColorChooser");
+            if (chooser.IsActive && !chooser.IsFocused) {
+                UIStateMachine.Toggle("ColorChooser");
+            }
         }
 
         public void NotifySizerAttached(UIElement element) {
@@ -125,6 +130,15 @@ namespace UIEditor.Editor.States {
 
         public void NotifyCanvasScaleChanged(UIElement element) {
             OnSizerChanged?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+        public void OpenColorChooser(Color color, PropertyInfo info, UIElement target) {
+            UIStateMachine.Activate("ColorChooser");
+            var chooser = (ColorChooser)UIStateMachine.GetState("ColorChooser");
+            UIStateMachine.FocusOn(chooser, Main._drawInterfaceGameTime);
+            chooser.SelectedColor = color;
+            chooser.Info = info;
+            chooser.Target = target;
         }
 
 

@@ -13,6 +13,7 @@ using Terraria.ModLoader.Config;
 using Terraria.ModLoader;
 using Terraria;
 using UIEditor.Editor.Components;
+using System.Reflection;
 
 namespace UIEditor.Editor.States.Attached {
     public class ColorChooser : UIState {
@@ -48,8 +49,19 @@ namespace UIEditor.Editor.States.Attached {
         public int A { get { return _A.Value; } }
         public Color SelectedColor {
             get { return new Color(R, G, B, A); }
+            set {
+                _R.Value = value.R;
+                _G.Value = value.G;
+                _B.Value = value.B;
+                _A.Value = value.A;
+            }
         }
+
+        public PropertyInfo Info { get; set; }
+        public UIElement Target { get; set; }
+
         public ColorChooser(string name) : base(name) {
+            IsActive = false;
             _window = new UIWindow() {
                 Size = new Vector2(270, 420),
                 AnchorPoint = new Vector2(0.5f, 0.5f),
@@ -214,6 +226,9 @@ namespace UIEditor.Editor.States.Attached {
             base.UpdateSelf(gameTime);
             _hex.Text = "#" + SelectedColor.Hex4();
             _preview.Color = SelectedColor;
+            if (Info != null && Target != null) {
+                Info.SetValue(Target, SelectedColor);
+            }
         }
 
     }

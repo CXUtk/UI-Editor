@@ -50,6 +50,7 @@ namespace UIEditor.UILib {
 
         public void Add(UIState state) {
             uiStates.Add(state);
+            state.UIStateMachine = this;
             state.TimeGetFocus = _timer;
             state.ShouldRecalculate = true;
             state.Recalculate();
@@ -59,12 +60,32 @@ namespace UIEditor.UILib {
             uiRunningStack.Remove(state);
         }
 
+        public void Activate(string name) {
+            var state = uiStates.Find((s) => s.Name == name);
+            if (state == null) throw new ArgumentNullException();
+            state.IsActive = true;
+            state.TimeGetFocus = _timer;
+        }
+
+        public UIState GetState(string name) {
+            var state = uiStates.Find((s) => s.Name == name);
+            if (state == null) throw new ArgumentNullException();
+            return state;
+        }
+
         public void Toggle(string name) {
             var state = uiStates.Find((s) => s.Name == name);
             if (state == null) throw new ArgumentNullException();
             state.IsActive ^= true;
             if (state.IsActive)
                 state.TimeGetFocus = _timer;
+        }
+
+        public void FocusOn(UIState state, GameTime gameTime) {
+            _lastFocusElement?.UnFocus(new UIActionEvent(_lastLeftDownElement, gameTime.TotalGameTime));
+            state.FocusOn(new UIActionEvent(state, gameTime.TotalGameTime));
+            _lastLeftDownElement = state;
+            _lastFocusElement = state;
         }
 
         public void HandleMouseEvent(GameTime gameTime) {

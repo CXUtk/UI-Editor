@@ -33,7 +33,7 @@ namespace UIEditor {
             UIStateMachine.Add(new EditorState("Editor"));
             UIStateMachine.Add(new BottomToolBarState("ToolbarBottom"));
             UIStateMachine.Add(new TestState2("tstate2"));
-            UIStateMachine.Add(new ColorChooser("Color"));
+            UIStateMachine.Add(new ColorChooser("ColorChooser"));
         }
 
         public override void PostSetupContent() {

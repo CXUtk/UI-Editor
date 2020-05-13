@@ -95,6 +95,9 @@ namespace UIEditor.Editor.States {
                     SizeFactor = new Vector2(1, 1),
                     Color = (Color)value,
                 };
+                color.OnClick += (e, s) => {
+                    _editor.OpenColorChooser((Color)value, info, element);
+                };
                 return color;
             } else if (info.PropertyType == typeof(Vector2)) {
                 var vector2 = new UIVector2(element, info) {
