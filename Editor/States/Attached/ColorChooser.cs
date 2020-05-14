@@ -43,6 +43,7 @@ namespace UIEditor.Editor.States.Attached {
         private UIValueSlider _B;
         private UIValueSlider _A;
         private UIColorBar _colorBar;
+        private UIColorRect _colorRect;
         private UILabel _hex;
         public int R { get { return _R.Value; } }
         public int G { get { return _G.Value; } }
@@ -55,6 +56,10 @@ namespace UIEditor.Editor.States.Attached {
                 _G.Value = value.G;
                 _B.Value = value.B;
                 _A.Value = value.A;
+                var hsv = Drawing.RGB2HSV(value);
+                _colorRect.SV = new Vector2(hsv.Y, hsv.Z);
+                _colorRect.Hue = hsv.X;
+                _colorBar.Value = hsv.X;
             }
         }
 
@@ -214,6 +219,7 @@ namespace UIEditor.Editor.States.Attached {
                 Size = new Vector2(-20, -20),
                 Position = new Vector2(10, 10),
             };
+
             _window.AppendChild(colorView);
             colorView.AppendChild(colorViewContainer);
 
@@ -223,15 +229,30 @@ namespace UIEditor.Editor.States.Attached {
                 AnchorPoint = new Vector2(1f, 1f),
                 SizeFactor = new Vector2(0f, 1f),
                 Size = new Vector2(25f, -5f),
-                Position = new Vector2(-10, 0),
+                Position = new Vector2(-20, 0),
+            };
+            _colorRect = new UIColorRect() {
+                Pivot = new Vector2(0f, 0.5f),
+                AnchorPoint = new Vector2(0f, 0.5f),
+                Size = new Vector2(128, 128),
+                Position = new Vector2(30, 0),
             };
             colorViewContainer.AppendChild(_colorBar);
+            colorViewContainer.AppendChild(_colorRect);
 
             _R.OnValueChanged += _R_OnValueChanged;
             _G.OnValueChanged += _R_OnValueChanged;
             _B.OnValueChanged += _R_OnValueChanged;
             _A.OnValueChanged += _R_OnValueChanged;
+            _colorBar.OnValueChanged += _colorBar_OnValueChanged;
+            _colorRect.OnValueChanged += _colorBar_OnValueChanged;
 
+        }
+
+
+        private void _colorBar_OnValueChanged(UILib.Events.UIActionEvent e, UIElement sender) {
+            SelectedColor = Drawing.HSV2RGB(new Vector3(_colorBar.Value, _colorRect.SV.X, _colorRect.SV.Y));
+            Inspecter?.UpdateValue();
         }
 
         private void _window_OnClose(UILib.Events.UIActionEvent e, UIElement sender) {

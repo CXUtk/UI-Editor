@@ -13,11 +13,11 @@ using UIEditor.UILib.Components;
 using UIEditor.UILib.Events;
 
 namespace UIEditor.Editor.Components {
-    public class UIColorBar : UIElement {
+    public class UIColorRect : UIElement {
         public event ActionEvent OnValueChanged;
-        public float Value { get; set; }
+        public float Hue { get; set; }
+        public Vector2 SV { get; set; }
         private Effect _shader;
-        private UIImage _arrow;
         private bool _isMouseDown;
         public override void MouseLeftDown(UIMouseEvent e) {
             _isMouseDown = true;
@@ -28,35 +28,31 @@ namespace UIEditor.Editor.Components {
             _isMouseDown = false;
             base.MouseLeftUp(e);
         }
-        public UIColorBar() : base() {
+        public UIColorRect() : base() {
             UseShader = true;
             PropagationRule = UILib.Enums.PropagationFlags.FocusEvents | UILib.Enums.PropagationFlags.ScrollWheel;
-            _arrow = new UIImage() {
-                AnchorPoint = new Vector2(1, 0),
-                Pivot = new Vector2(1, 0.5f),
-                Texture = UIEditor.Instance.SkinManager.GetTexture("ArrowSmall"),
-            };
-            Value = 0;
-            AppendChild(_arrow);
             _shader = UIEditor.Instance.GetEffect("Effects/ColorWheel");
+            PostDrawSelf += UIColorRect_PostDrawSelf;
         }
+
+        private void UIColorRect_PostDrawSelf(UIDrawEvent e, UIElement sender) {
+            e.SpriteBatch.Draw(ModContent.GetTexture("UIEditor/Images/WhiteCircle"), new Vector2(Width * SV.X, Height * (1 - SV.Y)), null, Color.White, 0f, new Vector2(8f, 8f), 1f, SpriteEffects.None, 0f);
+        }
+
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             if (_isMouseDown) {
-                int topY = 0, bottomY = Height;
-                var posLocal = _arrow.ScreenPositionToParentAR(Main.MouseScreen);
-                float r = (posLocal.Y - topY) / (bottomY - topY);
-                if (float.IsNaN(r)) r = 0;
-                Value = MathHelper.Clamp(r, 0, 1);
+                var pos = ScreenPositionToNodeAR(Main.MouseScreen, new Vector2(0, 0));
+                SV = new Vector2(pos.X / Width, (1 - pos.Y / Height));
                 OnValueChanged?.Invoke(new UIActionEvent(this, gameTime.TotalGameTime), this);
             }
-            _arrow.Position = new Vector2(25, Value * Height);
         }
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            _shader.CurrentTechnique.Passes["ColorBar"].Apply();
-            _shader.Parameters["uDegree"].SetValue(0f);
+            _shader.Parameters["uDegree"].SetValue(Hue);
+            _shader.CurrentTechnique.Passes["ColorRect"].Apply();
             sb.Draw(UIEditor.Instance.SkinManager.GetTexture("NoTexture"), new Rectangle(0, 0, Width, Height), Color.White);
+
         }
     }
 }

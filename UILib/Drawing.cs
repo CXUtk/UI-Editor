@@ -62,5 +62,25 @@ namespace UIEditor.UILib {
                 DrawStraightLine(sb, points[i], points[(i + 1) % points.Count], lineWidth, color);
             }
         }
+        public static float Fraction(float x) {
+            return x - (float)Math.Floor(x);
+        }
+        public static Color HSV2RGB(Vector3 hsv) {
+            Vector4 fact = new Vector4(1, 2 / 3f, 1 / 3f, 3);
+            Vector3 tmp = new Vector3(Fraction(hsv.X + fact.X), Fraction(hsv.X + fact.Y), Fraction(hsv.X + fact.Z));
+            Vector3 p = tmp * 6 - new Vector3(3, 3, 3);
+            p = new Vector3(Math.Abs(p.X), Math.Abs(p.Y), Math.Abs(p.Z));
+            var xxx = new Vector3(fact.X, fact.X, fact.X);
+            return new Color(hsv.Z * Vector3.Lerp(xxx, Vector3.Clamp(p - xxx, Vector3.Zero, Vector3.One), hsv.Y));
+        }
+        public static Vector3 RGB2HSV(Color rgb) {
+            Vector3 c = rgb.ToVector3();
+            Vector4 fact = new Vector4(1, -1 / 3f, 2 / 3f, -1);
+            Vector4 p = c.Y < c.Z ? new Vector4(c.Z, c.Y, fact.W, fact.Z) : new Vector4(c.Y, c.Z, fact.X, fact.Y);
+            Vector4 q = c.X < p.X ? new Vector4(p.X, p.Y, p.W, c.X) : new Vector4(c.X, p.Y, p.Z, p.X);
+            float d = q.X - Math.Min(q.W, q.Y);
+            float e = 1.0e-10f;
+            return new Vector3(Fraction(Math.Abs(q.Z + (q.W - q.Y) / (6.0f * d + e))), d / (q.X + e), q.X);
+        }
     }
 }

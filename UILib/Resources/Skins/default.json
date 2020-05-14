@@ -25,7 +25,8 @@
         "Icon_Button": "Images/Icons/Panel",
         "Icon_Label": "Images/Icons/Label",
         "Icon_Textbox": "Images/Icons/TextBox",
-        "Icon_ProgressBar": "Images/Icons/ProgressBar"
+        "Icon_ProgressBar": "Images/Icons/ProgressBar",
+        "ArrowSmall": "Images/UI/ArrowSmall"
     },
     "colors": {
         "Background": "34, 34, 38, 255",

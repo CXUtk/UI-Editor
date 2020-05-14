@@ -32,7 +32,7 @@ namespace UIEditor.UILib.Components {
                     Position = new Vector2(0f, 0),
                     Texture = Main.magicPixel,
                 };
-
+                _currentValue = 0f;
                 _sliderButton = new UIButton() {
                     AnchorPoint = new Vector2(0f, 0.5f),
                     Pivot = new Vector2(0.5f, 0.5f),
