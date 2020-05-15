@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using UIEditor.UILib.Components.Interface;
 
 namespace UIEditor.UILib.Components {
     public class UIProgressBar : UIElement, IUIValue<float> {
-
+        [JsonIgnore]
         public Texture2D FrameTexture { get; set; }
         /// <summary>
         /// 边框贴图四个角的大小，除去这四个角后的区域为填充区域

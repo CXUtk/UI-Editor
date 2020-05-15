@@ -21,9 +21,7 @@ namespace UIEditor.Editor.States {
     public class Inspecter : UIEditorPart {
         private UIPanel _inspecterPanel;
         private UIList _inspectorList;
-        private EditorState _editor;
-        public Inspecter(EditorState editor) : base() {
-            _editor = editor;
+        public Inspecter(EditorState editor) : base(editor) {
 
             _inspecterPanel = new UIPanel() {
                 Pivot = new Vector2(0, 0),
@@ -75,7 +73,7 @@ namespace UIEditor.Editor.States {
                 };
                 check.OnCheckedChange += (e, s) => {
                     info.SetValue(element, e.Value);
-                    _editor.NotifyElementPropertyChange(this);
+                    Editor.NotifyElementPropertyChange(this);
                 };
                 return check;
             } else if (info.PropertyType == typeof(string)) {
@@ -87,7 +85,7 @@ namespace UIEditor.Editor.States {
                 };
                 changer.OnTextChange += (e, s) => {
                     info.SetValue(element, e.NewString);
-                    _editor.NotifyElementPropertyChange(this);
+                    Editor.NotifyElementPropertyChange(this);
                 };
                 return changer;
             } else if (info.PropertyType == typeof(Color)) {
@@ -98,7 +96,7 @@ namespace UIEditor.Editor.States {
                     Color = (Color)value,
                 };
                 color.OnClick += (e, s) => {
-                    _editor.OpenColorChooser(info, element, color);
+                    Editor.OpenColorChooser(info, element, color);
                 };
                 return color;
             } else if (info.PropertyType == typeof(Vector2)) {
@@ -109,7 +107,7 @@ namespace UIEditor.Editor.States {
                 };
                 vector2.OnValueChanged += (e, s) => {
                     info.SetValue(element, vector2.Value);
-                    _editor.NotifyElementPropertyChange(this);
+                    Editor.NotifyElementPropertyChange(this);
                 };
                 return vector2;
             } else if (info.PropertyType == typeof(float)) {
@@ -120,7 +118,7 @@ namespace UIEditor.Editor.States {
                 };
                 textF.OnValueChanged += (e, s) => {
                     info.SetValue(element, textF.Value);
-                    _editor.NotifyElementPropertyChange(this);
+                    Editor.NotifyElementPropertyChange(this);
                 };
                 return textF;
             }
@@ -162,9 +160,9 @@ namespace UIEditor.Editor.States {
         }
 
         public override void Initialize() {
-            _editor.OnSelectionChange += _editor_OnSelectionChange;
-            _editor.OnSizerAttached += _editor_OnSelectionChange;
-            _editor.OnSizerChanged += _editor_OnSizerChanged;
+            Editor.OnSelectionChange += _editor_OnSelectionChange;
+            Editor.OnSizerAttached += _editor_OnSelectionChange;
+            Editor.OnSizerChanged += _editor_OnSizerChanged;
             //_editor.OnPropertyChanged += _editor_OnPropertyChanged;
         }
 

@@ -40,5 +40,12 @@ namespace UIEditor.UILib.Components {
                      new Vector2(Width / (float)Texture.Width, Height / (float)Texture.Height), SpriteEffects.None, 0f);
             }
         }
+        public override object Clone() {
+            UIImage image = (UIImage)base.Clone();
+            image.SizeStyle = this.SizeStyle;
+            image.Texture = this.Texture;
+            image.Color = this.Color;
+            return image;
+        }
     }
 }

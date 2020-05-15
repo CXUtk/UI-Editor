@@ -242,9 +242,7 @@ namespace UIEditor.UILib {
         }
 
         public void DrawDragElement(SpriteBatch sb) {
-            var mousePos = Main.MouseScreen;
-            Drawing.DrawAdvBox(sb, new Rectangle((int)mousePos.X - 50, (int)mousePos.Y - 25, 100, 50),
-                Color.Yellow, UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default"), new Vector2(4, 4));
+
         }
 
         public void SetIME(Vector2 pos) {

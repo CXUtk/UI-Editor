@@ -20,10 +20,8 @@ namespace UIEditor.Editor.States {
         public Canvas Canvas { get; }
         private ViewerMiddle Middle { get; }
         private UIPanel _viewerPanel;
-        private EditorState _editor;
 
-        public Viewer(EditorState editor) : base() {
-            _editor = editor;
+        public Viewer(EditorState editor) : base(editor) {
             PropagationRule = PropagationFlags.FocusEvents | PropagationFlags.ScrollWheel;
 
             _viewerPanel = new UIPanel() {
@@ -52,8 +50,8 @@ namespace UIEditor.Editor.States {
         }
         public override void MouseLeftDown(UIMouseEvent e) {
             base.MouseLeftDown(e);
-            if (_editor.PlaceElement != null)
-                Canvas.PlaceElement(e.MouseScreen, _editor.PlaceElement);
+            if (Editor.PlaceElement != null)
+                Canvas.PlaceElement(e.MouseScreen, Editor.PlaceElement);
         }
 
         private bool IsSizer(UIElement element) {
@@ -69,10 +67,10 @@ namespace UIEditor.Editor.States {
                 var target = Canvas.ElementAt(Main.MouseScreen);
                 if (!IsSizer(target)) {
                     if (target == Canvas.Root) {
-                        _editor.NotifySizerAttached(null);
+                        Editor.NotifySizerAttached(null);
                         Middle.PlaceSizer(null);
                     } else {
-                        _editor.NotifySizerAttached(target);
+                        Editor.NotifySizerAttached(target);
                         Middle.PlaceSizer(target);
                     }
                 }
@@ -82,8 +80,8 @@ namespace UIEditor.Editor.States {
         }
 
         public override void Initialize() {
-            _editor.OnSelectionChange += _editor_OnSelectionChange;
-            _editor.OnPropertyChanged += _editor_OnPropertyChanged;
+            Editor.OnSelectionChange += _editor_OnSelectionChange;
+            Editor.OnPropertyChanged += _editor_OnPropertyChanged;
         }
 
         private void _editor_OnPropertyChanged(UIActionEvent e, UIElement sender) {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,19 @@ using Terraria;
 
 namespace UIEditor.UILib.Components {
     public class UIImageButton : UIElement {
+        /// <summary>
+        /// 按钮本体的图案
+        /// </summary>
+        [JsonIgnore]
         public Texture2D Texture { get; set; }
+        /// <summary>
+        /// 按钮白边的图案，会在鼠标移动上去的时候显示
+        /// </summary>
+        [JsonIgnore]
         public Texture2D WhiteTexture { get; set; }
-        public float TextureScale { get; set; }
+        /// <summary>
+        /// 按钮容器大小的计算方式，inline代表只计算贴图大小，block代表计算指定的大小
+        /// </summary>
         public SizeStyle SizeStyle { get; set; }
         public Color DefaultColor { get; set; }
         public Color MouseOverColor { get; set; }
@@ -25,7 +36,6 @@ namespace UIEditor.UILib.Components {
         public UIImageButton() : base() {
             Name = "图标按钮";
             SizeStyle = SizeStyle.Inline;
-            TextureScale = 1f;
             Texture = Main.magicPixel;
             DefaultColor = Color.Gray * 1.2f;
             MouseOverColor = Color.White;
@@ -66,17 +76,23 @@ namespace UIEditor.UILib.Components {
                 sb.Draw(Texture, Pivot * new Vector2(Width, Height), null, _color, TextureRotation, Pivot * Texture.Size(),
                    new Vector2(1, 1), SpriteEffects.None, 0f);
                 if (IsMouseHover && WhiteTexture != null) {
-                    sb.Draw(WhiteTexture, Pivot * new Vector2(Width, Height), null, _color, TextureRotation, Pivot * WhiteTexture.Size(),
+                    sb.Draw(WhiteTexture, Pivot * new Vector2(Width, Height), null, Color.White, TextureRotation, Pivot * WhiteTexture.Size(),
                   new Vector2(1, 1), SpriteEffects.None, 0f);
                 }
             } else {
-                sb.Draw(Texture, Pivot * new Vector2(Width, Height), null, _color, TextureRotation, Pivot * Texture.Size(),
-                     new Vector2(Width / (float)Texture.Width, Height / (float)Texture.Height), SpriteEffects.None, 0f);
+                sb.Draw(Texture, new Rectangle(0, 0, Width, Height), null, _color, TextureRotation, Pivot * Texture.Size(), SpriteEffects.None, 0f);
                 if (IsMouseHover && WhiteTexture != null) {
-                    sb.Draw(WhiteTexture, Pivot * new Vector2(Width, Height), null, _color, TextureRotation, Pivot * WhiteTexture.Size(),
-                     new Vector2(Width / (float)Texture.Width, Height / (float)Texture.Height), SpriteEffects.None, 0f); ;
+                    sb.Draw(WhiteTexture, new Rectangle(0, 0, Width, Height), null, Color.White, TextureRotation, Pivot * Texture.Size(), SpriteEffects.None, 0f);
                 }
             }
+        }
+
+        public override object Clone() {
+            UIImageButton button = (UIImageButton)base.Clone();
+            button.SizeStyle = this.SizeStyle;
+            button.Texture = this.Texture;
+            button.WhiteTexture = this.WhiteTexture;
+            return button;
         }
     }
 }

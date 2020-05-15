@@ -30,10 +30,12 @@ namespace UIEditor.Editor.States {
         public Viewer Viewer { get; private set; }
         public Browser Browser { get; private set; }
         public Inspecter Inspecter { get; private set; }
-
+        public Navigator Navigator { get; private set; }
         private UIWindow _window;
         private UIElement _body;
-        private UIElement _navigator;
+        private Vector2 _placeSize;
+        private bool _inPlaceMode;
+
         private const float PADDING_BODY = 10f;
         public override void Initialize() {
             base.Initialize();
@@ -50,6 +52,14 @@ namespace UIEditor.Editor.States {
                 Position = new Vector2(10, 32),
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-PADDING_BODY * 2, -32 - PADDING_BODY),
+            };
+            Navigator = new Navigator(this) {
+                Name = "Navigator",
+                Pivot = new Vector2(0.5f, 0f),
+                AnchorPoint = new Vector2(0.5f, 0f),
+                SizeFactor = new Vector2(1f, 0f),
+                Size = new Vector2(0, 35f),
+                Position = new Vector2(0, 0),
             };
             Browser = new Browser(this) {
                 Name = "Browser",
@@ -73,6 +83,7 @@ namespace UIEditor.Editor.States {
             _window.OnClose += Box1_OnClose;
             AppendChild(_window);
             _window.AppendChild(_body);
+            _body.AppendChild(Navigator);
             _body.AppendChild(Viewer);
             _body.AppendChild(Browser);
             _body.AppendChild(Inspecter);
@@ -91,7 +102,9 @@ namespace UIEditor.Editor.States {
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-            Viewer.Position = new Vector2(Browser.Width, 0);
+            Browser.Position = new Vector2(0, Navigator.Position.Y + Navigator.Height);
+            Browser.Size = new Vector2(0f, -(Navigator.Position.Y + Navigator.Height));
+            Viewer.Position = new Vector2(Browser.Width, Navigator.Position.Y + Navigator.Height);
             Inspecter.Position = new Vector2(Browser.Width, Viewer.Height);
             var selected = (BrowserTreeNode)Browser.SelectedElement;
             var e = (selected == null) ? null : selected.BindingElement;
@@ -145,12 +158,27 @@ namespace UIEditor.Editor.States {
 
         public void SetPlaceMode(UIElement element) {
             PlaceElement = element;
+            if (element != null) {
+                _inPlaceMode = true;
+                _placeSize = new Vector2(element.Width, element.Height);
+            } else {
+                _inPlaceMode = false;
+            }
         }
         private void Box1_OnClose(UIActionEvent e, UIElement sender) {
             this.IsActive = false;
         }
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
+        }
+
+        public override void Draw(SpriteBatch sb) {
+            base.Draw(sb);
+            if (_inPlaceMode) {
+                var mousePos = Main.MouseScreen;
+                Drawing.DrawAdvBox(sb, new Rectangle((int)(mousePos.X - _placeSize.X / 2), (int)(mousePos.Y - _placeSize.Y / 2), (int)_placeSize.X, (int)_placeSize.Y),
+                    Color.Yellow, UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default"), new Vector2(4, 4));
+            }
         }
     }
 }

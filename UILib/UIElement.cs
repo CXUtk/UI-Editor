@@ -36,7 +36,7 @@ namespace UIEditor.UILib {
         /// </summary>
         public bool IsVisible { get; set; }
 
-        [EditorPropertyIgnore]
+        [JsonIgnore]
         /// <summary>
         /// 该UI节点的父节点
         /// </summary>
@@ -122,30 +122,35 @@ namespace UIEditor.UILib {
         /// 标记该节点或容器是否处于用户焦点
         /// </summary>
         [EditorPropertyIgnore]
+        [JsonIgnore]
         public bool IsFocused { get; set; }
 
         /// <summary>
         /// 标记该节点以及其子节点是否应该重新计算位置
         /// </summary>
         [EditorPropertyIgnore]
+        [JsonIgnore]
         public bool ShouldRecalculate { get; set; }
 
         /// <summary>
         /// 标记该节点是否处于Preview模式，如果处于这个模式就会在Viewer特殊处理
         /// </summary>
         [EditorPropertyIgnore]
+        [JsonIgnore]
         internal bool IsPreview { get; set; }
 
         /// <summary>
         /// 标记该元素是否被某些容器选中
         /// </summary>
         [EditorPropertyIgnore]
+        [JsonIgnore]
         internal bool IsSelected { get; set; }
 
         /// <summary>
         /// 如果需要使用着色器，会更改这个元素的绘制模式，会严重影响性能
         /// </summary>
         [EditorPropertyIgnore]
+        [JsonIgnore]
         public bool UseShader { get; set; }
 
         //public int MarginLeft { get; set; }
@@ -182,18 +187,21 @@ namespace UIEditor.UILib {
 
         #region 派生属性
         [EditorPropertyIgnore]
+        [JsonIgnore]
         public Rectangle OuterRectangleScreen {
             get {
                 return _selfHitbox.GetOuterRectangle();
             }
         }
         [EditorPropertyIgnore]
+        [JsonIgnore]
         public Rectangle BaseRectangleScreen {
             get {
                 return new Rectangle((int)(_baseTopLeftScreen.X), (int)(_baseTopLeftScreen.Y), Width, Height);
             }
         }
         [EditorPropertyReadOnly]
+        [JsonIgnore]
         public Rectangle InnerRectangleScreen {
             get {
                 return new Rectangle((int)(_baseTopLeftScreen.X), (int)(_baseTopLeftScreen.Y), Width, Height);
@@ -201,6 +209,7 @@ namespace UIEditor.UILib {
         }
 
         [EditorPropertyReadOnly]
+        [JsonIgnore]
         public int Width {
             get {
                 return (int)(SizeFactor.X * _parentRect.Width + Size.X);
@@ -208,6 +217,7 @@ namespace UIEditor.UILib {
         }
 
         [EditorPropertyReadOnly]
+        [JsonIgnore]
         public int Height {
             get {
                 return (int)(SizeFactor.Y * _parentRect.Height + Size.Y);
@@ -217,9 +227,10 @@ namespace UIEditor.UILib {
         /// 如果鼠标位置在这个UI元素上面
         /// </summary>
         [EditorPropertyIgnore]
+        [JsonIgnore]
         public bool IsMouseHover { get; private set; }
 
-
+        [JsonIgnore]
         public Vector2 PivotOffset {
             get {
                 return new Vector2(Width * Pivot.X, Height * Pivot.Y);

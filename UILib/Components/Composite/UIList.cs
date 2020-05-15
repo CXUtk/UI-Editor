@@ -32,8 +32,6 @@ namespace UIEditor.UILib.Components.Composite {
         private int _listUpMost;
         private int _listBottomMost;
 
-        private const float INNER_PADDING = 5f;
-
         public UIList() : base() {
             Name = "列表";
             Overflow = OverflowType.Hidden;

@@ -26,7 +26,12 @@
         "Icon_Label": "Images/Icons/Label",
         "Icon_Textbox": "Images/Icons/TextBox",
         "Icon_ProgressBar": "Images/Icons/ProgressBar",
-        "ArrowSmall": "Images/UI/ArrowSmall"
+        "Icon_Panel": "Images/Icons/Panel",
+        "Icon_Picture": "Images/Icons/Picture",
+        "Icon_ImageButton": "Images/Icons/ImageButton",
+        "ArrowSmall": "Images/UI/ArrowSmall",
+        "NewState": "Images/UI/New",
+        "NewState_White": "Images/UI/New_White"
     },
     "colors": {
         "Background": "34, 34, 38, 255",

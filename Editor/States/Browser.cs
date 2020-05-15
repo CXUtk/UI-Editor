@@ -13,7 +13,6 @@ using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.Editor.Components;
-using System.Linq;
 using UIEditor.UILib.Enums;
 
 namespace UIEditor.Editor.States {
@@ -25,9 +24,7 @@ namespace UIEditor.Editor.States {
         private UIPanel _listPanel;
         private UITreeList _treeList;
         private UIList _toolBarList;
-        private EditorState _editor;
-        public Browser(EditorState editor) : base() {
-            _editor = editor;
+        public Browser(EditorState editor) : base(editor) {
             PropagationRule = PropagationFlags.FocusEvents;
             _listPanel = new UIPanel() {
                 AnchorPoint = new Vector2(0, 0),
@@ -56,7 +53,7 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(1f, 1f),
                 AnchorPoint = new Vector2(0f, 0.5f),
                 Pivot = new Vector2(0f, 0.5f),
-                PropagationRule = UILib.Enums.PropagationFlags.BLOCK_ALL,
+                PropagationRule = PropagationFlags.BLOCK_ALL,
                 ButtonTooltip = "工具栏",
             };
             AppendChild(_listPanel);
@@ -113,6 +110,14 @@ namespace UIEditor.Editor.States {
             };
             pointer.OnClick += Pointer_OnClick;
             _toolBarList.AddElement(pointer);
+            var empty = new ToolBarButton() {
+                Text = $"空节点",
+                SizeFactor = new Vector2(1, 0),
+                Size = new Vector2(0, 30),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("NoTexture"),
+            };
+            empty.OnClick += Empty_OnClick;
+            _toolBarList.AddElement(empty);
             var button = new ToolBarButton() {
                 Text = $"按钮",
                 SizeFactor = new Vector2(1, 0),
@@ -120,6 +125,7 @@ namespace UIEditor.Editor.States {
                 ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("Icon_Button"),
             };
             button.OnClick += Button_OnClick;
+            _toolBarList.AddElement(button);
             var label = new ToolBarButton() {
                 Text = $"标签文本",
                 SizeFactor = new Vector2(1, 0),
@@ -144,38 +150,77 @@ namespace UIEditor.Editor.States {
             };
             progressBar.OnClick += ProgressBar_OnClick;
             _toolBarList.AddElement(progressBar);
+            var panelBar = new ToolBarButton() {
+                Text = $"面板",
+                SizeFactor = new Vector2(1, 0),
+                Size = new Vector2(0, 30),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("Icon_Panel"),
+            };
+            panelBar.OnClick += PanelBar_OnClick;
+            _toolBarList.AddElement(panelBar);
+            var picture = new ToolBarButton() {
+                Text = $"图片",
+                SizeFactor = new Vector2(1, 0),
+                Size = new Vector2(0, 30),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("Icon_Picture"),
+            };
+            picture.OnClick += Picture_OnClick;
+            _toolBarList.AddElement(picture);
+        }
+
+        private void Empty_OnClick(UIMouseEvent e, UIElement sender) {
+            Editor.SetPlaceMode(new UIElement() {
+                Size = new Vector2(50, 50),
+                IsPreview = true,
+            });
+        }
+
+        private void Picture_OnClick(UIMouseEvent e, UIElement sender) {
+            Editor.SetPlaceMode(new UIImage() {
+                Size = new Vector2(50, 50),
+                IsPreview = true,
+                SizeStyle = SizeStyle.Block,
+                Texture = Main.magicPixel,
+            });
+        }
+
+        private void PanelBar_OnClick(UIMouseEvent e, UIElement sender) {
+            Editor.SetPlaceMode(new UIPanel() {
+                Size = new Vector2(100, 100),
+                IsPreview = true,
+            });
         }
 
         private void ProgressBar_OnClick(UIMouseEvent e, UIElement sender) {
-            _editor.SetPlaceMode(new UIProgressBar() {
+            Editor.SetPlaceMode(new UIProgressBar() {
                 Size = new Vector2(60, 20),
                 IsPreview = true,
             });
         }
 
         private void TextBox_OnClick(UIMouseEvent e, UIElement sender) {
-            _editor.SetPlaceMode(new UITextBox() {
+            Editor.SetPlaceMode(new UITextBox() {
                 Size = new Vector2(50, 30),
                 IsPreview = true,
             });
         }
 
         private void Label_OnClick(UIMouseEvent e, UIElement sender) {
-            _editor.SetPlaceMode(new UILabel() {
+            Editor.SetPlaceMode(new UILabel() {
                 Size = new Vector2(50, 30),
                 IsPreview = true,
             });
         }
 
         private void Button_OnClick(UIMouseEvent e, UIElement sender) {
-            _editor.SetPlaceMode(new UIButton() {
+            Editor.SetPlaceMode(new UIButton() {
                 Size = new Vector2(100, 50),
                 IsPreview = true,
             });
         }
 
         private void Pointer_OnClick(UIMouseEvent e, UIElement sender) {
-            _editor.SetPlaceMode(null);
+            Editor.SetPlaceMode(null);
         }
 
         public void AddNode(UIElement element) {
@@ -183,7 +228,7 @@ namespace UIEditor.Editor.States {
         }
 
         public void Refresh() {
-            var e = _editor.Viewer.Canvas.Root;
+            var e = Editor.Viewer.Canvas.Root;
             _treeList.ClearRoots();
             if (e != null) {
                 foreach (var child in e.Children) {
@@ -200,8 +245,8 @@ namespace UIEditor.Editor.States {
 
         public override void Initialize() {
             Refresh();
-            _editor.OnPlaceElement += _editor_OnPlaceElement;
-            _editor.OnSizerAttached += _editor_OnSizerChanged;
+            Editor.OnPlaceElement += _editor_OnPlaceElement;
+            Editor.OnSizerAttached += _editor_OnSizerChanged;
         }
 
         private void _editor_OnSizerChanged(UIActionEvent e, UIElement sender) {
