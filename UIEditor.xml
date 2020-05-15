@@ -19,11 +19,6 @@
             如果某个UI类型具有此特性，则在层级浏览器中不会显示其子节点
             </summary>
         </member>
-        <member name="F:UIEditor.UIEditor.Instance">
-            <summary>
-            UI编辑器的单例实例指针
-            </summary>
-        </member>
         <member name="P:UIEditor.UILib.Components.UIScrollBarH.EndSize">
             <summary>
             滚动条两端的贴图高度
@@ -54,10 +49,35 @@
             一个简易的条状UI，由两端和中间组成
             </summary>
         </member>
+        <member name="P:UIEditor.UILib.Components.UIImageButton.Texture">
+            <summary>
+            按钮本体的图案
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIImageButton.WhiteTexture">
+            <summary>
+            按钮白边的图案，会在鼠标移动上去的时候显示
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIImageButton.SizeStyle">
+            <summary>
+            按钮容器大小的计算方式，inline代表只计算贴图大小，block代表计算指定的大小
+            </summary>
+        </member>
         <member name="T:UIEditor.UILib.Components.UILabel">
             <summary>
             自动适应大小的标签UI组件
             只显示一行文本
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIPanel.PanelTexture">
+            <summary>
+            UI面板的背景贴图
+            </summary>
+        </member>
+        <member name="P:UIEditor.UILib.Components.UIPanel.PanelBorderTexture">
+            <summary>
+             UI面板的边框贴图，如果为null就不画
             </summary>
         </member>
         <member name="P:UIEditor.UILib.Components.UIProgressBar.FrameCornerSize">
@@ -238,11 +258,37 @@
         </member>
         <member name="M:UIEditor.UILib.UIElement.ScreenPositionToParentAR(Microsoft.Xna.Framework.Vector2)">
             <summary>
-             把屏幕坐标转化为相对于这个UI元素的父节点的子节点坐标
+             把屏幕坐标转化为相对于这个UI元素的父节点的子节点坐标，并且可以指定锚点相对位置
             </summary>
             <param name="worldPos"></param>
             <param name="anchor"></param>
             <returns></returns>
+        </member>
+        <member name="M:UIEditor.UILib.UIElement.ScreenPositionToParent(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            把屏幕坐标转化为为相对于这个UI元素的父节点的子节点坐标，锚点位置默认是左上角
+            </summary>
+            <param name="worldPos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UIEditor.UILib.UIElement.NodePositionToScreenAR(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            把相对于基准点的位置转化为屏幕位置
+            </summary>
+            <param name="nodePos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UIEditor.UILib.UIElement.ParentNodePositionToScreenAR(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            把基准点相对于父节点的位置转化为屏幕位置
+            </summary>
+            <param name="nodePos"></param>
+            <returns></returns>
+        </member>
+        <member name="P:UIEditor.UILib.UIElement.PositionScreen">
+            <summary>
+            基准点位置相对于屏幕的位置
+            </summary>
         </member>
         <member name="M:UIEditor.UILib.UIElement.ElementAt(Microsoft.Xna.Framework.Vector2)">
             <summary>
@@ -250,6 +296,11 @@
             </summary>
             <param name="pos"></param>
             <returns></returns>
+        </member>
+        <member name="F:UIEditor.UIEditor.Instance">
+            <summary>
+            UI编辑器的单例实例指针
+            </summary>
         </member>
     </members>
 </doc>

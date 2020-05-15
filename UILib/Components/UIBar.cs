@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace UIEditor.UILib.Components {
     /// 一个简易的条状UI，由两端和中间组成
     /// </summary>
     public class UIBar : UIElement {
+        [JsonIgnore]
         public Texture2D Texture { get; set; }
         public int EndSize { get; set; }
         public Color Color { get; set; }

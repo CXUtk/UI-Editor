@@ -248,7 +248,7 @@ namespace UIEditor.UILib {
         }
 
         /// <summary>
-        ///  把屏幕坐标转化为相对于这个UI元素的父节点的子节点坐标
+        ///  把屏幕坐标转化为相对于这个UI元素的父节点的子节点坐标，并且可以指定锚点相对位置
         /// </summary>
         /// <param name="worldPos"></param>
         /// <param name="anchor"></param>
@@ -257,14 +257,31 @@ namespace UIEditor.UILib {
             if (Parent != null) return Parent.ScreenPositionToNodeAR(worldPos, AnchorPoint);
             return worldPos;
         }
+
+        /// <summary>
+        /// 把屏幕坐标转化为为相对于这个UI元素的父节点的子节点坐标，锚点位置默认是左上角
+        /// </summary>
+        /// <param name="worldPos"></param>
+        /// <returns></returns>
         public Vector2 ScreenPositionToParent(Vector2 worldPos) {
             if (Parent != null) return Parent.ScreenPositionToNodeAR(worldPos, new Vector2(0, 0));
             return worldPos;
         }
 
+        /// <summary>
+        /// 把相对于基准点的位置转化为屏幕位置
+        /// </summary>
+        /// <param name="nodePos"></param>
+        /// <returns></returns>
         public Vector2 NodePositionToScreenAR(Vector2 nodePos) {
             return PositionScreen + nodePos;
         }
+
+        /// <summary>
+        /// 把基准点相对于父节点的位置转化为屏幕位置
+        /// </summary>
+        /// <param name="nodePos"></param>
+        /// <returns></returns>
         public Vector2 ParentNodePositionToScreenAR(Vector2 nodePos) {
             return _parentRect.TopLeft() + new Vector2(Width * AnchorPoint.X, Height * AnchorPoint.Y) + nodePos;
         }
@@ -272,13 +289,17 @@ namespace UIEditor.UILib {
         //    return _baseTopLeftScreen - PivotOffset;
         //}
 
-
+        [JsonIgnore]
         public IHitBox ScreenHitBox {
             get {
                 return _selfHitbox;
             }
         }
 
+        /// <summary>
+        /// 基准点位置相对于屏幕的位置
+        /// </summary>
+        [JsonIgnore]
         public Vector2 PositionScreen {
             get {
                 return _baseTopLeftScreen + PivotOffset;
@@ -288,7 +309,7 @@ namespace UIEditor.UILib {
             }
         }
 
-
+        [JsonIgnore]
         public Vector2 TopLeft {
             get {
                 return Position - PivotOffset;

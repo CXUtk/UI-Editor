@@ -9,9 +9,11 @@ using UIEditor.UILib.Events;
 using UIEditor.UILib.Components;
 using Terraria;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 
 namespace UIEditor.UILib.Components {
     public class UIImage : UIElement {
+        [JsonIgnore]
         public Texture2D Texture { get; set; }
         public Color Color { get; set; }
         public SizeStyle SizeStyle { get; set; }
