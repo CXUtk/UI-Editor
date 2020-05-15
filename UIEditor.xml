@@ -44,6 +44,11 @@
             当前滚动条运动到的位置的比例，这个值处于0和1之间
             </summary>
         </member>
+        <member name="P:UIEditor.UILib.Components.UIValueSlider.Value">
+            <summary>
+            当前滚动条运动到的位置的比例，这个值处于Min和Max之间
+            </summary>
+        </member>
         <member name="T:UIEditor.UILib.Components.UIBar">
             <summary>
             一个简易的条状UI，由两端和中间组成
@@ -60,7 +65,7 @@
             边框贴图四个角的大小，除去这四个角后的区域为填充区域
             </summary>
         </member>
-        <member name="P:UIEditor.UILib.Components.UIProgressBar.CurrentValue">
+        <member name="P:UIEditor.UILib.Components.UIProgressBar.Value">
             <summary>
             当前进度条的进度值，是一个0-1之间的浮点数
             </summary>

@@ -15,6 +15,10 @@ namespace UIEditor.UILib.Components.Advanced {
 
         public UIElement Left { get; }
         public UIElement Right { get; }
+        public string LeftTooltip {
+            get { return _left.Tooltip; }
+            set { _left.Tooltip = value; }
+        }
 
         private UIElement _left;
         private UIElement _right;

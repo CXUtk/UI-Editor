@@ -10,6 +10,7 @@ using UIEditor.Editor.States;
 using UIEditor.UILib.Resources;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.Editor.States.Attached;
+using UIEditor.Editor.Helper;
 
 namespace UIEditor {
     public class UIEditor : Mod {
@@ -38,6 +39,7 @@ namespace UIEditor {
 
         public override void PostSetupContent() {
             base.PostSetupContent();
+            Documentation.Load();
             Array.Resize(ref Main.cursorTextures, 25);
             Main.cursorTextures[17] = GetTexture("Images/Cursors/CursorMove");
             Main.cursorTextures[18] = GetTexture("Images/Cursors/CursorScale");

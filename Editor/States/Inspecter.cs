@@ -14,6 +14,8 @@ using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.Editor.Components;
 using UIEditor.UILib.Components.Interface;
+using UIEditor.Editor.Helper;
+using System.Xml;
 
 namespace UIEditor.Editor.States {
     public class Inspecter : UIEditorPart {
@@ -145,10 +147,16 @@ namespace UIEditor.Editor.States {
                     Pivot = new Vector2(0, 0.5f),
                     Position = new Vector2(5, 0),
                 };
+
                 var item = new UITableBar(left, right) {
                     SizeFactor = new Vector2(1, 0),
                     Size = new Vector2(0, 30),
                 };
+                XmlNode info2 = null;
+                if ((info2 = Documentation.GetPropertyInfo(info.DeclaringType.FullName + "." + info.Name)) != null) {
+                    item.LeftTooltip = info2.InnerText;
+                    left.Tooltip = info2.InnerText;
+                }
                 _inspectorList.AddElement(item);
             }
         }
