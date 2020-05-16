@@ -82,7 +82,13 @@ namespace UIEditor.UILib.Components {
         /// <summary>
         /// 当前滚动条运动到的位置的比例，这个值处于Min和Max之间
         /// </summary>
-        public int Value { get { return (int)(_slider._currentValue * (Max - Min) + Min); } set { _slider._currentValue = MathHelper.Clamp((value - Min) / (float)(Max - Min), 0, 1); _slider.UpdateValue(); } }
+        public int Value {
+            get { return (int)(_slider._currentValue * (Max - Min) + Min); }
+            set {
+                _slider._currentValue = MathHelper.Clamp((value - Min) / (float)(Max - Min), 0, 1);
+                _slider.UpdateValue(); _display.Value = value; _display.Apply();
+            }
+        }
         public int Min { get; set; }
         public int Max { get; set; }
         private UIInnerSlider _slider;

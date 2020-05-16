@@ -29,8 +29,6 @@ namespace UIEditor.Editor.Helper {
                     _propertyDocs.Add(name.Substring(2, name.Length - 2), node);
                 }
             }
-
-            Main.NewText("?");
         }
         internal static XmlNode GetPropertyInfo(string fullname) {
             if (!_propertyDocs.ContainsKey(fullname)) {
