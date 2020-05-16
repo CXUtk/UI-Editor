@@ -7,8 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components {
+    [EditorPropertyNoChildren]
     public class UIScrollBarV : UIElement {
         public Texture2D OuterTexture {
             get {

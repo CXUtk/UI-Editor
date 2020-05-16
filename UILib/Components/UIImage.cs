@@ -10,6 +10,7 @@ using UIEditor.UILib.Components;
 using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components {
     public class UIImage : UIElement {

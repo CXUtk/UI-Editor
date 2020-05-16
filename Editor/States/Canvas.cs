@@ -77,5 +77,32 @@ namespace UIEditor.Editor.States {
             Editor.NotifyPlaceElement(element);
         }
 
+        internal UIElement GetElementAtMouse() {
+            return _getElement(Root);
+        }
+
+        private UIElement _getElement(UIElement element) {
+            // 如果处于预览模式，且不显示子节点，那么就直接选中这个节点
+            if (element.IsPreview && element.GetType().IsDefined(typeof(EditorPropertyNoChildrenAttribute), true))
+                return element;
+            // 从后往前响应，因为靠后的儿子总是在最上层
+            UIElement target = null;
+            int sz = element.Children.Count;
+            for (int i = sz - 1; i >= 0; i--) {
+                var child = element.Children[i];
+                if (child.IsActive && child.ScreenHitBox.Contains(Main.MouseScreen)) {
+                    var tmp = _getElement(child);
+                    if (tmp != null) {
+                        target = tmp;
+                        break;
+                    }
+                }
+            }
+            if (target != null) return target;
+            if (element.ScreenHitBox.Contains(Main.MouseScreen) && !element.NoEvent) {
+                return element;
+            }
+            return target;
+        }
     }
 }

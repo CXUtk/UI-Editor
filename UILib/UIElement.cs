@@ -133,7 +133,7 @@ namespace UIEditor.UILib {
         public bool ShouldRecalculate { get; set; }
 
         /// <summary>
-        /// 标记该节点是否处于Preview模式，如果处于这个模式就会在Viewer特殊处理
+        /// 标记该节点是否处于Preview模式，如果处于这个模式就会在编辑器的Viewer里特殊处理
         /// </summary>
         [EditorPropertyIgnore]
         [JsonIgnore]
@@ -477,10 +477,6 @@ namespace UIEditor.UILib {
         /// <param name="pos"></param>
         /// <returns></returns>
         public virtual UIElement ElementAt(Vector2 pos) {
-            // 如果处于预览模式，且不显示子节点，那么就直接选中这个节点
-            if (IsPreview && this.GetType().IsDefined(typeof(EditorPropertyNoChildrenAttribute), true))
-                if (_selfHitbox.Contains(pos)) return this;
-
             UIElement target = null;
             int sz = Children.Count;
             for (int i = sz - 1; i >= 0; i--) {
@@ -494,7 +490,7 @@ namespace UIEditor.UILib {
                 }
             }
             if (target != null) return target;
-            if (_selfHitbox.Contains(pos) && !NoEvent) {
+            if (_selfHitbox.Contains(pos) && !NoEvent && !IsPreview) {
                 return this;
             }
             return target;

@@ -7,8 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components.Composite {
+    [EditorPropertyNoChildren]
     public class UIList : UIElement {
         public float ItemMargin {
             get { return _itemMargin; }

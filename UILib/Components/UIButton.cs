@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components {
+    [EditorPropertyNoChildren]
     public class UIButton : UIPanel {
         public string Text { get; set; }
         public bool DrawPanel { get; set; }

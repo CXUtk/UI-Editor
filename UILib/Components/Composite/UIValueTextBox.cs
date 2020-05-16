@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Terraria;
+using UIEditor.Editor.Attributes;
 using UIEditor.UILib.Events;
 
 namespace UIEditor.UILib.Components.Composite {
+    [EditorPropertyNoChildren]
     public class UIValueTextBox<T> : UITextBox where T : IFormattable, IConvertible {
         public event ValueChangeEvent<T> OnValueChanged;
 

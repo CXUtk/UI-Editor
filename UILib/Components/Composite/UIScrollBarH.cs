@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components {
+    [EditorPropertyNoChildren]
     public class UIScrollBarH : UIElement {
         public Texture2D OuterTexture {
             get {

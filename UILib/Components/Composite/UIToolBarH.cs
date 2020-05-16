@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components.Composite {
+    [EditorPropertyNoChildren]
     public class UIToolBarH : UIElement {
         public Texture2D CollapseButtonUpTexture { get; set; }
         public Texture2D CollapseButtonDownTexture { get; set; }

@@ -46,11 +46,6 @@ namespace UIEditor.UILib.Components {
             width *= Value;
             sb.Draw(Main.magicPixel, new Rectangle((int)(FrameCornerSize.X), (int)(FrameCornerSize.Y),
                 (int)width, (int)(Height - FrameCornerSize.Y * 2)), FillColor);
-
-        }
-
-        public void Refresh() {
-            throw new NotImplementedException();
         }
     }
 }

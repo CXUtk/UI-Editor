@@ -11,8 +11,10 @@ using Terraria.ModLoader;
 using UIEditor.UILib.Events;
 using UIEditor.UILib.Components.Interface;
 using UIEditor.UILib.Components.Composite;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components {
+    [EditorPropertyNoChildren]
     public class UIValueSlider : UIElement, IUIValue<int> {
         public Color SliderColor { get { return _slider._innerLine.Color; } set { _slider._innerLine.Color = value; } }
         public event ActionEvent OnValueChanged;

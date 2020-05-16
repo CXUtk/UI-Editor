@@ -13,12 +13,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI.Chat;
 using ReLogic.OS;
 using static UIEditor.UILib.Components.UITextArea;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components {
 
     /// <summary>
     /// 单行输入的文本框
     /// </summary>
+    [EditorPropertyNoChildren]
     public class UITextBox : UIPanel {
         private readonly UILabel _label;
         protected string _text = "";

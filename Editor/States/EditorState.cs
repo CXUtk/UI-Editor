@@ -105,7 +105,8 @@ namespace UIEditor.Editor.States {
             Browser.Position = new Vector2(0, Navigator.Position.Y + Navigator.Height);
             Browser.Size = new Vector2(0f, -(Navigator.Position.Y + Navigator.Height));
             Viewer.Position = new Vector2(Browser.Width, Navigator.Position.Y + Navigator.Height);
-            Inspecter.Position = new Vector2(Browser.Width, Viewer.Height);
+            Viewer.Size = new Vector2(0, -(Navigator.Position.Y + Navigator.Height));
+            Inspecter.Position = new Vector2(Browser.Width, Viewer.Height + Navigator.Position.Y + Navigator.Height);
             var selected = (BrowserTreeNode)Browser.SelectedElement;
             var e = (selected == null) ? null : selected.BindingElement;
             if (_lastFocusElement != e) {

@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
+using UIEditor.Editor.Attributes;
 using UIEditor.UILib.Components.Advanced;
 
 namespace UIEditor.UILib.Components.Composite {
+    [EditorPropertyNoChildren]
     public class UITreeList : UIList {
         public event ActionEvent OnSelect;
         public float LayerPaddingLeft { get; set; }

@@ -64,7 +64,8 @@ namespace UIEditor.Editor.States {
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             if (Main.hasFocus && IsFocused && _wasDown && Main.mouseLeftRelease) {
-                var target = Canvas.ElementAt(Main.MouseScreen);
+                var target = Canvas.GetElementAtMouse();
+                Main.NewText(target.ToString());
                 if (!IsSizer(target)) {
                     if (target == Canvas.Root) {
                         Editor.NotifySizerAttached(null);

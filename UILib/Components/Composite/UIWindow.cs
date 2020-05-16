@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using UIEditor.UILib.Events;
 using Terraria;
 using Microsoft.Xna.Framework.Graphics;
+using UIEditor.Editor.Attributes;
 
 namespace UIEditor.UILib.Components.Composite {
+    [EditorPropertyNoChildren]
     public class UIWindow : UIPanel {
         private readonly UIImageButton _closeButton;
         private bool _isDragging;
