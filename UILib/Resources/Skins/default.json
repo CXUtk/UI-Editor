@@ -31,7 +31,9 @@
         "Icon_ImageButton": "Images/Icons/ImageButton",
         "ArrowSmall": "Images/UI/ArrowSmall",
         "NewState": "Images/UI/New",
-        "NewState_White": "Images/UI/New_White"
+        "NewState_White": "Images/UI/New_White",
+	"Down":"Images/UI/Down",
+	"Down_Border":"Images/UI/Down_Border"
     },
     "colors": {
         "Background": "34, 34, 38, 255",

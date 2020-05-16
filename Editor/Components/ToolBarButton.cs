@@ -15,7 +15,7 @@ namespace UIEditor.Editor.Components {
         public Texture2D ButtonTexture { get { return _image.Texture; } set { _image.Texture = value; } }
         public string Text { get { return _label.Text; } set { _label.Text = value; } }
         private readonly UIImage _image;
-        private readonly UILabel _label;
+        protected readonly UILabel _label;
         public ToolBarButton() : base() {
             IsSelected = false;
             _image = new UIImage() {

@@ -70,19 +70,25 @@ namespace UIEditor.UILib.Components {
             this._color = Color.Lerp(DefaultColor, MouseOverColor, factor);
         }
 
-        public override void DrawSelf(SpriteBatch sb) {
+        public override void DrawSelf(SpriteBatch sb)
+        {
             base.DrawSelf(sb);
-            if (SizeStyle == SizeStyle.Inline) {
+            if (SizeStyle == SizeStyle.Inline)
+            {
                 sb.Draw(Texture, Pivot * new Vector2(Width, Height), null, _color, TextureRotation, Pivot * Texture.Size(),
                    new Vector2(1, 1), SpriteEffects.None, 0f);
-                if (IsMouseHover && WhiteTexture != null) {
+                if (IsMouseHover && WhiteTexture != null)
+                {
                     sb.Draw(WhiteTexture, Pivot * new Vector2(Width, Height), null, Color.White, TextureRotation, Pivot * WhiteTexture.Size(),
                   new Vector2(1, 1), SpriteEffects.None, 0f);
                 }
-            } else {
-                sb.Draw(Texture, new Rectangle(0, 0, Width, Height), null, _color, TextureRotation, Pivot * Texture.Size(), SpriteEffects.None, 0f);
-                if (IsMouseHover && WhiteTexture != null) {
-                    sb.Draw(WhiteTexture, new Rectangle(0, 0, Width, Height), null, Color.White, TextureRotation, Pivot * Texture.Size(), SpriteEffects.None, 0f);
+            }
+            else
+            {
+                sb.Draw(Texture, new Rectangle(0, 0, Width, Height), null, _color, TextureRotation, Pivot * new Vector2(Width, Height), SpriteEffects.None, 0f);
+                if (IsMouseHover && WhiteTexture != null)
+                {
+                    sb.Draw(WhiteTexture, new Rectangle(0, 0, Width, Height), null, Color.White, TextureRotation, Pivot * new Vector2(Width, Height), SpriteEffects.None, 0f);
                 }
             }
         }
