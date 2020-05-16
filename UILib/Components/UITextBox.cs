@@ -20,8 +20,8 @@ namespace UIEditor.UILib.Components {
     /// 单行输入的文本框
     /// </summary>
     public class UITextBox : UIPanel {
-        private UILabel _label;
-        private string _text;
+        private readonly UILabel _label;
+        protected string _text = "";
         private int _carrot;
         private float _timer;
         private bool _shouldBlink;
@@ -32,7 +32,8 @@ namespace UIEditor.UILib.Components {
             }
             set {
                 if (_text != value) {
-                    var e = new UITextChangeEvent(_text, value, this, Main._drawInterfaceGameTime.TotalGameTime);
+
+                    var e = new UITextChangeEvent(_text, value, this, new TimeSpan());
                     TextChange(e);
                     if (!e.Cancel) {
                         _text = e.NewString;
@@ -52,15 +53,16 @@ namespace UIEditor.UILib.Components {
         private static UIStateMachine StateMachine => UIEditor.Instance.UIStateMachine;
         public event TextChangeEvent OnTextChange;
         public UITextBox() : base() {
+            Name = "文本框";
             Overflow = OverflowType.Hidden;
-            BlockPropagation = true;
-            _text = string.Empty;
+            _text = "";
             _shouldBlink = false;
             PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default");
             _label = new UILabel() {
                 AnchorPoint = new Vector2(0, 0.5f),
                 Pivot = new Vector2(0, 0.5f),
                 NoEvent = true,
+                Position = new Vector2(5f, 0f),
             };
             _offsetL = _offsetR = 0;
             OnClick += FindCarrot;
@@ -68,7 +70,7 @@ namespace UIEditor.UILib.Components {
         }
 
         private void FindCarrot(UIMouseEvent e, UIElement sender) {
-            var localMousePos = _label.ScreenPositionToNode(e.MouseScreen);
+            var localMousePos = _label.ScreenPositionToNodeAR(e.MouseScreen, Vector2.Zero);
             int l = 0, r = Text.Length;
             int ans = r;
             while (l <= r) {
@@ -109,9 +111,8 @@ namespace UIEditor.UILib.Components {
                 _label.Text = Text.Insert(_carrot, _shouldBlink ? "|" : " ");
                 _label.CalculateSize();
             } else {
-                if (_label.Text.Length != Text.Length) {
-                    _label.Text = Text;
-                }
+                _label.Text = Text;
+
             }
         }
 
@@ -129,26 +130,23 @@ namespace UIEditor.UILib.Components {
                     _offsetL = carrotpos - 5f * TextScale;
                     _offsetR = _offsetL + Width;
                 }
-                _label.Position = new Vector2(Math.Min(0, Width - _offsetR), 0);
+                _label.Position = new Vector2(Math.Min(5, Width - _offsetR), 0);
                 _label.Recalculate();
                 DrawIME();
             }
             base.DrawSelf(sb);
         }
 
-        public void TextChange(UITextChangeEvent e) {
-
+        public virtual void TextChange(UITextChangeEvent e) {
             OnTextChange?.Invoke(e, this);
         }
-
+        private bool KeyDown(Keys key) {
+            return Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
+        }
         private void InputText() {
             PlayerInput.WritingText = true;
             Main.instance.HandleIME();
-            #region KeyDown
-            bool KeyDown(Keys key) {
-                return Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
-            }
-            #endregion
+
             if (KeyDown(Keys.End)) {
                 _carrot = Text.Length;
             } else if (KeyDown(Keys.Home)) {

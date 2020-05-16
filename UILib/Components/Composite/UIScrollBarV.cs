@@ -62,19 +62,17 @@ namespace UIEditor.UILib.Components {
 
         private float _currentValue;
 
-        private UIBar _innerBar;
-        private UIBar _outerBar;
+        private readonly UIBar _innerBar;
+        private readonly UIBar _outerBar;
 
         private bool _isMouseOver;
         private bool _isMouseDown;
         private float _offsetY;
         private float _timer;
 
-        private const float PADDING = 5;
         public UIScrollBarV() : base() {
-            BlockPropagation = true;
-            SizeFactor = new Vector2(0, 1);
-            Size = new Vector2(10, -PADDING * 2);
+            Name = "垂直滚动条";
+            PropagationRule = Enums.PropagationFlags.FocusEvents;
             _currentValue = 0;
             _isMouseOver = false;
             _outerBar = new UIBar() {
@@ -110,7 +108,7 @@ namespace UIEditor.UILib.Components {
 
         private void _innerBar_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
             _isMouseDown = true;
-            _offsetY = _innerBar.PostionScreen.Y - e.MouseScreen.Y;
+            _offsetY = _innerBar.PositionScreen.Y - e.MouseScreen.Y;
         }
 
         private void _innerBar_OnMouseOut(Events.UIMouseEvent e, UIElement sender) {
@@ -143,13 +141,11 @@ namespace UIEditor.UILib.Components {
             // 锚点和基准点都在顶部
             int topY = 0, bottomY = _outerBar.Height - _innerBar.Height;
             if (_isMouseDown) {
-                var posLocal = _innerBar.ScreenPositionToNode(Main.MouseScreen + new Vector2(0, _offsetY));
+                var posLocal = _innerBar.ScreenPositionToParentAR(Main.MouseScreen + new Vector2(0, _offsetY));
                 float r = (posLocal.Y - topY) / (bottomY - topY);
                 if (float.IsNaN(r)) r = 0;
                 CurrentValue = r;
             }
-
-
             var pos = new Vector2(0, MathHelper.Lerp(topY, bottomY, CurrentValue));
             _innerBar.Position = pos;
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,17 @@ using System.Threading.Tasks;
 
 namespace UIEditor.UILib.Resources {
     public class SkinManager {
-        private Skin _currentSkin;
-        public void Load() {
-            _currentSkin = new Skin("default.json");
+        public Skin CurrentSkin { get; }
+        public SkinManager() {
+            CurrentSkin = new Skin("default.json");
+        }
+
+        public Color GetColor(string name) {
+            return CurrentSkin.GetColor(name);
         }
 
         public Texture2D GetTexture(string name) {
-            return _currentSkin.TryGetTexture(name);
+            return CurrentSkin.TryGetTexture(name);
         }
     }
 }

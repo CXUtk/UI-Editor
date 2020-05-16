@@ -11,8 +11,8 @@ namespace UIEditor.UILib.Components {
     // Pivot和Anchor得用(0, 0)
     public class UIMenuItem : UIElement {
         #region Fields
-        private List<UIMenuItem> items;
-        private UILabel label;
+        private readonly List<UIMenuItem> items;
+        private readonly UILabel label;
         #endregion
         #region Properties
         public float ItemsPadding {
@@ -49,7 +49,7 @@ namespace UIEditor.UILib.Components {
             AnchorPoint = Vector2.Zero;
             label.Text = string.Empty;
             AppendChild(label);
-            BlockPropagation = true;
+            PropagationRule = Enums.PropagationFlags.FocusEvents;
             Size = new Vector2(19, 22);
             items = new List<UIMenuItem>();
             ItemsWidth = 20;
@@ -107,13 +107,13 @@ namespace UIEditor.UILib.Components {
             }
             switch (dir) {
                 case 0: {
-                        Vector2 startpos = PostionScreen - new Vector2(Width, Height) * Pivot;
+                        Vector2 startpos = PositionScreen - new Vector2(Width, Height) * Pivot;
                         startpos.Y += Height;
                         foreach (var item in items) {
-                            item.PostionScreen = startpos;
+                            item.PositionScreen = startpos;
                             startpos.Y += item.Height - 1;
                         }
-                        var center = PostionScreen - new Vector2(Width, Height) * Pivot + new Vector2(ItemsWidth, Height) / 2;
+                        var center = PositionScreen - new Vector2(Width, Height) * Pivot + new Vector2(ItemsWidth, Height) / 2;
                         if (center.X < Main.screenWidth / 2) {
                             // 往右
                             dir = 1;
@@ -124,17 +124,17 @@ namespace UIEditor.UILib.Components {
                         break;
                     }
                 case -1: {
-                        Vector2 startpos = Parent.PostionScreen - new Vector2(Width, Height) * Pivot - new Vector2(((UIMenuItem)Parent).ItemsWidth, 0);
+                        Vector2 startpos = Parent.PositionScreen - new Vector2(Width, Height) * Pivot - new Vector2(((UIMenuItem)Parent).ItemsWidth, 0);
                         foreach (var item in items) {
-                            item.PostionScreen = startpos;
+                            item.PositionScreen = startpos;
                             startpos.Y += item.Height - 1;
                         }
                         break;
                     }
                 case 1: {
-                        Vector2 startpos = Parent.PostionScreen + new Vector2(Width, Height) * (-Pivot + new Vector2(1, 0)) + new Vector2(((UIMenuItem)Parent).ItemsWidth, 0);
+                        Vector2 startpos = Parent.PositionScreen + new Vector2(Width, Height) * (-Pivot + new Vector2(1, 0)) + new Vector2(((UIMenuItem)Parent).ItemsWidth, 0);
                         foreach (var item in items) {
-                            item.PostionScreen = startpos;
+                            item.PositionScreen = startpos;
                             startpos.Y += item.Height - 1;
                         }
                         break;

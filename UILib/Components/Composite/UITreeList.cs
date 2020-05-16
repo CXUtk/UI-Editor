@@ -7,19 +7,39 @@ using UIEditor.UILib.Components.Advanced;
 
 namespace UIEditor.UILib.Components.Composite {
     public class UITreeList : UIList {
+        public event ActionEvent OnSelect;
         public float LayerPaddingLeft { get; set; }
         private List<UITreeNode> _roots;
+
         public UITreeList() : base() {
+            Name = "树状列表";
             LayerPaddingLeft = 20f;
             _roots = new List<UITreeNode>();
         }
         public override void AddElement(UIElement treeNode) {
             if (!(treeNode is UITreeNode)) throw new Exception("树状列表必须传入UITreeNode对象");
-            _roots.Add((UITreeNode)treeNode);
+            var root = (UITreeNode)treeNode;
+            _roots.Add(root);
+            _assignEvent(root);
         }
+
+        private void _assignEvent(UITreeNode treenode) {
+            treenode.DisplayElement.OnMouseDown += DisplayElement_OnMouseDown;
+            foreach (var child in treenode.TreeNodes) {
+                _assignEvent(child);
+            }
+        }
+
+        private void DisplayElement_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
+            SelectedElement = sender;
+            OnSelect?.Invoke(new Events.UIActionEvent(this, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+        public void ClearRoots() { _roots.Clear(); Clear(); }
 
         private void _addElement(UIElement element) {
             base.AddElement(element);
+            ShouldRecalculate = true;
         }
 
         private float _maxLeftPadding;
@@ -27,6 +47,7 @@ namespace UIEditor.UILib.Components.Composite {
             _maxLeftPadding = Math.Max(_maxLeftPadding, leftPadding);
             node.DisplayElement.LeftOffset = leftPadding;
             node.DisplayElement.Position = new Vector2(0, _totHeight);
+            node.DisplayElement.IsSelected = (node.DisplayElement == SelectedElement);
             node.DisplayElement.Update(gameTime);
             _addElement(node.DisplayElement);
             _totHeight += node.DisplayElement.Height + ItemMargin;
@@ -52,7 +73,6 @@ namespace UIEditor.UILib.Components.Composite {
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
-
         }
     }
 }

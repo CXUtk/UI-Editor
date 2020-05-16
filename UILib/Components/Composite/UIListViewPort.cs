@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace UIEditor.UILib.Components {
     public class UIListViewPort : UIElement {
         public UIListViewPort() : base() {
+            Name = "列表内部";
             Overflow = OverflowType.Hidden;
         }
         public void RemoveAll() {

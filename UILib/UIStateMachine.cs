@@ -13,16 +13,20 @@ namespace UIEditor.UILib {
     public class UIStateMachine {
         public int ActiveStateNumber => uiRunningStack.Count;
         public UIElement FocusedElement { get { return _lastFocusElement; } }
-        private List<UIState> uiRunningStack = new List<UIState>();
-        private List<UIState> uiStates = new List<UIState>();
+        public UIElement LastRightClickElement { get { return _lastRightClickElement; } }
+        private readonly List<UIState> uiRunningStack = new List<UIState>();
+        private readonly List<UIState> uiStates = new List<UIState>();
 
 
 
         private UIElement _previousHoverElement;
         private UIElement _lastLeftDownElement;
+        private UIElement _lastLeftClickElement;
+        private UIElement _lastRightClickElement;
         private UIElement _lastRightDownElement;
         private UIElement _lastFocusElement;
 
+        private double _lastLeftClickTime = 0;
         private bool _wasMouseLeftDown;
         private bool _wasMouseRightDown;
 
@@ -46,6 +50,7 @@ namespace UIEditor.UILib {
 
         public void Add(UIState state) {
             uiStates.Add(state);
+            state.UIStateMachine = this;
             state.TimeGetFocus = _timer;
             state.ShouldRecalculate = true;
             state.Recalculate();
@@ -55,12 +60,32 @@ namespace UIEditor.UILib {
             uiRunningStack.Remove(state);
         }
 
+        public void Activate(string name) {
+            var state = uiStates.Find((s) => s.Name == name);
+            if (state == null) throw new ArgumentNullException();
+            state.IsActive = true;
+            state.TimeGetFocus = _timer;
+        }
+
+        public UIState GetState(string name) {
+            var state = uiStates.Find((s) => s.Name == name);
+            if (state == null) throw new ArgumentNullException();
+            return state;
+        }
+
         public void Toggle(string name) {
             var state = uiStates.Find((s) => s.Name == name);
             if (state == null) throw new ArgumentNullException();
             state.IsActive ^= true;
             if (state.IsActive)
                 state.TimeGetFocus = _timer;
+        }
+
+        public void FocusOn(UIState state, GameTime gameTime) {
+            _lastFocusElement?.UnFocus(new UIActionEvent(_lastLeftDownElement, gameTime.TotalGameTime));
+            state.FocusOn(new UIActionEvent(state, gameTime.TotalGameTime));
+            _lastLeftDownElement = state;
+            _lastFocusElement = state;
         }
 
         public void HandleMouseEvent(GameTime gameTime) {
@@ -105,16 +130,24 @@ namespace UIEditor.UILib {
 
             // 鼠标左键
             if (!_wasMouseLeftDown && mouseLeftDown && hoverElement != null) {
-                hoverElement.MouseDown(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                hoverElement.MouseLeftDown(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 hoverElement.FocusOn(new UIActionEvent(hoverElement, gameTime.TotalGameTime));
+                hoverElement.DragStart(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 _lastLeftDownElement = hoverElement;
                 _lastFocusElement = hoverElement;
             }
 
             if (_wasMouseLeftDown && Main.mouseLeftRelease) {
-                _lastLeftDownElement?.MouseUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                _lastLeftDownElement?.MouseLeftUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                _lastLeftDownElement?.DragEnd(new UIDragEndEvent(_lastLeftDownElement, hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
                 if (_wasMouseLeftDown && Main.mouseLeftRelease && hoverElement != null && _lastLeftDownElement == hoverElement) {
-                    hoverElement.MouseClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                    if (gameTime.TotalGameTime.TotalMilliseconds - _lastLeftClickTime > 200) {
+                        hoverElement.MouseLeftClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                    } else {
+                        hoverElement.MouseDoubleClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                    }
+                    _lastLeftClickElement = hoverElement;
+                    _lastLeftClickTime = gameTime.TotalGameTime.TotalMilliseconds;
                 }
                 _lastLeftDownElement = null;
             }
@@ -128,8 +161,10 @@ namespace UIEditor.UILib {
 
             if (_wasMouseRightDown && Main.mouseRightRelease) {
                 _lastRightDownElement?.MouseRightUp(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
-                if (hoverElement != null && _lastRightDownElement == hoverElement)
+                if (hoverElement != null && _lastRightDownElement == hoverElement) {
                     hoverElement.MouseRightClick(new UIMouseEvent(hoverElement, gameTime.TotalGameTime, Main.MouseScreen));
+                    _lastRightClickElement = hoverElement;
+                }
                 _lastRightDownElement = null;
             }
 
@@ -200,9 +235,13 @@ namespace UIEditor.UILib {
                     state.Draw(sb);
                 }
             }
-
+            DrawDragElement(sb);
             DrawIME();
             DrawTooltip();
+
+        }
+
+        public void DrawDragElement(SpriteBatch sb) {
 
         }
 

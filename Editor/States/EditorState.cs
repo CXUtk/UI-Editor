@@ -12,21 +12,36 @@ using UIEditor.UILib.Components.Advanced;
 using UIEditor.UILib.Components.Composite;
 using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework.Graphics;
+using UIEditor.Editor.Components;
+using UIEditor.Editor.States.Attached;
+using UIEditor.UILib.Components.Interface;
 
 namespace UIEditor.Editor.States {
     public class EditorState : UIState {
+        internal event ActionEvent OnSelectionChange;
+        internal event ActionEvent OnSizerAttached;
+        internal event ActionEvent OnSizerChanged;
+        internal event ActionEvent OnPropertyChanged;
+        internal event ActionEvent OnPlaceElement;
+        internal event ActionEvent OnViewerMove;
+
         public EditorState(string name) : base(name) { }
 
+        public Viewer Viewer { get; private set; }
+        public Browser Browser { get; private set; }
+        public Inspecter Inspecter { get; private set; }
+        public Navigator Navigator { get; private set; }
+        private UIWindow _window;
         private UIElement _body;
-        private UIList _list;
-        private UIScrollBarV scrollBar;
+        private Vector2 _placeSize;
+        private bool _inPlaceMode;
 
         private const float PADDING_BODY = 10f;
         public override void Initialize() {
             base.Initialize();
             Overflow = OverflowType.Hidden;
-            var window = new UIWindow() {
-                Name = "a",
+            _window = new UIWindow() {
+                Name = "Editor",
                 Size = new Vector2(800, 640),
                 AnchorPoint = new Vector2(0.5f, 0.5f),
                 Position = new Vector2(100, 100)
@@ -38,132 +53,132 @@ namespace UIEditor.Editor.States {
                 SizeFactor = new Vector2(1, 1),
                 Size = new Vector2(-PADDING_BODY * 2, -32 - PADDING_BODY),
             };
-            var panel2 = new UIPanel() {
-                AnchorPoint = new Vector2(0, 0),
+            Navigator = new Navigator(this) {
+                Name = "Navigator",
+                Pivot = new Vector2(0.5f, 0f),
+                AnchorPoint = new Vector2(0.5f, 0f),
+                SizeFactor = new Vector2(1f, 0f),
+                Size = new Vector2(0, 35f),
+                Position = new Vector2(0, 0),
+            };
+            Browser = new Browser(this) {
+                Name = "Browser",
                 Pivot = new Vector2(0, 0),
-                SizeFactor = new Vector2(0.4f, 1f),
-                PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default"),
-            };
-            _list = new UITreeList() {
                 AnchorPoint = new Vector2(0, 0),
+                SizeFactor = new Vector2(0.382f, 1f),
+                Overflow = OverflowType.Hidden,
+            };
+            Viewer = new Viewer(this) {
+                Name = "Viewer",
                 Pivot = new Vector2(0, 0),
-                Position = new Vector2(5f, 5f),
-                SizeFactor = new Vector2(1f, 1f),
-                Size = new Vector2(-5f, -5f),
+                AnchorPoint = new Vector2(0, 0),
+                SizeFactor = new Vector2(0.618f, 0.7f),
             };
-            scrollBar = new UIScrollBarV() {
-                Name = "ScrollBar",
-                AnchorPoint = new Vector2(1, 0.5f),
-                Pivot = new Vector2(1, 0.5f),
-                Position = new Vector2(-5, 0),
+            Inspecter = new Inspecter(this) {
+                Name = "Inspector",
+                Pivot = new Vector2(0, 0),
+                AnchorPoint = new Vector2(0, 0),
+                SizeFactor = new Vector2(0.618f, 0.3f),
             };
-            var scrollBarH = new UIScrollBarH() {
-                Name = "ScrollBarH",
-            };
-            var progress = new UIProgressBar() {
-                Name = "Progress",
-                AnchorPoint = new Vector2(1, 0),
-                Pivot = new Vector2(1, 0),
-                Position = new Vector2(-5, 5),
-                SizeFactor = new Vector2(0.5f, 0f),
-                Size = new Vector2(0, 25),
-            };
-            var textbox = new UITextBox() {
-                Name = "Text",
-                AnchorPoint = new Vector2(1, 0),
-                Pivot = new Vector2(1, 0),
-                Position = new Vector2(-5, 50),
-                SizeFactor = new Vector2(0.5f, 0f),
-                Size = new Vector2(0, 30),
-            };
-            _list.SetScrollBarV(scrollBar);
-            _list.SetScrollBarH(scrollBarH);
-            panel2.AppendChild(_list);
-            window.OnClose += Box1_OnClose;
-            AppendChild(window);
-            window.AppendChild(_body);
-            _body.AppendChild(panel2);
-            _body.AppendChild(progress);
-            _body.AppendChild(textbox);
+            _window.OnClose += Box1_OnClose;
+            AppendChild(_window);
+            _window.AppendChild(_body);
+            _body.AppendChild(Navigator);
+            _body.AppendChild(Viewer);
+            _body.AppendChild(Browser);
+            _body.AppendChild(Inspecter);
 
-
-
-
-            //for (int j = 0; j < 2; j++) {
-            //    var list = new List<UITreeNode>();
-            //    for (int i = 0; i < 10; i++) {
-            //        list.Add(new UITreeNode("Leaf", new List<UITreeNode>()));
-            //    }
-            //    var root = new UITreeNode("Root", list);
-            //    _list.AddElement(root);
-            //}
-            UITreeNode node = null;
-            node = _build(node, 0);
-            node.Name = "根节点";
-            _list.AddElement(node);
-        }
-        int tot = 0;
-        UITreeNode _build(UITreeNode node, int level) {
-            tot++;
-            List<UITreeNode> nodes = new List<UITreeNode>();
-            if (node == null) {
-                node = new UITreeNode(tot.ToString(), nodes);
-            }
-            if (level == 6) return node;
-            for (int i = 0; i < 2; i++) {
-                UITreeNode child = null;
-                child = _build(child, level + 1);
-                nodes.Add(child);
-            }
-            return node;
+            _init();
         }
 
+        public void _init() {
+            Browser.Initialize();
+            Viewer.Initialize();
+            Inspecter.Initialize();
+        }
+
+
+        private UIElement _lastFocusElement;
+
+        public override void UpdateSelf(GameTime gameTime) {
+            base.UpdateSelf(gameTime);
+            Browser.Position = new Vector2(0, Navigator.Position.Y + Navigator.Height);
+            Browser.Size = new Vector2(0f, -(Navigator.Position.Y + Navigator.Height));
+            Viewer.Position = new Vector2(Browser.Width, Navigator.Position.Y + Navigator.Height);
+            Inspecter.Position = new Vector2(Browser.Width, Viewer.Height);
+            var selected = (BrowserTreeNode)Browser.SelectedElement;
+            var e = (selected == null) ? null : selected.BindingElement;
+            if (_lastFocusElement != e) {
+                OnSelectionChange.Invoke(new UIActionEvent(e, gameTime.TotalGameTime), this);
+                _lastFocusElement = e;
+            }
+        }
+
+        public void NotifySizerAttached(UIElement element) {
+            _lastFocusElement = element;
+            OnSizerAttached?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+
+        public void NotifyElementPropertyChange(UIElement element) {
+            OnPropertyChanged?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+
+        public void NotifyPlaceElement(UIElement element) {
+            OnPlaceElement?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+
+        public void NotifyMoveViewer(UIElement element) {
+            OnViewerMove?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+        public void NotifySizerChanged(UIElement element) {
+            OnSizerChanged?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+        public void NotifyCanvasScaleChanged(UIElement element) {
+            OnSizerChanged?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
+        internal void OpenColorChooser(PropertyInfo info, UIElement target, IUIUpdateable updateable) {
+            UIStateMachine.Activate("ColorChooser");
+            var chooser = (ColorChooser)UIStateMachine.GetState("ColorChooser");
+            UIStateMachine.FocusOn(chooser, Main._drawInterfaceGameTime);
+            chooser.SelectedColor = (Color)info.GetValue(target);
+            chooser.Info = info;
+            chooser.Target = target;
+            chooser.Inspecter = updateable;
+        }
+
+
+
+        internal UIElement PlaceElement { get; private set; }
+
+        public void SetPlaceMode(UIElement element) {
+            PlaceElement = element;
+            if (element != null) {
+                _inPlaceMode = true;
+                _placeSize = new Vector2(element.Width, element.Height);
+            } else {
+                _inPlaceMode = false;
+            }
+        }
         private void Box1_OnClose(UIActionEvent e, UIElement sender) {
             this.IsActive = false;
         }
-
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            //sb.End();
-            //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
-            //    DepthStencilState.None, RasterizerState.CullNone, null, Matrix.CreateScale(1) * Matrix.CreateRotationZ(0) * Matrix.CreateTranslation(new Vector3(10, 10, 0)) * Main.UIScaleMatrix);
-
-            // sb.End();
-            //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
-            //    DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
-        private UIElement _lastFocusElement = null;
-        public override void UpdateSelf(GameTime gameTime) {
-            base.UpdateSelf(gameTime);
-            return;
-            if (_lastFocusElement != UIEditor.Instance.UIStateMachine.FocusedElement) {
-                var e = UIEditor.Instance.UIStateMachine.FocusedElement;
-
-                _list.Clear();
-                if (e != null) {
-                    foreach (var info in e.GetType().GetProperties()) {
-
-                        if (info.IsDefined(typeof(Editor.Attributes.EditorPropertyIgnoreAttribute), true))
-                            continue;
-                        var text = new UILabel() {
-                            Text = info.Name + ": " + info.GetValue(e)?.ToString(),
-                            SizeFactor = new Vector2(1f, 0f),
-                            Size = new Vector2(0, 30),
-                            SizeStyle = SizeStyle.Block,
-                        };
-                        _list.AddElement(text);
-
-                    }
-                }
+        public override void Draw(SpriteBatch sb) {
+            base.Draw(sb);
+            if (_inPlaceMode) {
+                var mousePos = Main.MouseScreen;
+                Drawing.DrawAdvBox(sb, new Rectangle((int)(mousePos.X - _placeSize.X / 2), (int)(mousePos.Y - _placeSize.Y / 2), (int)_placeSize.X, (int)_placeSize.Y),
+                    Color.Yellow, UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default"), new Vector2(4, 4));
             }
-            _lastFocusElement = UIEditor.Instance.UIStateMachine.FocusedElement;
-            //var progress = _body.GetChildByName("Progress") as UIProgressBar;
-            //progress.CurrentValue = (float)Math.Abs(Math.Sin(gameTime.TotalGameTime.TotalSeconds * 0.5f));
-            //progress.Rotation = -progress.CurrentValue;
         }
-
-
-
     }
 }

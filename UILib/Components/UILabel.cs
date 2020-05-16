@@ -15,7 +15,9 @@ namespace UIEditor.UILib.Components {
     public class UILabel : UIElement {
         public string Text { get; set; }
         public Color TextColor { get; set; }
-        public float TextScale { get; set; }
+        public Color BackgroundColor { get; set; }
+        public float TextScale { get { return _textScale; } set { CheckRecalculate(_textScale, value); _textScale = value; } }
+        private float _textScale;
         public bool IsLargeText { get; set; }
         public SizeStyle SizeStyle { get; set; }
 
@@ -25,6 +27,7 @@ namespace UIEditor.UILib.Components {
             Text = "文字";
             TextScale = 1f;
             TextColor = Color.White;
+            BackgroundColor = Color.Transparent;
             IsLargeText = false;
             SizeStyle = SizeStyle.Inline;
         }
@@ -40,21 +43,22 @@ namespace UIEditor.UILib.Components {
                 Size = MeasureSize(Text);
             else {
                 _displayString = StringProcess.GetClampStringWithEllipses(font, _displayString, TextScale, Width);
-                Size = new Vector2(0, Size.Y);
+                Size = new Vector2(Size.X, MeasureSize(_displayString).Y);
             }
         }
         public override void UpdateSelf(GameTime gameTime) {
-            CalculateSize();
-            Recalculate();
             base.UpdateSelf(gameTime);
+            CalculateSize();
+            RecalculateSelf();
         }
 
         public override void DrawSelf(SpriteBatch sb) {
             var font = IsLargeText ? Main.fontDeathText : Main.fontMouseText;
+            sb.Draw(Main.magicPixel, new Rectangle(0, 0, Width, Height), BackgroundColor);
             if (IsLargeText)
-                Terraria.Utils.DrawBorderStringBig(sb, _displayString, Vector2.Zero, TextColor, TextScale);
+                Utils.DrawBorderStringBig(sb, _displayString, Vector2.Zero, TextColor, TextScale);
             else
-                Terraria.Utils.DrawBorderString(sb, _displayString, Vector2.Zero, TextColor, TextScale);
+                Utils.DrawBorderString(sb, _displayString, Vector2.Zero, TextColor, TextScale);
             base.DrawSelf(sb);
         }
     }

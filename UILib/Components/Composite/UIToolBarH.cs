@@ -10,6 +10,7 @@ namespace UIEditor.UILib.Components.Composite {
     public class UIToolBarH : UIElement {
         public Texture2D CollapseButtonUpTexture { get; set; }
         public Texture2D CollapseButtonDownTexture { get; set; }
+        public string ButtonTooltip { get { return _openButton.Tooltip; } set { _openButton.Tooltip = value; } }
         public Texture2D PanelTexture {
             get { return _toolPanel.PanelTexture; }
             set { _toolPanel.PanelTexture = value; }
@@ -18,12 +19,13 @@ namespace UIEditor.UILib.Components.Composite {
             get { return _toolPanel.PanelTexture; }
             set { _toolPanel.PanelTexture = value; }
         }
-        private UIPanel _toolPanel;
+        private readonly UIPanel _toolPanel;
         private bool _collapseOn;
         private float _timer;
-        private UIImageButton _openButton;
+        private readonly UIImageButton _openButton;
 
         public UIToolBarH() : base() {
+            Name = "水平工具栏";
             _timer = 0;
             _collapseOn = false;
             CollapseButtonUpTexture = UIEditor.Instance.SkinManager.GetTexture("MoveUpButton");
@@ -41,6 +43,7 @@ namespace UIEditor.UILib.Components.Composite {
                 Pivot = new Vector2(0.5f, 0f),
                 PanelTexture = UIEditor.Instance.SkinManager.GetTexture("ToolBar_Default"),
                 CornerSize = new Vector2(6f, 6f),
+                PropagationRule = Enums.PropagationFlags.FocusEvents,
             };
 
             AppendChild(_toolPanel);
@@ -59,22 +62,16 @@ namespace UIEditor.UILib.Components.Composite {
             Vector2 lowerPos = new Vector2(0, _toolPanel.Height);
             if (_collapseOn) {
                 _openButton.Texture = CollapseButtonDownTexture;
-                if (_timer < 300) {
-                    _timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                } else {
-                    _timer = 300;
-                }
+                _timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_timer > 300) _timer = 300;
             } else {
                 _openButton.Texture = CollapseButtonUpTexture;
-                if (_timer > 0) {
-                    _timer -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                } else {
-                    _timer = 0;
-                }
+                _timer -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_timer < 0) _timer = 0;
             }
             Position = Vector2.Lerp(lowerPos, upperPos, _timer / 300.0f);
             _toolPanel.Position = new Vector2(0, _openButton.Height - 2);
-            _toolPanel.Size = new Vector2(-20, -_openButton.Height + 2);
+            _toolPanel.Size = new Vector2(0, -_openButton.Height + 2);
         }
     }
 }

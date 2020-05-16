@@ -70,9 +70,8 @@ namespace UIEditor.UILib.Components {
 
         private const float PADDING = 5;
         public UIScrollBarH() : base() {
-            BlockPropagation = true;
-            SizeFactor = new Vector2(1, 0);
-            Size = new Vector2(-PADDING * 2, 10);
+            Name = "水平滚动条";
+            PropagationRule = Enums.PropagationFlags.FocusEvents;
             _currentValue = 0f;
             _isMouseOver = false;
             var tex = Main.magicPixel;
@@ -80,8 +79,7 @@ namespace UIEditor.UILib.Components {
                 Texture = tex,
                 SizeFactor = new Vector2(1f, 1f),
                 AnchorPoint = new Vector2(0.5f, 0.5f),
-                EndSize = 6,
-                DrawStyle = DrawStyle.Horizontal,
+                EndSize = 6
             };
             ViewSize = 0.5f;
             _innerBar = new UIBar() {
@@ -90,8 +88,7 @@ namespace UIEditor.UILib.Components {
                 SizeFactor = new Vector2(0.5f, 1f),
                 Pivot = new Vector2(0f, 0.5f),
                 AnchorPoint = new Vector2(0f, 0.5f),
-                EndSize = 6,
-                DrawStyle = DrawStyle.Horizontal,
+                EndSize = 6
             };
             BackgroundColor = Color.Gray;
             DefaultInnerColor = Color.White * 0.5f;
@@ -112,7 +109,7 @@ namespace UIEditor.UILib.Components {
 
         private void _innerBar_OnMouseDown(Events.UIMouseEvent e, UIElement sender) {
             _isMouseDown = true;
-            _offsetX = _innerBar.PostionScreen.X - e.MouseScreen.X;
+            _offsetX = _innerBar.PositionScreen.X - e.MouseScreen.X;
         }
 
         private void _innerBar_OnMouseOut(Events.UIMouseEvent e, UIElement sender) {
@@ -148,7 +145,7 @@ namespace UIEditor.UILib.Components {
             // 锚点和基准点都在顶部
             int topX = 0, bottomX = _outerBar.Width - _innerBar.Width;
             if (_isMouseDown) {
-                var posLocal = _innerBar.ScreenPositionToNode(Main.MouseScreen + new Vector2(_offsetX, 0));
+                var posLocal = _innerBar.ScreenPositionToParentAR(Main.MouseScreen + new Vector2(_offsetX, 0));
                 float r = (posLocal.X - topX) / (bottomX - topX);
                 if (float.IsNaN(r)) r = 0;
                 CurrentValue = r;

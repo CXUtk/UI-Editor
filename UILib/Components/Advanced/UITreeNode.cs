@@ -14,11 +14,13 @@ namespace UIEditor.UILib.Components.Advanced {
         public bool IsFolded { get; set; }
         public float LeftOffset { get; set; }
         public bool CanFold { get; set; }
-        private UIImageButton _foldButton;
-        private UILabel _label;
+        public string Text { get { return _label.Text; } set { _label.Text = value; } }
+        private readonly UIImageButton _foldButton;
+        private readonly UILabel _label;
         public UITreeNodeDisplay(string text) : base() {
             IsFolded = true;
             CanFold = false;
+            IsSelected = false;
             _foldButton = new UIImageButton() {
                 Pivot = new Vector2(0, 0.5f),
                 AnchorPoint = new Vector2(0, 0.5f),
@@ -28,9 +30,11 @@ namespace UIEditor.UILib.Components.Advanced {
                 Text = text,
                 Pivot = new Vector2(0, 0.5f),
                 AnchorPoint = new Vector2(0, 0.5f),
+                NoEvent = true,
             };
             AppendChild(_foldButton);
             AppendChild(_label);
+            OnDoubleClick += Element_OnClick;
         }
         private void Element_OnClick(Events.UIMouseEvent e, UIElement sender) {
             IsFolded ^= true;
@@ -51,10 +55,14 @@ namespace UIEditor.UILib.Components.Advanced {
 
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            if (IsFocused) {
-                Drawing.DrawAdvBox(sb, 0, 0, Width, Height, Color.White, UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default"),
-                    new Vector2(4, 4));
+            var color = UIEditor.Instance.SkinManager.GetColor(IsSelected ? "Background2" : "Background");
+            // 容器处于交点颜色就变成highlight
+            if (IsSelected && this.Parent.IsFocused) {
+                color = UIEditor.Instance.SkinManager.GetColor("Highlight");
             }
+            Drawing.DrawAdvBox(sb, 0, 0, Width, Height, color, Main.magicPixel,
+                new Vector2(4, 4));
+
         }
     }
     public class UITreeNode : UIElement {
@@ -69,11 +77,16 @@ namespace UIEditor.UILib.Components.Advanced {
                 Pivot = new Vector2(0f, 0f),
                 AnchorPoint = new Vector2(0f, 0f),
                 SizeFactor = new Vector2(1f, 0f),
-                Size = new Vector2(0f, 32f),
+                Size = new Vector2(0f, 30f),
             };
             DisplayElement = display;
             TreeNodes = nodes;
             //AppendChild(display);
+        }
+        public UITreeNode(UITreeNodeDisplay nodeDisplay, IList<UITreeNode> nodes) : base() {
+            Pivot = new Vector2(0, 0);
+            DisplayElement = nodeDisplay;
+            TreeNodes = nodes;
         }
 
         public override void UpdateSelf(GameTime gameTime) {

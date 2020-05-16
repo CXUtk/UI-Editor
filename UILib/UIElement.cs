@@ -10,13 +10,17 @@ using UIEditor.UILib.Hitbox;
 using Terraria;
 using Newtonsoft.Json;
 using UIEditor.Editor.Attributes;
+using UIEditor.UILib.Enums;
 
 namespace UIEditor.UILib {
-    public class UIElement {
+    public class UIElement : ICloneable {
         public delegate void MouseEvent(UIMouseEvent e, UIElement sender);
         public delegate void ScrollEvent(UIScrollWheelEvent e, UIElement sender);
         public delegate void ActionEvent(UIActionEvent e, UIElement sender);
         public delegate void DrawEvent(UIDrawEvent e, UIElement sender);
+        public delegate void DragStartEvent(UIMouseEvent e, UIElement sender);
+        public delegate void DragEndEvent(UIDragEndEvent e, UIElement sender);
+        public delegate void ValueChangeEvent<T>(UIValueChangeEvent<T> e, UIElement sender);
 
         public static bool DEBUG_MODE = true;
 
@@ -32,7 +36,7 @@ namespace UIEditor.UILib {
         /// </summary>
         public bool IsVisible { get; set; }
 
-        [EditorPropertyIgnore]
+        [JsonIgnore]
         /// <summary>
         /// 该UI节点的父节点
         /// </summary>
@@ -101,7 +105,7 @@ namespace UIEditor.UILib {
         /// <summary>
         /// UI元素是否阻止事件向其父元素传播
         /// </summary>
-        public bool BlockPropagation { get; set; }
+        public PropagationFlags PropagationRule { get; set; }
 
         /// <summary>
         /// 这个UI元素是否会响应事件
@@ -114,13 +118,40 @@ namespace UIEditor.UILib {
         /// </summary>
         public string Tooltip { get; set; }
 
+        /// <summary>
+        /// 标记该节点或容器是否处于用户焦点
+        /// </summary>
         [EditorPropertyIgnore]
+        [JsonIgnore]
         public bool IsFocused { get; set; }
 
+        /// <summary>
+        /// 标记该节点以及其子节点是否应该重新计算位置
+        /// </summary>
         [EditorPropertyIgnore]
+        [JsonIgnore]
         public bool ShouldRecalculate { get; set; }
 
+        /// <summary>
+        /// 标记该节点是否处于Preview模式，如果处于这个模式就会在Viewer特殊处理
+        /// </summary>
+        [EditorPropertyIgnore]
+        [JsonIgnore]
+        internal bool IsPreview { get; set; }
 
+        /// <summary>
+        /// 标记该元素是否被某些容器选中
+        /// </summary>
+        [EditorPropertyIgnore]
+        [JsonIgnore]
+        internal bool IsSelected { get; set; }
+
+        /// <summary>
+        /// 如果需要使用着色器，会更改这个元素的绘制模式，会严重影响性能
+        /// </summary>
+        [EditorPropertyIgnore]
+        [JsonIgnore]
+        public bool UseShader { get; set; }
 
         //public int MarginLeft { get; set; }
         //public int MarginRight { get; set; }
@@ -141,6 +172,7 @@ namespace UIEditor.UILib {
         public event MouseEvent OnMouseDown;
         public event MouseEvent OnMouseUp;
         public event MouseEvent OnClick;
+        public event MouseEvent OnDoubleClick;
         public event MouseEvent OnMouseRightDown;
         public event MouseEvent OnMouseRightUp;
         public event MouseEvent OnRightClick;
@@ -148,33 +180,44 @@ namespace UIEditor.UILib {
         public event ActionEvent OnFocused;
         public event ActionEvent OnUnFocused;
         public event DrawEvent PostDrawSelf;
-
+        public event MouseEvent OnDragStart;
+        public event DragEndEvent OnDragEnd;
         #endregion
 
 
         #region 派生属性
+        [EditorPropertyIgnore]
+        [JsonIgnore]
         public Rectangle OuterRectangleScreen {
             get {
                 return _selfHitbox.GetOuterRectangle();
             }
         }
+        [EditorPropertyIgnore]
+        [JsonIgnore]
         public Rectangle BaseRectangleScreen {
             get {
                 return new Rectangle((int)(_baseTopLeftScreen.X), (int)(_baseTopLeftScreen.Y), Width, Height);
             }
         }
+        [EditorPropertyReadOnly]
+        [JsonIgnore]
         public Rectangle InnerRectangleScreen {
             get {
                 return new Rectangle((int)(_baseTopLeftScreen.X), (int)(_baseTopLeftScreen.Y), Width, Height);
             }
         }
 
-
+        [EditorPropertyReadOnly]
+        [JsonIgnore]
         public int Width {
             get {
                 return (int)(SizeFactor.X * _parentRect.Width + Size.X);
             }
         }
+
+        [EditorPropertyReadOnly]
+        [JsonIgnore]
         public int Height {
             get {
                 return (int)(SizeFactor.Y * _parentRect.Height + Size.Y);
@@ -183,53 +226,102 @@ namespace UIEditor.UILib {
         /// <summary>
         /// 如果鼠标位置在这个UI元素上面
         /// </summary>
-        public bool IsMouseHover {
-            get {
-                return _selfHitbox.Contains(Main.MouseScreen);
-            }
-        }
+        [EditorPropertyIgnore]
+        [JsonIgnore]
+        public bool IsMouseHover { get; private set; }
 
-        private Vector2 PivotOffset {
+        [JsonIgnore]
+        public Vector2 PivotOffset {
             get {
                 return new Vector2(Width * Pivot.X, Height * Pivot.Y);
             }
         }
 
-        public Vector2 ScreenPositionToNode(Vector2 worldPos) {
-            return worldPos - (_baseTopLeftScreen - Position + PivotOffset);
+        /// <summary>
+        /// 把屏幕坐标转化为相对于这个UI元素的子节点的坐标，可以指定锚点
+        /// </summary>
+        /// <param name="worldPos"></param>
+        /// <param name="anchor"></param>
+        /// <returns></returns>
+        public Vector2 ScreenPositionToNodeAR(Vector2 worldPos, Vector2 anchor) {
+            return worldPos - (_baseTopLeftScreen + new Vector2(Width * anchor.X, Height * anchor.Y));
         }
 
+        /// <summary>
+        ///  把屏幕坐标转化为相对于这个UI元素的父节点的子节点坐标，并且可以指定锚点相对位置
+        /// </summary>
+        /// <param name="worldPos"></param>
+        /// <param name="anchor"></param>
+        /// <returns></returns>
+        public Vector2 ScreenPositionToParentAR(Vector2 worldPos) {
+            if (Parent != null) return Parent.ScreenPositionToNodeAR(worldPos, AnchorPoint);
+            return worldPos;
+        }
+
+        /// <summary>
+        /// 把屏幕坐标转化为为相对于这个UI元素的父节点的子节点坐标，锚点位置默认是左上角
+        /// </summary>
+        /// <param name="worldPos"></param>
+        /// <returns></returns>
+        public Vector2 ScreenPositionToParent(Vector2 worldPos) {
+            if (Parent != null) return Parent.ScreenPositionToNodeAR(worldPos, new Vector2(0, 0));
+            return worldPos;
+        }
+
+        /// <summary>
+        /// 把相对于基准点的位置转化为屏幕位置
+        /// </summary>
+        /// <param name="nodePos"></param>
+        /// <returns></returns>
+        public Vector2 NodePositionToScreenAR(Vector2 nodePos) {
+            return PositionScreen + nodePos;
+        }
+
+        /// <summary>
+        /// 把基准点相对于父节点的位置转化为屏幕位置
+        /// </summary>
+        /// <param name="nodePos"></param>
+        /// <returns></returns>
+        public Vector2 ParentNodePositionToScreenAR(Vector2 nodePos) {
+            return _parentRect.TopLeft() + new Vector2(Width * AnchorPoint.X, Height * AnchorPoint.Y) + nodePos;
+        }
         //public Vector2 NodePositionToScreen(Vector2 worldPos) {
         //    return _baseTopLeftScreen - PivotOffset;
         //}
 
-
+        [JsonIgnore]
         public IHitBox ScreenHitBox {
             get {
                 return _selfHitbox;
             }
         }
 
-        public Vector2 PostionScreen {
+        /// <summary>
+        /// 基准点位置相对于屏幕的位置
+        /// </summary>
+        [JsonIgnore]
+        public Vector2 PositionScreen {
             get {
                 return _baseTopLeftScreen + PivotOffset;
             }
             set {
-                Position = ScreenPositionToNode(value);
+                Position = ScreenPositionToParentAR(value);
             }
         }
 
-        protected bool MouseDownedLeft {
+        [JsonIgnore]
+        public Vector2 TopLeft {
             get {
-                return _mouseDownedLeft;
+                return Position - PivotOffset;
+            }
+            set {
+                Position = value + PivotOffset;
             }
         }
 
-        protected int MouseDownTimeLeft {
-            get {
-                return _mouseDownTimeLeft;
-            }
-        }
+        protected bool MouseDownedLeft { get; private set; }
+
+        protected int MouseDownTimeLeft { get; private set; }
         #endregion
 
 
@@ -240,8 +332,7 @@ namespace UIEditor.UILib {
             return pos;
         }
         public void RecalculateLocation() {
-            _parentRect = Parent == null ? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight) :
-                 Parent.InnerRectangleScreen;
+            _parentRect = Parent?.InnerRectangleScreen ?? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
             _baseTopLeftScreen = getBaseRectScreen() + Position - PivotOffset;
             _realPosition = (Parent == null) ? Position : new Vector2(Parent.Width, Parent.Height) * AnchorPoint
                 + Position - new Vector2(Width * Pivot.X, Height * Pivot.Y);
@@ -276,91 +367,120 @@ namespace UIEditor.UILib {
 
         private Vector2 _baseTopLeftScreen;
         private Vector2 _realPosition;
-        private QuadrilateralHitbox _selfHitbox;
+        private readonly QuadrilateralHitbox _selfHitbox;
         private Matrix _selfTransform;
         private Rectangle _parentRect;
-        private int _mouseDownTimeLeft;
-        private bool _mouseDownedLeft;
-
-        private RasterizerState _selfRasterizerState;
+        private readonly RasterizerState _selfRasterizerState;
 
 
-
+        #region 事件
         public virtual void MouseEnter(UIMouseEvent e) {
             // Main.NewText("进入");
+            IsMouseHover = true;
             OnMouseEnter?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseEnter))
                 Parent?.MouseEnter(e);
         }
 
         public virtual void MouseOut(UIMouseEvent e) {
             //Main.NewText("离开");
+            IsMouseHover = false;
             OnMouseOut?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseOut))
                 Parent?.MouseOut(e);
         }
 
-        public virtual void MouseDown(UIMouseEvent e) {
+        public virtual void MouseLeftDown(UIMouseEvent e) {
             //Main.NewText("按下");
-            _mouseDownedLeft = true;
+            MouseDownedLeft = true;
             OnMouseDown?.Invoke(e, this);
-            if (!BlockPropagation)
-                Parent?.MouseDown(e);
+            if (PropagationRule.HasFlag(PropagationFlags.MouseLeftDown))
+                Parent?.MouseLeftDown(e);
         }
 
         public virtual void MouseRightDown(UIMouseEvent e) {
             //Main.NewText("右键按下");
             OnMouseRightDown?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseRightDown))
                 Parent?.MouseRightDown(e);
         }
 
-        public virtual void MouseUp(UIMouseEvent e) {
+        public virtual void MouseLeftUp(UIMouseEvent e) {
             // Main.NewText("抬起");
-            _mouseDownedLeft = false;
+            MouseDownedLeft = false;
             OnMouseUp?.Invoke(e, this);
-            if (!BlockPropagation)
-                Parent?.MouseUp(e);
+            if (PropagationRule.HasFlag(PropagationFlags.MouseLeftUp))
+                Parent?.MouseLeftUp(e);
         }
 
         public virtual void MouseRightUp(UIMouseEvent e) {
             // Main.NewText("右键抬起");
             OnMouseRightUp?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseRightUp))
                 Parent?.MouseRightUp(e);
         }
-        public virtual void MouseClick(UIMouseEvent e) {
+        public virtual void MouseLeftClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnClick?.Invoke(e, this);
-            if (!BlockPropagation)
-                Parent?.MouseClick(e);
+            if (PropagationRule.HasFlag(PropagationFlags.MouseLeftClick))
+                Parent?.MouseLeftClick(e);
+        }
+        public virtual void MouseDoubleClick(UIMouseEvent e) {
+            //Main.NewText("点击");
+            OnDoubleClick?.Invoke(e, this);
+            if (PropagationRule.HasFlag(PropagationFlags.MouseLeftDouble))
+                Parent?.MouseDoubleClick(e);
         }
         public virtual void MouseRightClick(UIMouseEvent e) {
             //Main.NewText("点击");
             OnRightClick?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.MouseRightClick))
                 Parent?.MouseRightClick(e);
         }
 
         public virtual void ScrollWheel(UIScrollWheelEvent e) {
             OnScrollWheel?.Invoke(e, this);
-            if (!BlockPropagation)
+            if (PropagationRule.HasFlag(PropagationFlags.ScrollWheel))
                 Parent?.ScrollWheel(e);
         }
 
-        // 聚焦事件不会向后传播
         public virtual void FocusOn(UIActionEvent e) {
             IsFocused = true;
             OnFocused?.Invoke(e, this);
+            if (PropagationRule.HasFlag(PropagationFlags.FocusOn))
+                Parent?.FocusOn(e);
         }
 
         public virtual void UnFocus(UIActionEvent e) {
             IsFocused = false;
             OnUnFocused?.Invoke(e, this);
+            if (PropagationRule.HasFlag(PropagationFlags.UnFocus))
+                Parent?.UnFocus(e);
         }
 
+        public virtual void DragStart(UIMouseEvent e) {
+            OnDragStart?.Invoke(e, this);
+            if (PropagationRule.HasFlag(PropagationFlags.DragStart))
+                Parent?.DragStart(e);
+        }
+        public virtual void DragEnd(UIDragEndEvent e) {
+            OnDragEnd?.Invoke(e, this);
+            if (PropagationRule.HasFlag(PropagationFlags.DragEnd))
+                Parent?.DragEnd(e);
+        }
 
-        public UIElement ElementAt(Vector2 pos) {
+        #endregion
+
+        /// <summary>
+        /// 获取在屏幕坐标为pos的地点的最上层响应事件的UI元件
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public virtual UIElement ElementAt(Vector2 pos) {
+            // 如果处于预览模式，且不显示子节点，那么就直接选中这个节点
+            if (IsPreview && this.GetType().IsDefined(typeof(EditorPropertyNoChildrenAttribute), true))
+                if (_selfHitbox.Contains(pos)) return this;
+
             UIElement target = null;
             int sz = Children.Count;
             for (int i = sz - 1; i >= 0; i--) {
@@ -395,11 +515,13 @@ namespace UIEditor.UILib {
             IsVisible = true;
             Rotation = 0;
             NoEvent = false;
+            PropagationRule = PropagationFlags.PASS_ALL;
             _selfRasterizerState = new RasterizerState() {
                 CullMode = CullMode.None,
                 ScissorTestEnable = true,
             };
             Tooltip = "";
+            UseShader = false;
             _selfHitbox = new QuadrilateralHitbox();
             Recalculate();
         }
@@ -431,9 +553,9 @@ namespace UIEditor.UILib {
 
         private Matrix ApplyTransform(Matrix prev) {
             int w = Width, h = Height;
-            Matrix m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3((int)(_realPosition.X + w * Pivot.X),
+            var m1 = Matrix.CreateScale(Scale.X, Scale.Y, 1f) * Matrix.CreateTranslation(new Vector3((int)(_realPosition.X + w * Pivot.X),
                 (int)(_realPosition.Y + h * Pivot.Y), 0)) * prev;
-            Matrix m2 = Matrix.CreateTranslation(new Vector3((int)(-w * Pivot.X), (int)(-h * Pivot.Y), 0f)) * Matrix.CreateRotationZ(Rotation);
+            var m2 = Matrix.CreateTranslation(new Vector3((int)(-w * Pivot.X), (int)(-h * Pivot.Y), 0f)) * Matrix.CreateRotationZ(Rotation);
             return m2 * m1;
         }
 
@@ -444,16 +566,32 @@ namespace UIEditor.UILib {
                 }
             }
         }
+        public void SpriteBatchBegin(SpriteBatch sb, BlendState blendState) {
+            sb.Begin(SpriteSortMode.Deferred, blendState, SamplerState.AnisotropicClamp,
+                       DepthStencilState.None, sb.GraphicsDevice.RasterizerState, null, _selfTransform);
+        }
+
         public virtual void Draw(SpriteBatch sb) {
             Rectangle scissorRectangle = sb.GraphicsDevice.ScissorRectangle;
             var defaultstate = sb.GraphicsDevice.RasterizerState;
             if (IsVisible) {
                 sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                    DepthStencilState.None, defaultstate, null, _selfTransform);
+                if (UseShader) {
+                    sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                } else {
+                    sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                }
                 DrawSelf(sb);
+                if (UseShader) {
+                    sb.End();
+                    sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                }
                 PostDrawSelf?.Invoke(new UIDrawEvent(this, Main._drawInterfaceGameTime.TotalGameTime, sb), this);
             }
+
             if (Overflow == OverflowType.Hidden) {
                 sb.End();
                 sb.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRectangle, GetClippingRectangle(sb));
@@ -485,17 +623,15 @@ namespace UIEditor.UILib {
         }
 
         public virtual void UpdateSelf(GameTime gameTime) {
-            if (_mouseDownedLeft) {
-                _mouseDownTimeLeft++;
+            if (MouseDownedLeft) {
+                MouseDownTimeLeft++;
             } else {
-                _mouseDownTimeLeft = 0;
+                MouseDownTimeLeft = 0;
             }
         }
         public virtual void UpdateChildren(GameTime gameTime) {
-            foreach (var child in Children) {
-                if (child.IsActive) {
-                    child.Update(gameTime);
-                }
+            foreach (var child in Children.Where(child => child.IsActive)) {
+                child.Update(gameTime);
             }
         }
 
@@ -506,6 +642,21 @@ namespace UIEditor.UILib {
 
         public override string ToString() {
             return $"Type: {GetType().Name}, Name: {Name}";
+        }
+        public virtual object Clone() {
+            var obj = (UIElement)Activator.CreateInstance(GetType());
+            obj.Position = this.Position;
+            obj.Pivot = this.Pivot;
+            obj.AnchorPoint = this.AnchorPoint;
+            obj.Size = this.Size;
+            obj.SizeFactor = this.SizeFactor;
+            obj.Name = this.Name;
+            obj.Rotation = this.Rotation;
+            obj.Scale = this.Scale;
+            obj.IsActive = this.IsActive;
+            obj.IsVisible = this.IsVisible;
+            obj.IsPreview = this.IsPreview;
+            return obj;
         }
     }
 }

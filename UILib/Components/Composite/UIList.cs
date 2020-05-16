@@ -18,6 +18,8 @@ namespace UIEditor.UILib.Components.Composite {
             get { return _innerContainerPadding; }
             set { base.CheckRecalculate(_innerContainerPadding, value); _innerContainerPadding = value; }
         }
+        public UIElement SelectedElement { get; set; }
+        public IEnumerable<UIElement> Elements { get { return _elements; } }
         private float _itemMargin;
         private float _innerContainerPadding;
 
@@ -30,8 +32,8 @@ namespace UIEditor.UILib.Components.Composite {
         private int _listUpMost;
         private int _listBottomMost;
 
-
         public UIList() : base() {
+            Name = "列表";
             Overflow = OverflowType.Hidden;
             _viewPort = new UIListViewPort() {
                 AnchorPoint = new Vector2(0f, 0f),
@@ -56,9 +58,11 @@ namespace UIEditor.UILib.Components.Composite {
                 Children.Remove(_verticalScrollBar);
             }
             _verticalScrollBar = scrollBarV;
+            _verticalScrollBar.SizeFactor = new Vector2(0, 1f);
+            _verticalScrollBar.Size = new Vector2(10, 0);
             _verticalScrollBar.AnchorPoint = new Vector2(1, 0.5f);
             _verticalScrollBar.Pivot = new Vector2(1, 0.5f);
-            _verticalScrollBar.Position = new Vector2(-5, 0);
+            _verticalScrollBar.Position = new Vector2(0, 0);
             AppendChild(_verticalScrollBar);
             ShouldRecalculate = true;
         }
@@ -69,9 +73,11 @@ namespace UIEditor.UILib.Components.Composite {
                 Children.Remove(_horizontalScrollBar);
             }
             _horizontalScrollBar = scrollBarH;
+            _horizontalScrollBar.SizeFactor = new Vector2(1f, 0f);
+            _horizontalScrollBar.Size = new Vector2(0, 10);
             _horizontalScrollBar.AnchorPoint = new Vector2(0f, 1f);
             _horizontalScrollBar.Pivot = new Vector2(0f, 1f);
-            _horizontalScrollBar.Position = new Vector2(0, -5);
+            _horizontalScrollBar.Position = new Vector2(0, 0);
             AppendChild(_horizontalScrollBar);
             ShouldRecalculate = true;
         }
@@ -94,7 +100,7 @@ namespace UIEditor.UILib.Components.Composite {
 
             // 给垂直滚动条留点空间
             if (_verticalScrollBar != null) {
-                _horizontalScrollBar.Size = new Vector2(-_verticalScrollBar.Width - 5f, _horizontalScrollBar.Size.Y);
+                _horizontalScrollBar.Size = new Vector2(-_verticalScrollBar.Width, _horizontalScrollBar.Size.Y);
             }
             var maxWidth = Math.Max(_maxWidth - _viewPort.Width, 0);
             _horizontalScrollBar.ViewSize = _viewPort.Width / _maxWidth;
@@ -119,7 +125,7 @@ namespace UIEditor.UILib.Components.Composite {
 
         protected void CalculateViewPortScrollRelated() {
             if (_verticalScrollBar != null)
-                _viewPort.Size = new Vector2(-_verticalScrollBar.Width - 5f, 0);
+                _viewPort.Size = new Vector2(-_verticalScrollBar.Width - 5f, _viewPort.Size.Y);
             if (_horizontalScrollBar != null)
                 _viewPort.Size = new Vector2(_viewPort.Size.X, -_horizontalScrollBar.Height - 5f);
         }
