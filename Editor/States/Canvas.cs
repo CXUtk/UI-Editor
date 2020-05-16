@@ -64,7 +64,6 @@ namespace UIEditor.Editor.States {
                 var tmp = pos - PivotOffset;
                 tmp.X = MathHelper.Clamp(tmp.X, -Width + Parent.Width / 2, -Parent.Width / 2);
                 tmp.Y = MathHelper.Clamp(tmp.Y, -Height + Parent.Height / 2, -Parent.Height / 2);
-                Main.NewText(tmp);
                 Position = tmp + PivotOffset;
             }
 

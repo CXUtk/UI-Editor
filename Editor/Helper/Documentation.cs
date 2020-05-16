@@ -9,13 +9,13 @@ using System.Xml;
 using Terraria;
 
 namespace UIEditor.Editor.Helper {
-    internal static class Documentation {
-        private static Dictionary<string, XmlNode> _propertyDocs;
+    internal class Documentation {
+        private Dictionary<string, XmlNode> _propertyDocs;
         private const string FilePath = "UIEditor.xml";
-        static Documentation() {
+        internal Documentation() {
             _propertyDocs = new Dictionary<string, XmlNode>();
         }
-        internal static void Load() {
+        internal void Load() {
             string text;
             using (StreamReader sr = new StreamReader(UIEditor.Instance.GetFileStream(FilePath))) {
                 text = sr.ReadToEnd();
@@ -30,7 +30,7 @@ namespace UIEditor.Editor.Helper {
                 }
             }
         }
-        internal static XmlNode GetPropertyInfo(string fullname) {
+        internal XmlNode GetPropertyInfo(string fullname) {
             if (!_propertyDocs.ContainsKey(fullname)) {
                 return null;
             }

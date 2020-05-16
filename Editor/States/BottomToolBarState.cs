@@ -32,7 +32,7 @@ namespace UIEditor.Editor.States {
             var button = new UIImageButton() {
                 Texture = UIEditor.Instance.SkinManager.GetTexture("EditorIcon"),
                 Size = new Vector2(30f, 30f),
-                SizeStyle = SizeStyle.Block,
+                SizeStyle = SizeStyle.Inline,
                 DefaultColor = Color.White * 0.8f,
                 Tooltip = "切换编辑器界面"
             };

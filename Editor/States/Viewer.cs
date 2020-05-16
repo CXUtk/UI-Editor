@@ -65,7 +65,6 @@ namespace UIEditor.Editor.States {
             base.UpdateSelf(gameTime);
             if (Main.hasFocus && IsFocused && _wasDown && Main.mouseLeftRelease) {
                 var target = Canvas.GetElementAtMouse();
-                Main.NewText(target.ToString());
                 if (!IsSizer(target)) {
                     if (target == Canvas.Root) {
                         Editor.NotifySizerAttached(null);
@@ -77,7 +76,6 @@ namespace UIEditor.Editor.States {
                 }
             }
             _wasDown = Main.mouseLeft;
-            //var a = _canvas.NodePositionToScreenAR(_canvas.ScreenPositionToNodeAR(Main.MouseScreen, Vector2.Zero));
         }
 
         public override void Initialize() {

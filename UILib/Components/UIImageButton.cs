@@ -82,7 +82,7 @@ namespace UIEditor.UILib.Components {
             } else {
                 sb.Draw(Texture, new Rectangle(0, 0, Width, Height), null, _color, TextureRotation, Pivot * Texture.Size(), SpriteEffects.None, 0f);
                 if (IsMouseHover && WhiteTexture != null) {
-                    sb.Draw(WhiteTexture, new Rectangle(0, 0, Width, Height), null, Color.White, TextureRotation, Pivot * Texture.Size(), SpriteEffects.None, 0f);
+                    sb.Draw(WhiteTexture, new Rectangle(0, 0, Width, Height), null, Color.White, TextureRotation, Pivot * WhiteTexture.Size(), SpriteEffects.None, 0f);
                 }
             }
         }

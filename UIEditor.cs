@@ -21,6 +21,7 @@ namespace UIEditor {
 
         public UIStateMachine UIStateMachine;
         public SkinManager SkinManager;
+        internal Documentation Documentation;
 
         public UIEditor() {
 
@@ -39,6 +40,7 @@ namespace UIEditor {
 
         public override void PostSetupContent() {
             base.PostSetupContent();
+            Documentation = new Documentation();
             Documentation.Load();
             Array.Resize(ref Main.cursorTextures, 25);
             Main.cursorTextures[17] = GetTexture("Images/Cursors/CursorMove");

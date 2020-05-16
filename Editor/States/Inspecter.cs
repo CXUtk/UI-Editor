@@ -151,7 +151,7 @@ namespace UIEditor.Editor.States {
                     Size = new Vector2(0, 30),
                 };
                 XmlNode info2 = null;
-                if ((info2 = Documentation.GetPropertyInfo(info.DeclaringType.FullName + "." + info.Name)) != null) {
+                if ((info2 = UIEditor.Instance.Documentation.GetPropertyInfo(info.DeclaringType.FullName + "." + info.Name)) != null) {
                     item.LeftTooltip = info2.InnerText;
                     left.Tooltip = info2.InnerText;
                 }
