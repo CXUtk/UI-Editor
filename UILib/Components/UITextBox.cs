@@ -22,6 +22,10 @@ namespace UIEditor.UILib.Components {
     /// </summary>
     [EditorPropertyNoChildren]
     public class UITextBox : UIPanel {
+        /// <summary>
+        /// 这个文本组件可不可以被用户编辑？
+        /// </summary>
+        public bool Editable { get; set; }
         private readonly UILabel _label;
         protected string _text = "";
         private int _carrot;
@@ -55,6 +59,7 @@ namespace UIEditor.UILib.Components {
         private static UIStateMachine StateMachine => UIEditor.Instance.UIStateMachine;
         public event TextChangeEvent OnTextChange;
         public UITextBox() : base() {
+            Editable = true;
             Name = "文本框";
             Overflow = OverflowType.Hidden;
             _text = "";
@@ -88,12 +93,14 @@ namespace UIEditor.UILib.Components {
         }
 
         public override void FocusOn(UIActionEvent e) {
+            if (!Editable) return;
             PanelBorderTexture = UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default");
             _shouldBlink = true;
             _timer = 0;
             base.FocusOn(e);
         }
         public override void UnFocus(UIActionEvent e) {
+            if (!Editable) return;
             PanelBorderTexture = null;
             _shouldBlink = false;
             _timer = 0;
@@ -120,9 +127,8 @@ namespace UIEditor.UILib.Components {
 
 
         public override void DrawSelf(SpriteBatch sb) {
-            if (IsFocused) {
+            if (IsFocused && Editable) {
                 InputText();
-
                 // 10像素的偏移是留给光标的
                 float carrotpos = _label.MeasureSize(Text.Substring(0, _carrot)).X;
                 if (carrotpos >= _offsetR - 10f * TextScale) {
@@ -135,6 +141,7 @@ namespace UIEditor.UILib.Components {
                 _label.Position = new Vector2(Math.Min(5, Width - _offsetR), 0);
                 _label.Recalculate();
                 DrawIME();
+
             }
             base.DrawSelf(sb);
         }

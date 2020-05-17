@@ -9,10 +9,12 @@ using UIEditor.UILib.Events;
 using Microsoft.Xna.Framework;
 using static UIEditor.UILib.Components.UIDraggable;
 using Terraria;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor.Editor.Components {
     public class BrowserTreeDisplayNode : UITreeNodeDisplay {
         public UIElement BindingElement { get; }
+        public bool IsDragOver { get; set; }
         public UIBrowserTreeNode Info { get; }
         public event ActionEvent OnDragging;
         private bool _isDragging;
@@ -37,6 +39,16 @@ namespace UIEditor.Editor.Components {
             Info?.DragEnd(e);
             base.DragEnd(e);
         }
+        public override void DrawSelf(SpriteBatch sb) {
+            base.DrawSelf(sb);
+            // 容器处于交点颜色就变成highlight
+            if (IsDragOver && this.Parent.IsFocused) {
+                Drawing.DrawAdvBox(sb, 0, 0, Width, Height, UIEditor.Instance.SkinManager.GetColor("Highlight2"), UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default"),
+                    new Vector2(4, 4));
+            }
+
+
+        }
     }
 
     public class UIBrowserTreeNode : UIElement {
@@ -56,16 +68,19 @@ namespace UIEditor.Editor.Components {
             };
             DisplayElement = display;
             TreeNodes = nodes;
+            foreach (var node in nodes) {
+                node.InfoParent = this;
+            }
         }
 
         public void AddChildTreeNode(UIBrowserTreeNode node) {
             if (node.InfoParent != null) {
                 node.InfoParent.RemoveChildTreeNode(node);
+                node.InfoParent.CanFold = node.InfoParent.TreeNodes.Count > 0;
             } else {
                 var tree = (UIBrowserTreeList)Parent;
                 tree.RemoveTreeRoot(node);
             }
-            CanFold = true;
             node.InfoParent = this;
             DisplayElement.BindingElement.AppendChild(node.DisplayElement.BindingElement);
             TreeNodes.Add(node);
@@ -73,6 +88,7 @@ namespace UIEditor.Editor.Components {
         public void RemoveChildTreeNode(UIBrowserTreeNode node) {
             DisplayElement.BindingElement.RemoveChild(node.DisplayElement.BindingElement);
             TreeNodes.Remove(node);
+            CanFold = TreeNodes.Count > 0;
         }
         public override void DragEnd(UIDragEndEvent e) {
             var tree = (UIBrowserTreeList)Parent;

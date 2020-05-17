@@ -16,6 +16,10 @@ namespace UIEditor.Editor.Components {
         public event ValueChangeEvent<float> OnValueChanged;
         private UILabel _xl, _yl;
         private UIValueTextBox<float> _textX, _textY;
+        public bool Editable {
+            get { return _textX.Editable && _textY.Editable; }
+            set { _textX.Editable = _textY.Editable = value; }
+        }
         public Vector2 Value {
             get {
                 return new Vector2(_textX.Value, _textY.Value);

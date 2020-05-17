@@ -62,10 +62,11 @@ namespace UIEditor.Editor.Components {
             node.DisplayElement.LeftOffset = leftPadding;
             node.DisplayElement.Position = new Vector2(0, _totHeight);
             node.DisplayElement.IsSelected = (node.DisplayElement == SelectedElement);
+            node.DisplayElement.IsDragOver = (node.DisplayElement.ScreenHitBox.Contains(Main.MouseScreen));
             node.DisplayElement.Update(gameTime);
             _addElement(node.DisplayElement);
             _totHeight += node.DisplayElement.Height + ItemMargin;
-            node.CanFold = node.TreeNodes.Count != 0;
+            node.CanFold = (node.TreeNodes.Count != 0);
             if (node.DisplayElement.IsFolded) return;
             foreach (var child in node.TreeNodes) {
                 _dfsCalculate(child, leftPadding + LayerPaddingLeft, gameTime);
@@ -87,17 +88,18 @@ namespace UIEditor.Editor.Components {
         }
 
         public void NotifyDragAction(UIBrowserTreeNode src, UIElement dest) {
-            Main.NewText(src.ToString() + " " + dest.ToString());
             if (dest is BrowserTreeDisplayNode) {
-                var dest2 = (BrowserTreeDisplayNode)dest;
+                BrowserTreeDisplayNode dest2 = (BrowserTreeDisplayNode)dest;
                 if (src == dest2.Info) return;
                 dest2.Info.AddChildTreeNode(src);
             } else if (dest == _viewPort) {
-                src.InfoParent.RemoveChildTreeNode(src);
-                src.DisplayElement.BindingElement.Parent = Editor.Viewer.Canvas.Root;
+                src.InfoParent?.RemoveChildTreeNode(src);
                 src.InfoParent = null;
+                Editor.Viewer.Canvas.Root.AppendChild(src.DisplayElement.BindingElement);
                 AddElement(src);
             }
+            src.DisplayElement.BindingElement.Recalculate();
+            Editor.NotifySelectionChange();
         }
     }
 }

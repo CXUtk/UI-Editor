@@ -83,6 +83,9 @@ namespace UIEditor.Editor.States {
                     SizeFactor = new Vector2(1, 1),
                     Text = value.ToString(),
                 };
+                if (info.SetMethod == null) {
+                    changer.Editable = false;
+                }
                 changer.OnTextChange += (e, s) => {
                     info.SetValue(element, e.NewString);
                     Editor.NotifyElementPropertyChange(this);
@@ -105,6 +108,9 @@ namespace UIEditor.Editor.States {
                     Pivot = new Vector2(0, 0.5f),
                     SizeFactor = new Vector2(1, 1),
                 };
+                if (info.SetMethod == null) {
+                    vector2.Editable = false;
+                }
                 vector2.OnValueChanged += (e, s) => {
                     info.SetValue(element, vector2.Value);
                     Editor.NotifyElementPropertyChange(this);
@@ -116,6 +122,9 @@ namespace UIEditor.Editor.States {
                     Pivot = new Vector2(0, 0.5f),
                     SizeFactor = new Vector2(1, 1),
                 };
+                if (info.SetMethod == null) {
+                    textF.Editable = false;
+                }
                 textF.OnValueChanged += (e, s) => {
                     info.SetValue(element, textF.Value);
                     Editor.NotifyElementPropertyChange(this);

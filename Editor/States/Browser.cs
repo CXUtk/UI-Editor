@@ -88,16 +88,15 @@ namespace UIEditor.Editor.States {
 
         private UIBrowserTreeNode _copy(UIElement element) {
             List<UIBrowserTreeNode> children = new List<UIBrowserTreeNode>();
-            UIBrowserTreeNode node = new UIBrowserTreeNode(element.Name, element, children) {
+            foreach (var child in element.Children) {
+                children.Add(_copy(child));
+            }
+            return new UIBrowserTreeNode(element.Name, element, children) {
                 Pivot = new Vector2(0f, 0f),
                 AnchorPoint = new Vector2(0f, 0f),
                 SizeFactor = new Vector2(1f, 0f),
                 Size = new Vector2(0f, 30f),
             };
-            foreach (var child in element.Children) {
-                children.Add(_copy(child));
-            }
-            return node;
         }
 
 

@@ -115,6 +115,10 @@ namespace UIEditor.Editor.States {
             }
         }
 
+        public void NotifySelectionChange() {
+            OnSelectionChange.Invoke(new UIActionEvent(_lastFocusElement, Main._drawInterfaceGameTime.TotalGameTime), this);
+        }
+
         public void NotifySizerAttached(UIElement element) {
             _lastFocusElement = element;
             OnSizerAttached?.Invoke(new UIActionEvent(element, Main._drawInterfaceGameTime.TotalGameTime), this);
