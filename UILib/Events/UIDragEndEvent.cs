@@ -11,11 +11,11 @@ namespace UIEditor.UILib.Events {
     /// </summary>
     public class UIDragEndEvent : UIEvent {
         public Vector2 MouseScreen { get; }
-        public UIElement TargetElement { get; }
+        public UIElement DestElement { get; }
         public UIDragEndEvent(UIElement source, UIElement target, TimeSpan timestamp, Vector2 mouseScreen)
             : base(source, timestamp) {
             MouseScreen = mouseScreen;
-            TargetElement = target;
+            DestElement = target;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace UIEditor.Editor.States {
 
         public UIElement SelectedElement { get { return _treeList.SelectedElement; } }
         private UIPanel _listPanel;
-        private UITreeList _treeList;
+        private UIBrowserTreeList _treeList;
         private UIList _toolBarList;
         public Browser(EditorState editor) : base(editor) {
             PropagationRule = PropagationFlags.FocusEvents;
@@ -34,7 +34,7 @@ namespace UIEditor.Editor.States {
                 Position = new Vector2(15f, 5f),
                 PanelTexture = UIEditor.Instance.SkinManager.GetTexture("Box_Default"),
             };
-            _treeList = new UITreeList() {
+            _treeList = new UIBrowserTreeList(Editor) {
                 AnchorPoint = new Vector2(0, 0),
                 Pivot = new Vector2(0, 0),
                 SizeFactor = new Vector2(1f, 1f),
@@ -81,19 +81,19 @@ namespace UIEditor.Editor.States {
         }
 
         private void _treeList_OnSelect(UIActionEvent e, UIElement sender) {
-            var list = (UITreeList)sender;
-            var target = (BrowserTreeNode)list.SelectedElement;
+            var list = (UIBrowserTreeList)sender;
+            var target = (BrowserTreeDisplayNode)list.SelectedElement;
             OnSelectionChange?.Invoke(new UIActionEvent(target.BindingElement, e.TimeStamp), this);
         }
 
-        private UITreeNode _copy(UIElement element) {
-            List<UITreeNode> children = new List<UITreeNode>();
-            UITreeNode node = new UITreeNode(new BrowserTreeNode(element.Name, element) {
+        private UIBrowserTreeNode _copy(UIElement element) {
+            List<UIBrowserTreeNode> children = new List<UIBrowserTreeNode>();
+            UIBrowserTreeNode node = new UIBrowserTreeNode(element.Name, element, children) {
                 Pivot = new Vector2(0f, 0f),
                 AnchorPoint = new Vector2(0f, 0f),
                 SizeFactor = new Vector2(1f, 0f),
                 Size = new Vector2(0f, 30f),
-            }, children);
+            };
             foreach (var child in element.Children) {
                 children.Add(_copy(child));
             }
@@ -238,7 +238,7 @@ namespace UIEditor.Editor.States {
         }
         public UIElement FindTreeElement(UIElement element) {
             return _treeList.Elements.FirstOrDefault((e) => {
-                var a = ((BrowserTreeNode)e);
+                var a = ((BrowserTreeDisplayNode)e);
                 return a.BindingElement == element;
             });
         }

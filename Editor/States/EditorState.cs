@@ -107,7 +107,7 @@ namespace UIEditor.Editor.States {
             Viewer.Position = new Vector2(Browser.Width, Navigator.Position.Y + Navigator.Height);
             Viewer.Size = new Vector2(0, -(Navigator.Position.Y + Navigator.Height));
             Inspecter.Position = new Vector2(Browser.Width, Viewer.Height + Navigator.Position.Y + Navigator.Height);
-            var selected = (BrowserTreeNode)Browser.SelectedElement;
+            var selected = (BrowserTreeDisplayNode)Browser.SelectedElement;
             var e = (selected == null) ? null : selected.BindingElement;
             if (_lastFocusElement != e) {
                 OnSelectionChange.Invoke(new UIActionEvent(e, gameTime.TotalGameTime), this);

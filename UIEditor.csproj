@@ -5,21 +5,18 @@
     <AssemblyName>UIEditor</AssemblyName>
     <TargetFramework>net45</TargetFramework>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\DXT\Documents\My Games\Terraria\ModLoader\Mod Sources\UIEditor\UIEditor.xml</DocumentationFile>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <Target Name="BuildMod" AfterTargets="Build">
     <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
   </Target>
   <ItemGroup>
-    <Compile Remove="packages\**" />
     <Compile Remove="UITest\**" />
-    <EmbeddedResource Remove="packages\**" />
     <EmbeddedResource Remove="UITest\**" />
-    <None Remove="packages\**" />
     <None Remove="UITest\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
