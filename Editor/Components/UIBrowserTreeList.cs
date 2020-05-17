@@ -88,16 +88,22 @@ namespace UIEditor.Editor.Components {
         }
 
         public void NotifyDragAction(UIBrowserTreeNode src, UIElement dest) {
+            var basep = src.DisplayElement.BindingElement.PositionScreen;
             if (dest is BrowserTreeDisplayNode) {
                 BrowserTreeDisplayNode dest2 = (BrowserTreeDisplayNode)dest;
                 if (src == dest2.Info) return;
                 dest2.Info.AddChildTreeNode(src);
             } else if (dest == _viewPort) {
-                src.InfoParent?.RemoveChildTreeNode(src);
-                src.InfoParent = null;
+                if (src.InfoParent != null) {
+                    src.InfoParent.RemoveChildTreeNode(src);
+                    src.InfoParent = null;
+                } else {
+                    RemoveTreeRoot(src);
+                }
                 Editor.Viewer.Canvas.Root.AppendChild(src.DisplayElement.BindingElement);
                 AddElement(src);
             }
+            src.DisplayElement.BindingElement.Position = src.DisplayElement.BindingElement.ScreenPositionToParentAR(basep);
             src.DisplayElement.BindingElement.Recalculate();
             Editor.NotifySelectionChange();
         }
