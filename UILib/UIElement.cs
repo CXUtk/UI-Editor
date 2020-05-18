@@ -519,6 +519,7 @@ namespace UIEditor.UILib {
             Tooltip = "";
             UseShader = false;
             _selfHitbox = new QuadrilateralHitbox();
+            Overflow = OverflowType.Overflow;
             Recalculate();
         }
 

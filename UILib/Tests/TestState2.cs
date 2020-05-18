@@ -49,13 +49,13 @@ namespace UIEditor.UILib.Tests {
                 Position = new Vector2(200, 200),
                 Size = new Vector2(128, 128),
             };
-            var selector = new UIEnumSelector(typeof(TypeCode))
-            {
+            var selector = new UIEnumSelector<TypeCode>() {
                 Position = new Vector2(140, 280),
-                Size = new Vector2(100, 320),
+                Size = new Vector2(100, 30),
                 Pivot = new Vector2(0, 0),
                 AnchorPoint = new Vector2(0, 0)
             };
+            selector.HangElement = box13;
 
             checkbox.OnCheckedChange += Checkbox_OnCheckedChange;
             button.OnClick += (e, sender) => {

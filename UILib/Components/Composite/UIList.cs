@@ -41,6 +41,7 @@ namespace UIEditor.UILib.Components.Composite {
                 AnchorPoint = new Vector2(0f, 0f),
                 SizeFactor = new Vector2(1, 1),
                 Pivot = new Vector2(0f, 0f),
+                Overflow = OverflowType.Hidden,
             };
             _elements = new List<UIElement>();
             ItemMargin = 5f;
