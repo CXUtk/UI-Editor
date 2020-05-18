@@ -45,14 +45,16 @@ namespace UIEditor.UILib.Tests {
                 Name = "test checkbox",
                 Position = new Vector2(90, 90)
             };
-            var slot = new UIItemSlot {
-                Name = "test slot",
-                Position = new Vector2(90, 190),
-                ItemType = ModContent.ItemType<ItemForTest>()
-            };
             var colorwheel = new UIColorBar() {
                 Position = new Vector2(200, 200),
                 Size = new Vector2(128, 128),
+            };
+            var selector = new UIEnumSelector(typeof(TypeCode))
+            {
+                Position = new Vector2(140, 280),
+                Size = new Vector2(100, 320),
+                Pivot = new Vector2(0, 0),
+                AnchorPoint = new Vector2(0, 0)
             };
 
             checkbox.OnCheckedChange += Checkbox_OnCheckedChange;
@@ -122,7 +124,7 @@ namespace UIEditor.UILib.Tests {
             box13.AppendChild(checkbox);
             //box13.AppendChild(button2);
             box13.AppendChild(menu);
-            box13.AppendChild(slot);
+            box13.AppendChild(selector);
             //box13.AppendChild(colorwheel);
             //UIValueSlider slider = new UIValueSlider() {
             //    Position = new Vector2(400, 300),
