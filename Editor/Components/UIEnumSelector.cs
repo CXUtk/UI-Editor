@@ -130,7 +130,7 @@ namespace UIEditor.Editor.Components {
             _label.Size = new Vector2(Width - _expandButton.Width - 5f, _label.Size.Y);
         }
 
-        private void List_OnSelect(UILib.Events.UIActionEvent e, UIElement sender) {
+        private void List_OnSelect(UIActionEvent e, UIElement sender) {
             CurrentValue = ((EnumValueButton)((UISelectableList)e.Target).SelectedElement).Value;
             _listPanel.IsActive = false;
         }

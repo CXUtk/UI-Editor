@@ -22,7 +22,7 @@ namespace UIEditor.UILib.Components.Composite {
         public UIWindow() : base() {
             Name = "窗口";
             PropagationRule = Enums.PropagationFlags.FocusEvents;
-
+            Overflow = OverflowType.Hidden;
             _closeButton = new UIImageButton() {
                 Pivot = new Vector2(1, 0),
                 AnchorPoint = new Vector2(1, 0),
@@ -50,9 +50,6 @@ namespace UIEditor.UILib.Components.Composite {
         public override void DragEnd(UIDragEndEvent e) {
             _isDragging = false;
             base.DragEnd(e);
-        }
-        public override void DrawSelf(SpriteBatch sb) {
-            base.DrawSelf(sb);
         }
 
         public override void UpdateSelf(GameTime gameTime) {

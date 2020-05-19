@@ -370,7 +370,10 @@ namespace UIEditor.UILib {
         private readonly QuadrilateralHitbox _selfHitbox;
         private Matrix _selfTransform;
         private Rectangle _parentRect;
-        private readonly RasterizerState _selfRasterizerState;
+        private static readonly RasterizerState OverflowHiddenRasterizerState = new RasterizerState {
+            CullMode = CullMode.None,
+            ScissorTestEnable = true
+        };
 
 
         #region 事件
@@ -512,14 +515,9 @@ namespace UIEditor.UILib {
             Rotation = 0;
             NoEvent = false;
             PropagationRule = PropagationFlags.PASS_ALL;
-            _selfRasterizerState = new RasterizerState() {
-                CullMode = CullMode.None,
-                ScissorTestEnable = true,
-            };
             Tooltip = "";
             UseShader = false;
             _selfHitbox = new QuadrilateralHitbox();
-            Overflow = OverflowType.Overflow;
             Recalculate();
         }
 
@@ -575,16 +573,16 @@ namespace UIEditor.UILib {
                 sb.End();
                 if (UseShader) {
                     sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                        DepthStencilState.None, OverflowHiddenRasterizerState, null, _selfTransform);
                 } else {
                     sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                        DepthStencilState.None, OverflowHiddenRasterizerState, null, _selfTransform);
                 }
                 DrawSelf(sb);
                 if (UseShader) {
                     sb.End();
                     sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                        DepthStencilState.None, defaultstate, null, _selfTransform);
+                        DepthStencilState.None, OverflowHiddenRasterizerState, null, _selfTransform);
                 }
                 PostDrawSelf?.Invoke(new UIDrawEvent(this, Main._drawInterfaceGameTime.TotalGameTime, sb), this);
             }
@@ -593,18 +591,18 @@ namespace UIEditor.UILib {
                 sb.End();
                 sb.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(scissorRectangle, GetClippingRectangle(sb));
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                    DepthStencilState.None, _selfRasterizerState, null, _selfTransform);
+                    DepthStencilState.None, OverflowHiddenRasterizerState, null, _selfTransform);
             }
             DrawChildren(sb);
             if (Overflow == OverflowType.Hidden) {
                 sb.End();
                 sb.GraphicsDevice.ScissorRectangle = scissorRectangle;
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                    DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
+                    DepthStencilState.None, OverflowHiddenRasterizerState, null, Main.UIScaleMatrix);
             } else {
                 sb.End();
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                    DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
+                    DepthStencilState.None, OverflowHiddenRasterizerState, null, Main.UIScaleMatrix);
             }
             if (DEBUG_MODE) {
                 _selfHitbox.Draw(sb);
