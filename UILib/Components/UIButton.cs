@@ -7,30 +7,30 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using UIEditor.Editor.Attributes;
+using UIEditor.UILib.Enums;
 
 namespace UIEditor.UILib.Components {
     [EditorPropertyNoChildren]
     public class UIButton : UIPanel {
-        public string Text { get; set; }
+        public string Text { get { return _label.Text; } set { _label.Text = value; } }
         public bool DrawPanel { get; set; }
-        public bool IsLargeText { get; set; }
+        public bool IsLargeText { get { return _label.IsLargeText; } set { _label.IsLargeText = value; } }
         public Color PanelDefaultColor { get; set; }
         public Color PanelMouseOverColor { get; set; }
-        public Color TextDefaultColor { get; set; }
+        public Color TextDefaultColor { get { return _label.TextColor; } set { _label.TextColor = value; } }
         public Color TextMouseOverColor { get; set; }
+        public Vector2 TextAlign { get { return _label.AnchorPoint; } set { _label.AnchorPoint = _label.Pivot = value; } }
 
         private readonly UILabel _label;
         private bool _isMouseOver;
         private double _timer;
 
         private void SyncToLabel() {
-            _label.Text = this.Text;
-            _label.AnchorPoint = new Vector2(0.5f, 0.5f);
-            _label.IsLargeText = this.IsLargeText;
-            _label.TextColor = this.TextDefaultColor;
             _label.NoEvent = true;
         }
         public UIButton() : base() {
+
+            _label = new UILabel();
             Name = "按钮";
             Text = "按钮";
             DrawPanel = true;
@@ -40,8 +40,7 @@ namespace UIEditor.UILib.Components {
             TextDefaultColor = Color.White;
             TextMouseOverColor = Color.Yellow;
             Color = PanelDefaultColor;
-
-            _label = new UILabel();
+            TextAlign = new Vector2(0.5f, 0.5f);
             SyncToLabel();
             this.AppendChild(_label);
             this.OnMouseEnter += UITextButton_OnMouseEnter;

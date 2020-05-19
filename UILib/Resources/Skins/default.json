@@ -22,7 +22,8 @@
         "NoTexture": "Images/Trans",
         "Fold_On": "Images/UI/Fold_On",
         "Fold_Off": "Images/UI/Fold_Off",
-        "Icon_Button": "Images/Icons/Panel",
+        "Icon_Button": "Images/Icons/Button",
+        "Icon_Mouse": "Images/Icons/Mouse",
         "Icon_Label": "Images/Icons/Label",
         "Icon_Textbox": "Images/Icons/TextBox",
         "Icon_ProgressBar": "Images/Icons/ProgressBar",
@@ -32,8 +33,8 @@
         "ArrowSmall": "Images/UI/ArrowSmall",
         "NewState": "Images/UI/New",
         "NewState_White": "Images/UI/New_White",
-	"Down":"Images/UI/Down",
-	"Down_Border":"Images/UI/Down_Border"
+        "Down": "Images/UI/Down",
+        "Down_Border": "Images/UI/Down_Border"
     },
     "colors": {
         "Background": "34, 34, 38, 255",

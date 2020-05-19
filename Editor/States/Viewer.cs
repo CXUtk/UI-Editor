@@ -21,6 +21,7 @@ namespace UIEditor.Editor.States {
         private ViewerMiddle Middle { get; }
         private UIPanel _viewerPanel;
 
+
         public Viewer(EditorState editor) : base(editor) {
             PropagationRule = PropagationFlags.FocusEvents | PropagationFlags.ScrollWheel;
 
@@ -65,14 +66,14 @@ namespace UIEditor.Editor.States {
             base.UpdateSelf(gameTime);
             if (Main.hasFocus && IsFocused && _wasDown && Main.mouseLeftRelease) {
                 var target = Canvas.GetElementAtMouse();
-                if (!IsSizer(target)) {
-                    if (target == Canvas.Root) {
+                if (target == Canvas.Root) {
+                    if (!Middle.SizerRectScreen.Contains(Main.MouseScreen.ToPoint())) {
                         Editor.NotifySizerAttached(null);
                         Middle.PlaceSizer(null);
-                    } else {
-                        Editor.NotifySizerAttached(target);
-                        Middle.PlaceSizer(target);
                     }
+                } else {
+                    Editor.NotifySizerAttached(target);
+                    Middle.PlaceSizer(target);
                 }
             }
             _wasDown = Main.mouseLeft;

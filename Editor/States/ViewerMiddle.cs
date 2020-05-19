@@ -14,6 +14,14 @@ namespace UIEditor.Editor.States {
         public Canvas Canvas { get; }
         public UISizer Sizer { get; }
         private EditorState Editor { get { return Canvas.Editor; } }
+        public Rectangle SizerRectScreen {
+            get {
+                if (Sizer.IsActive) {
+                    return Sizer.InnerRectangleScreen;
+                }
+                return Rectangle.Empty;
+            }
+        }
         public ViewerMiddle(Canvas canvas) : base() {
             Canvas = canvas;
             AppendChild(Canvas);

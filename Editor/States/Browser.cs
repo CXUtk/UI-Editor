@@ -105,7 +105,7 @@ namespace UIEditor.Editor.States {
                 Text = $"指针",
                 SizeFactor = new Vector2(1, 0),
                 Size = new Vector2(0, 30),
-                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("NoTexture"),
+                ButtonTexture = UIEditor.Instance.SkinManager.GetTexture("Icon_Mouse"),
             };
             pointer.OnClick += Pointer_OnClick;
             _toolBarList.AddElement(pointer);

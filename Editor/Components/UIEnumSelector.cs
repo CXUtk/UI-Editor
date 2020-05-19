@@ -22,7 +22,8 @@ namespace UIEditor.Editor.Components {
                 Name = enumValue.ToString();
                 Text = enumValue.ToString();
                 SizeFactor = new Vector2(1, 0f);
-                Size = new Vector2(0, 30f);
+                Size = new Vector2(0, 22f);
+                TextAlign = new Vector2(0, 0.5f);
             }
             public override void UpdateSelf(GameTime gameTime) {
                 base.UpdateSelf(gameTime);
@@ -64,6 +65,8 @@ namespace UIEditor.Editor.Components {
         public event ActionEvent OnValueChange;
 
         public UIEnumSelector(UIElement target, PropertyInfo property) : base() {
+            PropertyInfo = property;
+            Target = target;
             _label = new UILabel() {
                 Pivot = new Vector2(0f, 0.5f),
                 AnchorPoint = new Vector2(0f, 0.5f),
@@ -127,12 +130,13 @@ namespace UIEditor.Editor.Components {
             _listPanel.Size = new Vector2(Width, _listPanel.Size.Y);
             HangElement.AppendChild(_listPanel);
             _listPanel.IsActive ^= true;
-            _listPanel.Position = _listPanel.ScreenPositionToParentAR(this.InnerRectangleScreen.BottomLeft());
+
         }
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             _label.Size = new Vector2(Width - _expandButton.Width - 5f, _label.Size.Y);
+            _listPanel.Position = _listPanel.ScreenPositionToParentAR(this.InnerRectangleScreen.BottomLeft());
         }
 
         private void List_OnSelect(UIActionEvent e, UIElement sender) {
