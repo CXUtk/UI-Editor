@@ -49,13 +49,13 @@ namespace UIEditor.UILib.Tests {
                 Position = new Vector2(200, 200),
                 Size = new Vector2(128, 128),
             };
-            var selector = new UIEnumSelector<TypeCode>() {
-                Position = new Vector2(140, 280),
-                Size = new Vector2(100, 30),
-                Pivot = new Vector2(0, 0),
-                AnchorPoint = new Vector2(0, 0)
-            };
-            selector.HangElement = box13;
+            //var selector = new UIEnumSelector<TypeCode>() {
+            //    Position = new Vector2(140, 280),
+            //    Size = new Vector2(100, 30),
+            //    Pivot = new Vector2(0, 0),
+            //    AnchorPoint = new Vector2(0, 0)
+            //};
+            //selector.HangElement = box13;
 
             checkbox.OnCheckedChange += Checkbox_OnCheckedChange;
             button.OnClick += (e, sender) => {
@@ -123,30 +123,7 @@ namespace UIEditor.UILib.Tests {
             box13.AppendChild(button);
             box13.AppendChild(checkbox);
             //box13.AppendChild(button2);
-            box13.AppendChild(selector);
-            var values = typeof(TypeCode).GetEnumValues();
-            var _list = new UIList {
-                Name = "Values",
-                InnerContainerPadding = 2,
-                AnchorPoint = new Vector2(0f, 0),
-                Pivot = new Vector2(0f, 0),
-                SizeFactor = new Vector2(0.5f, 0.5f),
-                Position = new Vector2(10, 200),
-                Size = new Vector2(-4, -4),
-            };
-            var scrollBar = new UIScrollBarV() {
-                Name = "Enum_ScrollBar",
-                AnchorPoint = new Vector2(1, 0.5f),
-                Pivot = new Vector2(1, 0.5f),
-            };
-            _list.SetScrollBarV(scrollBar);
-            foreach (var value in values) {
-                _list.AddElement(new UIButton() {
-                    Text = value.ToString(),
-                    Size = new Vector2(50, 50),
-                });
-            }
-            box13.AppendChild(_list);
+            // box13.AppendChild(selector);
             //box13.AppendChild(colorwheel);
             //UIValueSlider slider = new UIValueSlider() {
             //    Position = new Vector2(400, 300),

@@ -3,19 +3,21 @@ using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using UIEditor.UILib;
 using UIEditor.UILib.Components;
 using UIEditor.UILib.Components.Composite;
+using UIEditor.UILib.Components.Interface;
 using UIEditor.UILib.Events;
 
 namespace UIEditor.Editor.Components {
-    public class UIEnumSelector<T> : UIPanel where T : Enum {
+    public class UIEnumSelector : UIPanel, IUIUpdateable {
         private class EnumValueButton : UIButton {
-            public T Value { get; }
-            public EnumValueButton(T enumValue) : base() {
+            public Enum Value { get; }
+            public EnumValueButton(Enum enumValue) : base() {
                 Value = enumValue;
                 Name = enumValue.ToString();
                 Text = enumValue.ToString();
@@ -40,31 +42,34 @@ namespace UIEditor.Editor.Components {
         private UIPanel _listPanel;
         private UIImageButton _expandButton;
 
-        private T _currentValue;
+        private Enum _currentValue;
+        public PropertyInfo PropertyInfo { get; }
+        public UIElement Target { get; }
 
-        public T CurrentValue {
+
+        public Enum Value {
             get {
                 return _currentValue;
             }
             set {
                 _currentValue = value;
                 _label.Text = value.ToString();
-                OnValueChange?.Invoke(new UIValueChangeEvent<T>(this, Main._drawInterfaceGameTime.TotalGameTime, value), this);
+
             }
         }
         /// <summary>
         /// 决定这个元件的隐藏列表元件挂载在哪个节点的子节点下，用于改变隐藏列表的行为
         /// </summary>
         public UIElement HangElement { get; set; }
-        public event ValueChangeEvent<T> OnValueChange;
+        public event ActionEvent OnValueChange;
 
-        public UIEnumSelector() : base() {
+        public UIEnumSelector(UIElement target, PropertyInfo property) : base() {
             _label = new UILabel() {
                 Pivot = new Vector2(0f, 0.5f),
                 AnchorPoint = new Vector2(0f, 0.5f),
                 NoEvent = true,
                 SizeStyle = SizeStyle.Block,
-                Text = default(T).ToString(),
+                Text = property.GetValue(target).ToString(),
                 Position = new Vector2(2f, 0f),
             };
             _expandButton = new UIImageButton() {
@@ -77,7 +82,7 @@ namespace UIEditor.Editor.Components {
             };
             _expandButton.OnClick += _expandButton_OnClick;
 
-            var values = typeof(T).GetEnumValues();
+            var values = property.PropertyType.GetEnumValues();
             _list = new UISelectableList {
                 Name = "Values",
                 InnerContainerPadding = 2,
@@ -94,7 +99,7 @@ namespace UIEditor.Editor.Components {
             };
             _list.SetScrollBarV(scrollBar);
             foreach (var value in values) {
-                _list.AddElement(new EnumValueButton((T)value));
+                _list.AddElement(new EnumValueButton((Enum)value));
             }
             _list.OnSelect += List_OnSelect;
             _list.IsActive = true;
@@ -131,8 +136,13 @@ namespace UIEditor.Editor.Components {
         }
 
         private void List_OnSelect(UIActionEvent e, UIElement sender) {
-            CurrentValue = ((EnumValueButton)((UISelectableList)e.Target).SelectedElement).Value;
+            Value = ((EnumValueButton)((UISelectableList)e.Target).SelectedElement).Value;
+            OnValueChange?.Invoke(new UIActionEvent(this, e.TimeStamp), this);
             _listPanel.IsActive = false;
+        }
+
+        public void UpdateValue() {
+            Value = (Enum)PropertyInfo.GetValue(Target);
         }
     }
 }

@@ -130,6 +130,18 @@ namespace UIEditor.Editor.States {
                     Editor.NotifyElementPropertyChange(this);
                 };
                 return textF;
+            } else if (info.PropertyType.IsEnum) {
+                var instance = new UIEnumSelector(element, info) {
+                    AnchorPoint = new Vector2(0, 0.5f),
+                    Pivot = new Vector2(0, 0.5f),
+                    SizeFactor = new Vector2(1, 1),
+                };
+                instance.HangElement = this;
+                instance.OnValueChange += (e, s) => {
+                    info.SetValue(element, instance.Value);
+                    Editor.NotifyElementPropertyChange(this);
+                };
+                return instance;
             }
             var text = new UILabel() {
                 AnchorPoint = new Vector2(0, 0.5f),
