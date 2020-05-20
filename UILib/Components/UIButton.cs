@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Terraria;
 using UIEditor.Editor.Attributes;
 using UIEditor.UILib.Enums;
+using Terraria.ID;
 
 namespace UIEditor.UILib.Components {
     [EditorPropertyNoChildren]
@@ -17,7 +18,7 @@ namespace UIEditor.UILib.Components {
         public bool IsLargeText { get { return _label.IsLargeText; } set { _label.IsLargeText = value; } }
         public Color PanelDefaultColor { get; set; }
         public Color PanelMouseOverColor { get; set; }
-        public Color TextDefaultColor { get { return _label.TextColor; } set { _label.TextColor = value; } }
+        public Color TextDefaultColor { get; set; }
         public Color TextMouseOverColor { get; set; }
         public Vector2 TextAlign { get { return _label.AnchorPoint; } set { _label.AnchorPoint = _label.Pivot = value; } }
 
@@ -53,7 +54,7 @@ namespace UIEditor.UILib.Components {
 
         private void UITextButton_OnMouseEnter(Events.UIMouseEvent e, UIElement sender) {
             _isMouseOver = true;
-            Main.PlaySound(12);
+            Main.PlaySound(SoundID.MenuTick);
         }
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);

@@ -63,7 +63,7 @@ namespace UIEditor.Editor.States {
             base.UpdateSelf(gameTime);
         }
 
-        private UIElement GetRightElement(PropertyInfo info, UIElement element) {
+        private UIElement GetRightElement(PropertyInfo info, UIElement element, ref int maxHeight) {
             object value = info.GetValue(element);
             if (info.PropertyType == typeof(bool)) {
                 var check = new UICheckBox() {
@@ -82,6 +82,7 @@ namespace UIEditor.Editor.States {
                     Pivot = new Vector2(0, 0.5f),
                     SizeFactor = new Vector2(1, 1),
                     Text = value.ToString(),
+                    Size = new Vector2(-8, 0),
                 };
                 if (info.SetMethod == null) {
                     changer.Editable = false;
@@ -97,6 +98,7 @@ namespace UIEditor.Editor.States {
                     Pivot = new Vector2(0, 0.5f),
                     SizeFactor = new Vector2(1, 1),
                     Color = (Color)value,
+                    Size = new Vector2(-8, 0),
                 };
                 color.OnClick += (e, s) => {
                     Editor.OpenColorChooser(info, element, color);
@@ -116,11 +118,27 @@ namespace UIEditor.Editor.States {
                     Editor.NotifyElementPropertyChange(this);
                 };
                 return vector2;
+            } else if (info.PropertyType == typeof(Rectangle)) {
+                var rect = new UIRectangle(element, info) {
+                    AnchorPoint = new Vector2(0, 0.5f),
+                    Pivot = new Vector2(0, 0.5f),
+                    SizeFactor = new Vector2(1, 1),
+                };
+                if (info.SetMethod == null) {
+                    rect.Editable = false;
+                }
+                rect.OnValueChanged += (e, s) => {
+                    info.SetValue(element, rect.Value);
+                    Editor.NotifyElementPropertyChange(this);
+                };
+                maxHeight = 65;
+                return rect;
             } else if (info.PropertyType == typeof(float)) {
                 var textF = new UIValueTextBoxEx<float>(element, info) {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
                     SizeFactor = new Vector2(1, 1),
+                    Size = new Vector2(-8, 0),
                 };
                 if (info.SetMethod == null) {
                     textF.Editable = false;
@@ -135,6 +153,7 @@ namespace UIEditor.Editor.States {
                     AnchorPoint = new Vector2(0, 0.5f),
                     Pivot = new Vector2(0, 0.5f),
                     SizeFactor = new Vector2(1, 1),
+                    Size = new Vector2(-8, 0),
                 };
                 instance.HangElement = this;
                 instance.OnValueChange += (e, s) => {
@@ -157,7 +176,8 @@ namespace UIEditor.Editor.States {
             foreach (var info in element.GetType().GetProperties()) {
                 if (info.IsDefined(typeof(Attributes.EditorPropertyIgnoreAttribute), true))
                     continue;
-                UIElement right = GetRightElement(info, element);
+                int height = 30;
+                UIElement right = GetRightElement(info, element, ref height);
                 var left = new UILabel() {
                     Text = info.Name,
                     Size = new Vector2(-10, 20),
@@ -169,12 +189,13 @@ namespace UIEditor.Editor.States {
 
                 var item = new UITableBar(left, right) {
                     SizeFactor = new Vector2(1, 0),
-                    Size = new Vector2(0, 30),
+                    Size = new Vector2(0, height),
                 };
                 XmlNode info2 = null;
                 if ((info2 = UIEditor.Instance.Documentation.GetPropertyInfo(info.DeclaringType.FullName + "." + info.Name)) != null) {
-                    item.LeftTooltip = info2.InnerText;
-                    left.Tooltip = info2.InnerText;
+                    string desc = info2.InnerText.Trim();
+                    item.LeftTooltip = desc;
+                    left.Tooltip = desc;
                 }
                 _inspectorList.AddElement(item);
             }

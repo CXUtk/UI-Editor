@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,19 +23,14 @@ namespace UIEditor.Editor.Components {
                 Name = enumValue.ToString();
                 Text = enumValue.ToString();
                 SizeFactor = new Vector2(1, 0f);
-                Size = new Vector2(0, 22f);
+                Size = new Vector2(0, 26f);
                 TextAlign = new Vector2(0, 0.5f);
             }
-            public override void UpdateSelf(GameTime gameTime) {
-                base.UpdateSelf(gameTime);
-                //var size = Parent.Size;
-                //size.Y = 18;
-                //Size = size;
-                //if (IsMouseHover) {
-                //    _label.TextColor = Color.Blue;
-                //} else {
-                //    _label.TextColor = Color.White;
-                //}
+            public override void DrawSelf(SpriteBatch sb) {
+                base.DrawSelf(sb);
+                if (IsSelected) {
+                    Drawing.DrawAdvBox(sb, 0, 0, Width, Height, Color.Yellow, UIEditor.Instance.SkinManager.GetTexture("BoxFrame_Default"), CornerSize);
+                }
             }
         }
 
