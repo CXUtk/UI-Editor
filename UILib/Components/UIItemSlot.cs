@@ -28,7 +28,10 @@ namespace UIEditor.UILib.Components {
             }
         }
 
+        public float ItemScale { get; set; }
+
         public UIItemSlot() {
+            ItemScale = 1f;
             PropagationRule = Enums.PropagationFlags.FocusEvents | Enums.PropagationFlags.ScrollWheel;
             Size = new Microsoft.Xna.Framework.Vector2(slotBack.Width, slotBack.Height);
 
@@ -90,13 +93,17 @@ namespace UIEditor.UILib.Components {
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
             var topLeft = PositionScreen - new Vector2(Width, Height) * Pivot;
-            sb.Draw(slotBack, Pivot * new Vector2(Width, Height), null, Color.White, 0, Pivot * slotBack.Size(),
+            sb.Draw(slotBack, Pivot * new Vector2(Width, Height), null, Color.White * 0.875f, 0, Pivot * slotBack.Size(),
                      new Vector2(1, 1), SpriteEffects.None, 0f);
-            if (0 < ItemType && ItemType < ItemLoader.ItemCount) {
+
+            if (0 < ItemType && ItemType < Main.itemTexture.Length) {
                 var itemTexture = Main.itemTexture[ItemType];
-                var pos = topLeft + itemTexture.Size() / 2;
-                sb.Draw(itemTexture, Pivot * new Vector2(Width, Height), null, Color.White, 0, Pivot * itemTexture.Size(),
-                         new Vector2(1, 1), SpriteEffects.None, 0f);
+                var frame = Main.itemAnimations[ItemType] != null ? Main.itemAnimations[ItemType].GetFrame(Main.itemTexture[ItemType]) : Main.itemTexture[ItemType].Frame(1, 1, 0, 0);
+                float scale = 1f;
+                if (itemTexture.Width > 32 || itemTexture.Height > 32)
+                    scale = (itemTexture.Width > itemTexture.Height ? (32f / itemTexture.Width) : (32f / itemTexture.Height));
+                sb.Draw(itemTexture, 0.5f * new Vector2(Width, Height), frame, Color.White, 0, 0.5f * frame.Size(),
+                         scale, SpriteEffects.None, 0f);
             }
         }
 

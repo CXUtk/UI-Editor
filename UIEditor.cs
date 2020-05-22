@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
-using Terraria.UI;
 using UIEditor.UILib;
 using UIEditor.UILib.Tests;
 using UIEditor.Editor.States;
@@ -11,6 +10,8 @@ using UIEditor.UILib.Resources;
 using Microsoft.Xna.Framework.Graphics;
 using UIEditor.Editor.States.Attached;
 using UIEditor.Editor.Helper;
+using UIState = UIEditor.UILib.UIState;
+using Terraria.UI;
 
 namespace UIEditor {
     public class UIEditor : Mod {
@@ -23,6 +24,8 @@ namespace UIEditor {
         public SkinManager SkinManager;
         internal Documentation Documentation;
 
+        private BottomToolBarState _toolBarState;
+
         public UIEditor() {
 
         }
@@ -33,10 +36,22 @@ namespace UIEditor {
 
             UIStateMachine = new UIStateMachine();
             UIStateMachine.Add(new EditorState("Editor"));
-            UIStateMachine.Add(new BottomToolBarState("ToolbarBottom"));
+            _toolBarState = new BottomToolBarState("ToolbarBottom");
+            UIStateMachine.Add(_toolBarState);
             UIStateMachine.Add(new TestState2("tstate2"));
             UIStateMachine.Add(new ColorChooser("ColorChooser"));
         }
+
+
+        public void AddState(UIState state) {
+            UIStateMachine.Add(state);
+        }
+
+
+        public void AddToolBarButton(UILib.UIElement button) {
+            _toolBarState.AddButton(button);
+        }
+
 
         public override void PostSetupContent() {
             base.PostSetupContent();

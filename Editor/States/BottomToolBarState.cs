@@ -17,6 +17,7 @@ namespace UIEditor.Editor.States {
         private UIToolBarH _toolBar;
 
         public BottomToolBarState(string name) : base(name) { }
+        private const float InnerMargin = 10f;
 
         public override void Initialize() {
             base.Initialize();
@@ -34,13 +35,29 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(30f, 30f),
                 SizeStyle = SizeStyle.Inline,
                 DefaultColor = Color.White * 0.8f,
-                Tooltip = "切换编辑器界面"
+                Tooltip = "切换编辑器界面",
+                AnchorPoint = new Vector2(0f, 0.5f),
+                Pivot = new Vector2(0f, 0.5f),
             };
             _toolElements.Add(button);
-            button.AnchorPoint = new Vector2(0.5f, 0.5f);
             button.OnClick += Button_OnClick;
             button.PostDrawSelf += Button_PostDrawSelf;
             _toolBar.AddToPanel(button);
+        }
+
+        public void AddButton(UIElement element) {
+            element.AnchorPoint = element.Pivot = new Vector2(0, 0.5f);
+            float currentX = 20f;
+            foreach (var button in _toolElements) {
+                button.Position = new Vector2(currentX, 0);
+                currentX += button.Width + InnerMargin;
+            }
+            element.Position = new Vector2(currentX, 0);
+            _toolElements.Add(element);
+            _toolBar.AddToPanel(element);
+            currentX += _toolBar.Width + InnerMargin;
+            currentX += 15f;
+            _toolBar.Size = new Vector2(Math.Max(80, currentX), 80);
         }
 
         private void Button_PostDrawSelf(UIDrawEvent e, UIElement sender) {

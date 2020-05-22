@@ -598,11 +598,11 @@ namespace UIEditor.UILib {
                 sb.End();
                 sb.GraphicsDevice.ScissorRectangle = scissorRectangle;
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                    DepthStencilState.None, OverflowHiddenRasterizerState, null, Main.UIScaleMatrix);
+                    DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
             } else {
                 sb.End();
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                    DepthStencilState.None, OverflowHiddenRasterizerState, null, Main.UIScaleMatrix);
+                    DepthStencilState.None, defaultstate, null, Main.UIScaleMatrix);
             }
             if (DEBUG_MODE) {
                 _selfHitbox.Draw(sb);
