@@ -26,6 +26,8 @@ namespace UIEditor.UILib.Components {
         /// 这个文本组件可不可以被用户编辑？
         /// </summary>
         public bool Editable { get; set; }
+
+        public bool DrawPanel { get; set; }
         private readonly UILabel _label;
         protected string _text = "";
         private int _carrot;
@@ -73,6 +75,7 @@ namespace UIEditor.UILib.Components {
             };
             _offsetL = _offsetR = 0;
             OnClick += FindCarrot;
+            DrawPanel = true;
             AppendChild(_label);
         }
 
@@ -143,7 +146,8 @@ namespace UIEditor.UILib.Components {
                 DrawIME();
 
             }
-            base.DrawSelf(sb);
+            if (DrawPanel)
+                base.DrawSelf(sb);
         }
 
         public virtual void TextChange(UITextChangeEvent e) {

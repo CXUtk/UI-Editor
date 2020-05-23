@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,13 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.UI.Chat;
 using UIEditor.UILib.Events;
 
 namespace UIEditor.UILib.Components {
     public class UIItemSlot : UIElement {
-        private static Texture2D slotBack = Main.inventoryBackTexture;
+        public bool Enabled { get; set; }
+        private Texture2D slotBack = Main.inventoryBackTexture;
 
         private int itemType;
         private int rightDownTime;
@@ -24,26 +27,45 @@ namespace UIEditor.UILib.Components {
             }
             set {
                 itemType = value;
-                Tooltip = Lang.GetItemNameValue(itemType);
             }
         }
+
+        public float Opacity { get; set; }
+
+        public int ItemStack { get; set; }
 
         public float ItemScale { get; set; }
 
         public UIItemSlot() {
+            Enabled = false;
             ItemScale = 1f;
             PropagationRule = Enums.PropagationFlags.FocusEvents | Enums.PropagationFlags.ScrollWheel;
-            Size = new Microsoft.Xna.Framework.Vector2(slotBack.Width, slotBack.Height);
+            Size = new Vector2(slotBack.Width, slotBack.Height);
 
             OnClick += UIItemSlot_OnClick;
             OnRightClick += UIItemSlot_OnRightClick;
 
             OnMouseRightDown += UIItemSlot_OnMouseRightDown;
             OnMouseRightUp += UIItemSlot_OnMouseRightUp;
+            ItemStack = 1;
+            Opacity = 1f;
+        }
+
+        protected bool _mouseHover;
+
+        public override void MouseEnter(UIMouseEvent e) {
+            _mouseHover = true;
+            base.MouseEnter(e);
+        }
+
+        public override void MouseOut(UIMouseEvent e) {
+            _mouseHover = false;
+            base.MouseOut(e);
         }
 
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
+
             if (!Main.mouseRight) {
                 rightDowned = false;
                 rightDownTime = 0;
@@ -89,25 +111,38 @@ namespace UIEditor.UILib.Components {
                 }
             }
         }
-
+        public virtual void HandleTooltip() {
+            Item item = new Item();
+            item.SetDefaults(ItemType);
+            item.stack = ItemStack;
+            Main.hoverItemName = item.Name;
+            if (item.stack > 1)
+                Main.hoverItemName = Main.hoverItemName + " (" + item.stack + ")";
+            Main.HoverItem = item;
+        }
         public override void DrawSelf(SpriteBatch sb) {
             base.DrawSelf(sb);
-            var topLeft = PositionScreen - new Vector2(Width, Height) * Pivot;
-            sb.Draw(slotBack, Pivot * new Vector2(Width, Height), null, Color.White * 0.875f, 0, Pivot * slotBack.Size(),
-                     new Vector2(1, 1), SpriteEffects.None, 0f);
+            if (_mouseHover) {
+                HandleTooltip();
+            }
+            Drawing.DrawAdvBox(sb, new Rectangle(0, 0, Width, Height), Color.White * Opacity, IsSelected ? Main.inventoryBack15Texture : slotBack, new Vector2(6, 6));
 
             if (0 < ItemType && ItemType < Main.itemTexture.Length) {
                 var itemTexture = Main.itemTexture[ItemType];
                 var frame = Main.itemAnimations[ItemType] != null ? Main.itemAnimations[ItemType].GetFrame(Main.itemTexture[ItemType]) : Main.itemTexture[ItemType].Frame(1, 1, 0, 0);
                 float scale = 1f;
-                if (itemTexture.Width > 32 || itemTexture.Height > 32)
-                    scale = (itemTexture.Width > itemTexture.Height ? (32f / itemTexture.Width) : (32f / itemTexture.Height));
+                if (frame.Width > 32 || frame.Height > 32)
+                    scale = (frame.Width > frame.Height ? (32f / frame.Width) : (32f / frame.Height));
                 sb.Draw(itemTexture, 0.5f * new Vector2(Width, Height), frame, Color.White, 0, 0.5f * frame.Size(),
                          scale, SpriteEffects.None, 0f);
+                if (ItemStack > 1) {
+                    ChatManager.DrawColorCodedStringWithShadow(sb, Main.fontItemStack, ItemStack.ToString(), new Vector2(10, Height - 20), Color.White, 0, Vector2.Zero, Scale * 0.9f);
+                }
             }
         }
 
         private void UIItemSlot_OnClick(UIMouseEvent e, UIElement sender) {
+            if (!Enabled) return;
             Main.playerInventory = true;
             if (Main.mouseItem.IsAir) {
                 Main.mouseItem = new Item();
@@ -118,6 +153,7 @@ namespace UIEditor.UILib.Components {
         }
 
         private void UIItemSlot_OnRightClick(UIMouseEvent e, UIElement sender) {
+            if (!Enabled) return;
             if (!Main.playerInventory || rightDownTime >= 12) {
                 return;
             }
@@ -134,12 +170,14 @@ namespace UIEditor.UILib.Components {
         }
 
         private void UIItemSlot_OnMouseRightDown(UIMouseEvent e, UIElement sender) {
+            if (!Enabled) return;
             Main.playerInventory = true;
             rightDownTime = 0;
             rightDowned = true;
         }
 
         private void UIItemSlot_OnMouseRightUp(UIMouseEvent e, UIElement sender) {
+            if (!Enabled) return;
             rightDownTime = 0;
             rightDowned = false;
         }

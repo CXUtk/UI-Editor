@@ -144,7 +144,7 @@ namespace UIEditor.UILib {
         /// </summary>
         [EditorPropertyIgnore]
         [JsonIgnore]
-        internal bool IsSelected { get; set; }
+        public bool IsSelected { get; set; }
 
         /// <summary>
         /// 如果需要使用着色器，会更改这个元素的绘制模式，会严重影响性能

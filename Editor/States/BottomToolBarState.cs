@@ -23,7 +23,7 @@ namespace UIEditor.Editor.States {
             base.Initialize();
             _toolElements = new List<UIElement>();
             _toolBar = new UIToolBarH() {
-                Size = new Vector2(80, 80),
+                Size = new Vector2(70, 70),
                 AnchorPoint = new Vector2(0.5f, 1f),
                 Pivot = new Vector2(0.5f, 1f),
             };
@@ -38,6 +38,7 @@ namespace UIEditor.Editor.States {
                 Tooltip = "切换编辑器界面",
                 AnchorPoint = new Vector2(0f, 0.5f),
                 Pivot = new Vector2(0f, 0.5f),
+                Position = new Vector2(20, 0),
             };
             _toolElements.Add(button);
             button.OnClick += Button_OnClick;
@@ -46,18 +47,18 @@ namespace UIEditor.Editor.States {
         }
 
         public void AddButton(UIElement element) {
-            element.AnchorPoint = element.Pivot = new Vector2(0, 0.5f);
+            element.AnchorPoint = new Vector2(0, 0.5f);
+            element.Pivot = new Vector2(0, 0.5f);
             float currentX = 20f;
-            foreach (var button in _toolElements) {
-                button.Position = new Vector2(currentX, 0);
-                currentX += button.Width + InnerMargin;
-            }
-            element.Position = new Vector2(currentX, 0);
             _toolElements.Add(element);
             _toolBar.AddToPanel(element);
-            currentX += _toolBar.Width + InnerMargin;
-            currentX += 15f;
-            _toolBar.Size = new Vector2(Math.Max(80, currentX), 80);
+            foreach (var button in _toolElements) {
+                button.Update(new GameTime());
+                button.Position = new Vector2(currentX, 0);
+                currentX += button.Size.X + InnerMargin;
+            }
+            currentX += 10f;
+            _toolBar.Size = new Vector2(Math.Max(70, currentX), 80);
         }
 
         private void Button_PostDrawSelf(UIDrawEvent e, UIElement sender) {

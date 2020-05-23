@@ -38,6 +38,7 @@ namespace UIEditor.Editor.States {
 
         private const float PADDING_BODY = 10f;
         public override void Initialize() {
+
             base.Initialize();
             Overflow = OverflowType.Hidden;
             _window = new UIWindow() {
@@ -89,6 +90,7 @@ namespace UIEditor.Editor.States {
             _body.AppendChild(Inspecter);
 
             _init();
+            IsActive = false;
         }
 
         public void _init() {
