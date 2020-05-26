@@ -118,6 +118,8 @@ namespace UIEditor.UILib.Components {
             Main.hoverItemName = item.Name;
             if (item.stack > 1)
                 Main.hoverItemName = Main.hoverItemName + " (" + item.stack + ")";
+            if (item.modItem != null)
+                Main.hoverItemName = Main.hoverItemName + " [" + item.modItem.mod.DisplayName + "]";
             Main.HoverItem = item;
         }
         public override void DrawSelf(SpriteBatch sb) {

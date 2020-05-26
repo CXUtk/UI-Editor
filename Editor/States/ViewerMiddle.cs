@@ -17,7 +17,7 @@ namespace UIEditor.Editor.States {
         public Rectangle SizerRectScreen {
             get {
                 if (Sizer.IsActive) {
-                    return Sizer.InnerRectangleScreen;
+                    return Sizer.BaseRectangleScreen;
                 }
                 return Rectangle.Empty;
             }

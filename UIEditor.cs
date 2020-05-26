@@ -38,7 +38,7 @@ namespace UIEditor {
             UIStateMachine.Add(new EditorState("Editor"));
             _toolBarState = new BottomToolBarState("ToolbarBottom");
             UIStateMachine.Add(_toolBarState);
-            UIStateMachine.Add(new TestState2("tstate2"));
+            // UIStateMachine.Add(new TestState2("tstate2"));
             UIStateMachine.Add(new ColorChooser("ColorChooser"));
         }
 

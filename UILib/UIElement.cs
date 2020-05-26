@@ -22,7 +22,7 @@ namespace UIEditor.UILib {
         public delegate void DragEndEvent(UIDragEndEvent e, UIElement sender);
         public delegate void ValueChangeEvent<T>(UIValueChangeEvent<T> e, UIElement sender);
 
-        public static bool DEBUG_MODE = true;
+        public static bool DEBUG_MODE = false;
 
 
         #region 基础属性
@@ -188,21 +188,14 @@ namespace UIEditor.UILib {
         #region 派生属性
         [EditorPropertyIgnore]
         [JsonIgnore]
-        public Rectangle OuterRectangleScreen {
+        public Rectangle AdjustedRectangleScreen {
             get {
                 return _selfHitbox.GetOuterRectangle();
             }
         }
-        [EditorPropertyIgnore]
-        [JsonIgnore]
-        public Rectangle BaseRectangleScreen {
-            get {
-                return new Rectangle((int)(_baseTopLeftScreen.X), (int)(_baseTopLeftScreen.Y), Width, Height);
-            }
-        }
         [EditorPropertyReadOnly]
         [JsonIgnore]
-        public Rectangle InnerRectangleScreen {
+        public Rectangle BaseRectangleScreen {
             get {
                 return new Rectangle((int)(_baseTopLeftScreen.X), (int)(_baseTopLeftScreen.Y), Width, Height);
             }
@@ -290,7 +283,7 @@ namespace UIEditor.UILib {
         //}
 
         [JsonIgnore]
-        public IHitBox ScreenHitBox {
+        public QuadrilateralHitbox ScreenHitBox {
             get {
                 return _selfHitbox;
             }
@@ -332,7 +325,7 @@ namespace UIEditor.UILib {
             return pos;
         }
         public void RecalculateLocation() {
-            _parentRect = Parent?.InnerRectangleScreen ?? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
+            _parentRect = Parent?.BaseRectangleScreen ?? new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
             _baseTopLeftScreen = getBaseRectScreen() + Position - PivotOffset;
             _realPosition = (Parent == null) ? Position : new Vector2(Parent.Width, Parent.Height) * AnchorPoint
                 + Position - new Vector2(Width * Pivot.X, Height * Pivot.Y);
@@ -543,7 +536,7 @@ namespace UIEditor.UILib {
 
 
         public Rectangle GetClippingRectangle(SpriteBatch sb) {
-            return Rectangle.Intersect(sb.GraphicsDevice.ScissorRectangle, OuterRectangleScreen);
+            return Rectangle.Intersect(sb.GraphicsDevice.ScissorRectangle, AdjustedRectangleScreen);
         }
 
         private Matrix ApplyTransform(Matrix prev) {

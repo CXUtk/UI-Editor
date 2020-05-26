@@ -187,7 +187,7 @@ namespace UIEditor.UILib.Components {
         }
 
         private void DrawIME() {
-            var pos = _label.InnerRectangleScreen.BottomLeft() + new Vector2(_label.MeasureSize(Text.Substring(0, _carrot)).X, 0);
+            var pos = _label.BaseRectangleScreen.BottomLeft() + new Vector2(_label.MeasureSize(Text.Substring(0, _carrot)).X, 0);
             var size = GetIMESize();
             if (pos.Y + Height + size.Y > Main.screenHeight) {
                 pos.Y -= 6 + size.Y;

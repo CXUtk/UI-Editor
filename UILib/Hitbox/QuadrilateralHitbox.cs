@@ -50,7 +50,41 @@ namespace UIEditor.UILib.Hitbox {
             Drawing.StrokePolygon(sb, _points.ToList(), 1, Color.Lime);
         }
 
+
+        private Vector2 getProjections(Vector2 projVec) {
+            float maxx = float.NegativeInfinity;
+            float minn = float.PositiveInfinity;
+            foreach (var point in _points) {
+                float a = Vector2.Dot(point, projVec);
+                maxx = Math.Max(maxx, a);
+                minn = Math.Min(minn, a);
+            }
+            return new Vector2(minn, maxx);
+        }
         public bool Intersects(IHitBox hitBox) {
+            if (hitBox is QuadrilateralHitbox) {
+                var quad = (QuadrilateralHitbox)hitBox;
+                List<Vector2> projVec = new List<Vector2>();
+                int n = _points.Length;
+                for (int i = 0; i < n; i++) {
+                    var vec = _points[(i + 1) % n] - _points[i];
+                    vec.Normalize();
+                    projVec.Add(new Vector2(-vec.Y, vec.X));
+                }
+                for (int i = 0; i < n; i++) {
+                    var vec = quad._points[(i + 1) % n] - quad._points[i];
+                    vec.Normalize();
+                    projVec.Add(new Vector2(-vec.Y, vec.X));
+                }
+                foreach (var proj in projVec) {
+                    var A = getProjections(proj);
+                    var B = quad.getProjections(proj);
+                    if (Math.Max(A.X, B.X) > Math.Min(A.Y, B.Y)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
             return false;
         }
 

@@ -138,7 +138,7 @@ namespace UIEditor.UILib.Components {
                 }
             }
             _innerBar.Color = Color.Lerp(DefaultInnerColor, MouseMoveInnerColor, _timer / 150f);
-            _innerBar.SizeFactor = new Vector2(1f, MathHelper.Clamp(ViewSize, 0.01f, 1));
+            _innerBar.SizeFactor = new Vector2(1f, MathHelper.Clamp(ViewSize, 0.05f, 1));
             _innerBar.RecalculateSelf();
             // 锚点和基准点都在顶部
             int topY = 0, bottomY = _outerBar.Height - _innerBar.Height;

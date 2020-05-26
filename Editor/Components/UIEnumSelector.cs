@@ -132,7 +132,7 @@ namespace UIEditor.Editor.Components {
         public override void UpdateSelf(GameTime gameTime) {
             base.UpdateSelf(gameTime);
             _label.Size = new Vector2(Width - _expandButton.Width - 5f, _label.Size.Y);
-            _listPanel.Position = _listPanel.ScreenPositionToParentAR(this.InnerRectangleScreen.BottomLeft());
+            _listPanel.Position = _listPanel.ScreenPositionToParentAR(this.BaseRectangleScreen.BottomLeft());
         }
 
         private void List_OnSelect(UIActionEvent e, UIElement sender) {

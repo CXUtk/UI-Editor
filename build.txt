@@ -1,9 +1,9 @@
-﻿displayName = UI 编辑器
-author = DXTsT
+﻿displayName = UI 基础库
+author = DXTsT（裙子）
 version = 1.0
 hideResources = false
 hideCode = false
 includeSource = true
 includePDB = true
 homepage = http://fs49.org/
-buildIgnore = *.csproj, *.sln, obj\*, bin\*, *.suo, *.user, .git\*, .vs\*, Libraries\*, UITest\*
+buildIgnore = *.csproj, *.sln, obj\*, bin\*, *.suo, *.user, .git\*, .vs\*, Libraries\*, UITest\*, Properties\*, packages\*

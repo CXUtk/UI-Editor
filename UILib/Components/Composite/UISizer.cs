@@ -192,7 +192,7 @@ namespace UIEditor.UILib.Components.Composite {
         public void AttachTo(UIElement element) {
             element.Recalculate();
             TargetElement = element;
-            Position = ScreenPositionToParentAR(element.InnerRectangleScreen.TopLeft()) - new Vector2(6, 6);
+            Position = ScreenPositionToParentAR(element.BaseRectangleScreen.TopLeft()) - new Vector2(6, 6);
             Size = new Vector2(element.Width + 12f, element.Height + 12f);
             Recalculate();
         }
