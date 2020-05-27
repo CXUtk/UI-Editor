@@ -35,7 +35,7 @@ namespace UIEditor.Editor.States {
                 Size = new Vector2(30f, 30f),
                 SizeStyle = SizeStyle.Inline,
                 DefaultColor = Color.White * 0.8f,
-                Tooltip = "切换编辑器界面",
+                Tooltip = "切换编辑器界面【未完成】",
                 AnchorPoint = new Vector2(0f, 0.5f),
                 Pivot = new Vector2(0f, 0.5f),
                 Position = new Vector2(20, 0),

@@ -12,7 +12,7 @@ using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace UIEditor.Editor.Components {
-    public class BrowserTreeDisplayNode : UITreeNodeDisplay {
+    public class BrowserTreeDisplayNode : UITreeNodeTextDisplay {
         public UIElement BindingElement { get; }
         public bool IsDragOver { get; set; }
         public UIBrowserTreeNode Info { get; }

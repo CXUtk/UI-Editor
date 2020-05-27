@@ -1,6 +1,6 @@
 ﻿displayName = UI 基础库
 author = DXTsT（裙子）
-version = 1.0
+version = 1.0.1
 hideResources = false
 hideCode = false
 includeSource = true

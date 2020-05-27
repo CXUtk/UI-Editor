@@ -34,12 +34,12 @@ namespace UIEditor.Editor.States {
         }
 
         private void Save_OnClick(UIMouseEvent e, UIElement sender) {
-            var list = Editor.Viewer.Canvas.Root.Children;
-            var text = JsonConvert.SerializeObject(list, Formatting.Indented);
-            using (StreamWriter sw = new StreamWriter(File.Open("test.json", FileMode.OpenOrCreate), Encoding.UTF8)) {
-                sw.Write(text);
-            }
-            Main.NewText("保存完成");
+            //var list = Editor.Viewer.Canvas.Root.Children;
+            //var text = JsonConvert.SerializeObject(list, Formatting.Indented);
+            //using (StreamWriter sw = new StreamWriter(File.Open("test.json", FileMode.OpenOrCreate), Encoding.UTF8)) {
+            //    sw.Write(text);
+            //}
+            Main.NewText("这个功能没有实现！", Color.Red);
         }
     }
 }
